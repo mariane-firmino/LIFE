@@ -5,7 +5,7 @@
         <div class="left_esqueci_minha_seha">
 
             <img
-                src="<?= URL ?>/img/life-menor.png"
+                src="<?= URL ?>/img/logo-life.png"
                 class="logo_esqueci_minha_seha"
                 alt="Logo Enfermaria"
             >

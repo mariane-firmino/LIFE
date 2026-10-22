@@ -445,27 +445,18 @@ body.fonte-extra-grande {
 
         <div class="row align-items-start">
 
-            <div class="col-8 linha-verde">
+        <!-- CABEÇALHO -->
+            <header class="home-topo">
 
-                <h1>Configuração</h1>
+                <div class="home-titulo">
+                    <h1>Configuração</h1>
+                    <p>Gerencie as configurações do sistema,
+                    aparência e acessibilidade.</p>
+                </div>
 
-                <p>
-                    Gerencie as configurações do sistema,
-                    aparência e acessibilidade.
-                </p>
+                <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
 
-            </div>
-
-            <div class="col-4 text-end">
-
-                <img
-                    src="<?= URL ?>/img/life-menor.png"
-                    class="logo-home"
-                    alt="Logo do sistema Enfermaria"
-                >
-
-            </div>
-
+            </header>
         </div>
 
     </div>

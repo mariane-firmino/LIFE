@@ -81,6 +81,7 @@ $campoSaude = function ($campo) use ($saude) {
 <div class="layout">
     <div class="container-fluid ps-4 pe-4 pt-5 pb-3">
         <div class="row align-items-start">
+            
             <div class="col-8 linha-verde">
                 <h1>Perfil do Aluno</h1>
                 <p>Visualize as informações do estudante aqui.</p>

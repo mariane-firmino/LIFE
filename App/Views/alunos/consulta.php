@@ -5,215 +5,297 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 include '../App/Views/menu.php';
+
+$alunos = $dados['alunos'] ?? [];
+$total  = count($alunos);
+
+// Opções dos filtros, montadas a partir dos próprios alunos
+$cursos = [];
+$turmas = [];
+
+foreach ($alunos as $aluno) {
+    if (!empty($aluno->curso)) {
+        $cursos[(string) $aluno->curso] = true;
+    }
+    if (!empty($aluno->ano_turma)) {
+        $turmas[(string) $aluno->ano_turma] = true;
+    }
+}
+
+$cursos = array_keys($cursos);
+$turmas = array_keys($turmas);
+sort($cursos);
+sort($turmas);
+
+// Classe de cor do turno
+function consultaAlunoClasseTurno($turno)
+{
+    $t = mb_strtolower((string) $turno);
+
+    if (strpos($t, 'manh') !== false) return 'turno-manha';
+    if (strpos($t, 'tarde') !== false) return 'turno-tarde';
+    if (strpos($t, 'noite') !== false || strpos($t, 'notur') !== false) return 'turno-noite';
+
+    return 'turno-outro';
+}
 ?>
+
+<!-- Bootstrap Icons (remova esta linha se já estiver carregado no menu.php ou no <head>) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 <div class="layout">
-    <div class="container-fluid ps-4 pe-4 pt-5 pb-3">
-        <div class="row align-items-start">
-            <div class="col-8 linha-verde">
+
+    <!-- CABEÇALHO -->
+    <div class="container-fluid px-4 pt-5 pb-3">
+
+        <header class="home-topo">
+
+            <div class="home-titulo">
                 <h1>Consultar Aluno</h1>
                 <p>Faça a consulta do estudante aqui.</p>
             </div>
-            <div class="col-4 text-end">
-                <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
-            </div>
-        </div>
+
+            <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
+
+        </header>
+
     </div>
+
 
     <main class="consultaAlunoPagina">
 
         <!-- FILTROS -->
+        <section class="consultaAlunoFiltros" aria-label="Filtros">
 
-        <section class="consultaAlunoFiltros">
             <div class="consultaAlunoCampoPesquisa">
                 <i class="bi bi-search consultaAlunoIconePesquisa"></i>
-                <input type="text" class="consultaAlunoInputPesquisa" placeholder="Buscar por nome do aluno">
+
+                <input
+                    type="search"
+                    id="consultaAlunoBusca"
+                    class="consultaAlunoInputPesquisa"
+                    placeholder="Buscar por nome do aluno"
+                    autocomplete="off"
+                    aria-label="Buscar por nome do aluno">
             </div>
 
-
-            <select class="consultaAlunoSelectPerfil">
-
-                <option selected>
-                    Todos os perfis
-                </option>
-
-                <option>
-                    123
-                </option>
-
+            <select id="consultaAlunoFiltroCurso" class="consultaAlunoSelect" aria-label="Filtrar por curso">
+                <option value="">Todos os cursos</option>
+                <?php foreach ($cursos as $curso): ?>
+                    <option value="<?= htmlspecialchars(mb_strtolower($curso)) ?>">
+                        <?= htmlspecialchars($curso) ?>
+                    </option>
+                <?php endforeach; ?>
             </select>
-            <select class="consultaAlunoSelectTurma">
-                <option selected>
-                    Turma
-                </option>
 
-                <option>
-                    123
-                </option>
+            <select id="consultaAlunoFiltroTurma" class="consultaAlunoSelect" aria-label="Filtrar por turma">
+                <option value="">Todas as turmas</option>
+                <?php foreach ($turmas as $turma): ?>
+                    <option value="<?= htmlspecialchars($turma) ?>">
+                        <?= htmlspecialchars($turma) ?>º ano
+                    </option>
+                <?php endforeach; ?>
             </select>
+
+            <button type="button" id="consultaAlunoLimpar" class="consultaAlunoLimpar" hidden>
+                <i class="bi bi-x-circle"></i> Limpar
+            </button>
+
         </section>
 
 
-        <section class="consultaAlunoResultado">
+        <!-- RESULTADO -->
+        <section class="consultaAlunoResultado" aria-live="polite">
+
             <div class="consultaAlunoResultadoIcone">
                 <i class="bi bi-people-fill"></i>
             </div>
 
             <div class="consultaAlunoResultadoTexto">
-                <strong class="consultaAlunoResultadoTitulo">
-                    Resultados da pesquisa
-                </strong>
+                <strong class="consultaAlunoResultadoTitulo">Resultados da pesquisa</strong>
 
-                <span class="consultaAlunoResultadoQuantidade">
-    <?= count($dados['alunos'] ?? []) ?>
-    <?= count($dados['alunos'] ?? []) == 1 ? 'Aluno encontrado' : 'Alunos encontrados' ?>
-</span> 
+                <span class="consultaAlunoResultadoQuantidade" id="consultaAlunoContador">
+                    <?= $total ?> <?= $total === 1 ? 'aluno encontrado' : 'alunos encontrados' ?>
+                </span>
             </div>
+
         </section>
 
 
+        <!-- TABELA -->
         <section class="consultaAlunoTabelaArea">
+
             <div class="consultaAlunoTabelaContainer">
 
-                <div class="consultaAlunoTabelaScroll" id="consultaAlunoTabelaScroll">
-                    <table class="consultaAlunoTabela">
-                        <thead class="consultaAlunoTabelaCabecalho">
+                <table class="consultaAlunoTabela">
 
-                            <tr>
-                                <th>Nome do Aluno</th>
-                                <th>Turma</th>
-                                <th>Curso</th>
-                                <th>Turno</th>
-                                <th>Data de Cadastro</th>
-                                <th class="consultaAlunoColunaAcoes">
-                                    Ações
-                                </th>
+                    <thead class="consultaAlunoTabelaCabecalho">
+                        <tr>
+                            <th>Nome do Aluno</th>
+                            <th>Turma</th>
+                            <th>Curso</th>
+                            <th>Turno</th>
+                            <th>Data de Cadastro</th>
+                            <th class="consultaAlunoColunaAcoes">Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="consultaAlunoTabelaCorpo" id="consultaAlunoCorpo">
+
+                        <?php foreach ($alunos as $aluno): ?>
+
+                            <?php
+                            $nome   = (string) ($aluno->nome ?? '');
+                            $curso  = (string) ($aluno->curso ?? '');
+                            $turma  = (string) ($aluno->ano_turma ?? '');
+                            $turno  = (string) ($aluno->turno ?? '');
+                            $inicial = $nome !== '' ? mb_strtoupper(mb_substr($nome, 0, 1)) : '?';
+                            ?>
+
+                            <tr
+                                class="consultaAlunoLinha"
+                                data-nome="<?= htmlspecialchars(mb_strtolower($nome)) ?>"
+                                data-curso="<?= htmlspecialchars(mb_strtolower($curso)) ?>"
+                                data-turma="<?= htmlspecialchars($turma) ?>">
+
+                                <!-- NOME -->
+                                <td class="consultaAlunoCelula consultaAlunoCelulaNome" data-label="Aluno">
+                                    <span class="consultaAlunoAvatar" aria-hidden="true">
+                                        <?= htmlspecialchars($inicial) ?>
+                                    </span>
+                                    <span class="consultaAlunoNomeTexto">
+                                        <?= htmlspecialchars($nome) ?>
+                                    </span>
+                                </td>
+
+                                <!-- TURMA -->
+                                <td class="consultaAlunoCelula" data-label="Turma">
+                                    <?= $turma !== '' ? htmlspecialchars($turma) . 'º ano' : '--' ?>
+                                </td>
+
+                                <!-- CURSO -->
+                                <td class="consultaAlunoCelula" data-label="Curso">
+                                    <?= $curso !== '' ? htmlspecialchars($curso) : '--' ?>
+                                </td>
+
+                                <!-- TURNO -->
+                                <td class="consultaAlunoCelula" data-label="Turno">
+                                    <?php if ($turno !== ''): ?>
+                                        <span class="consultaAlunoTurno <?= consultaAlunoClasseTurno($turno) ?>">
+                                            <?= htmlspecialchars($turno) ?>
+                                        </span>
+                                    <?php else: ?>
+                                        --
+                                    <?php endif; ?>
+                                </td>
+
+                                <!-- DATA DE CADASTRO -->
+                                <td class="consultaAlunoCelula" data-label="Cadastro">
+                                    <?= !empty($aluno->data_cadastro)
+                                        ? date('d/m/Y', strtotime($aluno->data_cadastro))
+                                        : '--/--/----' ?>
+                                </td>
+
+                                <!-- AÇÕES -->
+                                <td class="consultaAlunoCelula consultaAlunoCelulaAcoes" data-label="">
+                                    <a
+                                        class="consultaAlunoBotaoPerfil"
+                                        href="<?= URL ?>/alunos/visualizarPerfil/<?= (int) $aluno->id ?>"
+                                        title="Visualizar perfil">
+                                        <i class="bi bi-eye-fill"></i>
+                                        <span>Ver perfil</span>
+                                    </a>
+                                </td>
+
                             </tr>
-                        </thead>
 
-                       <tbody class="consultaAlunoTabelaCorpo">
+                        <?php endforeach; ?>
 
-<?php if (!empty($dados['alunos'])): ?>
+                        <!-- Linha de "nada encontrado" (controlada pelo JS) -->
+                        <tr id="consultaAlunoVazio" class="consultaAlunoLinhaVazia"<?= $total > 0 ? ' hidden' : '' ?>>
+                            <td colspan="6">
+                                <i class="bi bi-search"></i>
+                                <span id="consultaAlunoVazioTexto">
+                                    <?= $total > 0 ? 'Nenhum aluno encontrado com esses filtros.' : 'Nenhum aluno cadastrado.' ?>
+                                </span>
+                            </td>
+                        </tr>
 
-    <?php foreach ($dados['alunos'] as $aluno): ?>
+                    </tbody>
 
-        <tr class="consultaAlunoLinha">
+                </table>
 
-            <!-- NOME -->
-            <td class="consultaAlunoCelula">
-                <?= htmlspecialchars((string)($aluno->nome ?? '')) ?>
-            </td>
-
-            <!-- TURMA -->
-            <td class="consultaAlunoCelula">
-
-                <?php if (!empty($aluno->ano_turma)): ?>
-
-                    <?= htmlspecialchars((string)$aluno->ano_turma) ?>º ano
-
-                <?php else: ?>
-
-                    --
-
-                <?php endif; ?>
-
-            </td>
-
-            <!-- CURSO -->
-            <td class="consultaAlunoCelula">
-                <?= htmlspecialchars((string)($aluno->curso ?? '--')) ?>
-            </td>
-
-            <!-- TURNO -->
-            <td class="consultaAlunoCelula">
-                <?= htmlspecialchars((string)($aluno->turno ?? '--')) ?>
-            </td>
-
-            <!-- DATA DE CADASTRO -->
-            <td class="consultaAlunoCelula">
-
-                <?php if (!empty($aluno->data_cadastro)): ?>
-
-                    <?= date(
-                        'd/m/Y',
-                        strtotime($aluno->data_cadastro)
-                    ) ?>
-
-                <?php else: ?>
-
-                    --/--/----
-
-                <?php endif; ?>
-
-            </td>
-
-            <!-- AÇÕES -->
-            <td class="consultaAlunoCelula consultaAlunoCelulaAcoes">
-
-                <details class="consultaAlunoMenu">
-
-                    <summary
-                        class="consultaAlunoBotaoAcoes"
-                        aria-label="Abrir ações"
-                    >
-                        <i class="bi bi-three-dots"></i>
-                    </summary>
-
-                    <div class="consultaAlunoMenuOpcoes">
-
-                        <a
-                            class="consultaAlunoOpcaoMenu"
-                            href="<?= URL ?>/alunos/visualizarPerfil/<?= (int)$aluno->id ?>"
-                        >
-                            Visualizar Perfil
-                        </a>
-
-
-                    </div>
-
-                </details>
-
-            </td>
-
-        </tr>
-
-    <?php endforeach; ?>
-
-<?php else: ?>
-
-    <tr>
-
-        <td colspan="6" class="text-center p-4">
-
-            Nenhum aluno cadastrado.
-
-        </td>
-
-    </tr>
-
-<?php endif; ?>
-
-</tbody>
-
-                    </table>
-                </div>
             </div>
 
-            <div class="consultaAlunoBarraScroll">
-                <button type="button" class="consultaAlunoSeta" id="consultaAlunoScrollEsquerda">
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-
-
-                <div class="consultaAlunoTrilho" id="consultaAlunoTrilho">
-                    <div class="consultaAlunoIndicador" id="consultaAlunoIndicador"></div>
-                </div>
-
-
-                <button type="button" class="consultaAlunoSeta" id="consultaAlunoScrollDireita">
-                    <i class="bi bi-chevron-right"></i>
-                </button>
-            </div>
         </section>
+
     </main>
+
 </div>
-<?php include '../App/Views/footer.php' ?>
+
+
+<script>
+    (function () {
+        const busca = document.getElementById('consultaAlunoBusca');
+        const filtroCurso = document.getElementById('consultaAlunoFiltroCurso');
+        const filtroTurma = document.getElementById('consultaAlunoFiltroTurma');
+        const botaoLimpar = document.getElementById('consultaAlunoLimpar');
+        const contador = document.getElementById('consultaAlunoContador');
+        const vazio = document.getElementById('consultaAlunoVazio');
+        const vazioTexto = document.getElementById('consultaAlunoVazioTexto');
+        const linhas = document.querySelectorAll('#consultaAlunoCorpo .consultaAlunoLinha');
+
+        // Remove acentos e deixa minúsculo ("João" encontra "joao")
+        function normalizar(texto) {
+            return (texto || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .trim();
+        }
+
+        function filtrar() {
+            const termo = normalizar(busca.value);
+            const curso = filtroCurso.value;
+            const turma = filtroTurma.value;
+            let visiveis = 0;
+
+            linhas.forEach(function (linha) {
+                const combina =
+                    normalizar(linha.dataset.nome).indexOf(termo) !== -1 &&
+                    (curso === '' || linha.dataset.curso === curso) &&
+                    (turma === '' || linha.dataset.turma === turma);
+
+                linha.hidden = !combina;
+
+                if (combina) visiveis++;
+            });
+
+            contador.textContent =
+                visiveis + (visiveis === 1 ? ' aluno encontrado' : ' alunos encontrados');
+
+            // Mensagem de "nada encontrado" só se existirem alunos
+            if (linhas.length > 0) {
+                vazio.hidden = visiveis > 0;
+                vazioTexto.textContent = 'Nenhum aluno encontrado com esses filtros.';
+            }
+
+            botaoLimpar.hidden = !(termo || curso || turma);
+        }
+
+        busca.addEventListener('input', filtrar);
+        filtroCurso.addEventListener('change', filtrar);
+        filtroTurma.addEventListener('change', filtrar);
+
+        botaoLimpar.addEventListener('click', function () {
+            busca.value = '';
+            filtroCurso.value = '';
+            filtroTurma.value = '';
+            filtrar();
+            busca.focus();
+        });
+    })();
+</script>
+
+
+<?php include '../App/Views/footer.php'; ?>

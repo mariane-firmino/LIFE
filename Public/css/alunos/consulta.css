@@ -1,42 +1,23 @@
 /* =====================================================
-   CONFIGURAÇÕES GERAIS
+   PÁGINA
+   (o body e o * { box-sizing } ficam no CSS global;
+    não são mais redefinidos aqui)
 ===================================================== */
 
-* {
+.consultaAlunoPagina,
+.consultaAlunoPagina * {
     box-sizing: border-box;
 }
 
-html {
-    width: 100%;
-    min-height: 100%;
-}
-
-body {
-    width: 100%;
-    min-height: 100vh;
-
-    margin: 0;
-    padding: 0;
-
-    background: #ffffff;
-    color: #111111;
-
-    font-family: Arial, Helvetica, sans-serif;
-
-    overflow-x: hidden;
-}
-
-
-/* =====================================================
-   PÁGINA
-===================================================== */
-
 .consultaAlunoPagina {
     width: 100%;
-
     margin: 0 auto;
+    padding: 6px 24px 30px;
+}
 
-    padding: 6px 10px 20px;
+/* Garante que o atributo hidden funcione mesmo com display definido */
+.consultaAlunoPagina [hidden] {
+    display: none !important;
 }
 
 
@@ -46,114 +27,76 @@ body {
 
 .consultaAlunoFiltros {
     display: grid;
-
-    grid-template-columns:
-        minmax(0, 1fr)
-        160px
-        110px;
-
-    gap: 8px;
-
+    grid-template-columns: minmax(0, 1fr) 190px 160px auto;
+    gap: 10px;
     width: 100%;
 }
 
-
-/* =====================================================
-   CAMPO DE PESQUISA
-===================================================== */
-
 .consultaAlunoCampoPesquisa {
     position: relative;
-
     width: 100%;
+}
+
+.consultaAlunoInputPesquisa,
+.consultaAlunoSelect {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #d0dad4;
+    border-radius: 10px;
+    outline: none;
+    background-color: #ffffff;
+    color: #111111;
+    font-family: inherit;
+    font-size: 15px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .consultaAlunoInputPesquisa {
     display: block;
-
-    width: 100%;
-    height: 38px;
-
-    margin: 0;
-
-    padding: 0 10px 0 35px;
-
-    border: 1px solid #d0d0d0;
-    border-radius: 6px;
-
-    outline: none;
-
-    background: #ffffff;
-    color: #111111;
-
-    font-family: Arial, Helvetica, sans-serif;
-
-    font-size: 16px;
+    padding: 0 12px 0 40px;
 }
 
-.consultaAlunoInputPesquisa::placeholder {
-    color: #777777;
+.consultaAlunoInputPesquisa::placeholder { color: #7b8b83; }
+
+.consultaAlunoSelect {
+    padding: 0 30px 0 12px;
+    cursor: pointer;
 }
 
-.consultaAlunoInputPesquisa:focus {
-    border-color: #6e9d7c;
-
-    box-shadow:
-        0 0 0 2px
-        rgba(0, 83, 33, 0.08);
+.consultaAlunoInputPesquisa:focus,
+.consultaAlunoSelect:focus {
+    border-color: #168653;
+    box-shadow: 0 0 0 3px rgba(32, 180, 85, 0.18);
 }
 
 .consultaAlunoIconePesquisa {
     position: absolute;
-
     top: 50%;
-    left: 10px;
-
+    left: 14px;
     z-index: 2;
-
     transform: translateY(-50%);
-
-    color: #666666;
-
+    color: #7b8b83;
     font-size: 16px;
-
     pointer-events: none;
 }
 
-
-/* =====================================================
-   SELECTS
-===================================================== */
-
-.consultaAlunoSelectPerfil,
-.consultaAlunoSelectTurma {
-    width: 100%;
-    height: 38px;
-
-    padding: 0 28px 0 10px;
-
-    border: 1px solid #d0d0d0;
-    border-radius: 6px;
-
-    outline: none;
-
-    background-color: #ffffff;
-    color: #111111;
-
-    font-family: Arial, Helvetica, sans-serif;
-
-    font-size: 16px;
-
+.consultaAlunoLimpar {
+    height: 44px;
+    padding: 0 16px;
+    border: 1px solid #168653;
+    border-radius: 10px;
+    background: transparent;
+    color: #168653;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
     cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.consultaAlunoSelectPerfil:focus,
-.consultaAlunoSelectTurma:focus {
-    border-color: #6e9d7c;
-
-    box-shadow:
-        0 0 0 2px
-        rgba(0, 83, 33, 0.08);
+.consultaAlunoLimpar:hover {
+    background: #168653;
+    color: #ffffff;
 }
 
 
@@ -163,428 +106,186 @@ body {
 
 .consultaAlunoResultado {
     display: flex;
-
     align-items: center;
-
     width: 100%;
-
-    min-height: 52px;
-
-    margin-top: 18px;
-    margin-bottom: 18px;
-
-    padding: 7px 12px;
-
-    background-color: #dfffd5;
-
-    border-radius: 7px;
+    min-height: 60px;
+    margin: 18px 0;
+    padding: 10px 16px;
+    background: linear-gradient(90deg, #e3f7dc 0%, #f1fbee 100%);
+    border: 1px solid #cfe9c6;
+    border-left: 5px solid #20b455;
+    border-radius: 10px;
 }
 
 .consultaAlunoResultadoIcone {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    margin-right: 12px;
     display: flex;
-
     align-items: center;
     justify-content: center;
-
-    flex-shrink: 0;
-
-    width: 40px;
-    height: 40px;
-
-    margin-right: 9px;
-
-    color: #315927;
-
-    font-size: 30px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #168653;
+    font-size: 22px;
 }
 
-.consultaAlunoResultadoTexto {
-    min-width: 0;
-}
+.consultaAlunoResultadoTexto { min-width: 0; }
 
 .consultaAlunoResultadoTitulo {
     display: block;
-
-    margin: 0 0 2px;
-
+    margin-bottom: 2px;
     color: #064d25;
-
     font-size: 17px;
-
     font-weight: 700;
 }
 
 .consultaAlunoResultadoQuantidade {
     display: block;
-
-    color: #222222;
-
-    font-size: 15px;
-}
-
-
-/* =====================================================
-   ÁREA DA TABELA
-===================================================== */
-
-.consultaAlunoTabelaArea {
-    width: 100%;
-}
-
-
-/* =====================================================
-   CONTAINER BRANCO
-===================================================== */
-
-.consultaAlunoTabelaContainer {
-    width: 100%;
-    height: 220px;
-
-    background: #ffffff;
-
-    border: 1px solid #d0d0d0;
-
-    border-radius: 8px;
-
-    box-shadow:
-        0 3px 4px
-        rgba(0, 0, 0, 0.25);
-
-    overflow: hidden;
-}
-
-
-/* =====================================================
-   SCROLL DA TABELA
-===================================================== */
-
-.consultaAlunoTabelaScroll {
-    width: 100%;
-    height: 100%;
-
-    overflow-x: auto;
-    overflow-y: hidden;
-
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-.consultaAlunoTabelaScroll::-webkit-scrollbar {
-    display: none;
+    color: #3d4f46;
+    font-size: 14px;
 }
 
 
 /* =====================================================
    TABELA
+   (altura livre; passa de 560px ganha rolagem vertical
+    e o cabeçalho fica fixo no topo)
 ===================================================== */
 
-
-   .consultaAlunoTabela {
+.consultaAlunoTabelaContainer {
     width: 100%;
-    min-width: 1000px;
-
-    margin: 0;
-
-    border-collapse: collapse;
-
-    table-layout: fixed;
-
-    height: auto;
+    max-height: 560px;
+    overflow: auto;
+    background: #ffffff;
+    border: 1px solid #d8e2dc;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(23, 65, 45, 0.08);
+    scrollbar-width: thin;
+    scrollbar-color: #93b48b #f1f1f1;
 }
 
+.consultaAlunoTabelaContainer::-webkit-scrollbar { width: 8px; height: 8px; }
+.consultaAlunoTabelaContainer::-webkit-scrollbar-track { background: #f1f1f1; }
+.consultaAlunoTabelaContainer::-webkit-scrollbar-thumb { background: #93b48b; border-radius: 10px; }
+.consultaAlunoTabelaContainer::-webkit-scrollbar-thumb:hover { background: #285626; }
 
-/* =====================================================
-   CABEÇALHO
-===================================================== */
-
-.consultaAlunoTabelaCabecalho {
-    background: #005321;
+.consultaAlunoTabela {
+    width: 100%;
+    min-width: 760px;
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
 .consultaAlunoTabelaCabecalho th {
-    height: 38px;
-
-    padding: 8px 11px;
-
-    border: 0;
-
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: 13px 16px;
     background: #005321;
     color: #ffffff;
-
-    font-size: 17px;
-
+    font-size: 15px;
     font-weight: 700;
-
     text-align: left;
-    vertical-align: middle;
-
     white-space: nowrap;
+    border: 0;
 }
 
-
-/* =====================================================
-   LARGURA DAS COLUNAS
-===================================================== */
-
-.consultaAlunoTabelaCabecalho th:nth-child(1) {
-    width: 27%;
-}
-
-.consultaAlunoTabelaCabecalho th:nth-child(2) {
-    width: 12%;
-}
-
-.consultaAlunoTabelaCabecalho th:nth-child(3) {
-    width: 25%;
-}
-
-.consultaAlunoTabelaCabecalho th:nth-child(4) {
-    width: 12%;
-}
-
-.consultaAlunoTabelaCabecalho th:nth-child(5) {
-    width: 16%;
-}
-
-.consultaAlunoTabelaCabecalho th:nth-child(6) {
-    width: 8%;
-}
-
-
-
-/* =====================================================
-   CORPO DA TABELA
-===================================================== */
-
-.consultaAlunoLinha {
-    width: 100%;
-}
+.consultaAlunoColunaAcoes { text-align: center !important; width: 130px; }
 
 .consultaAlunoCelula {
-    height: 38px;
-
-    padding: 8px 11px;
-
-    border-top: 1px solid #e0e0e0;
-
+    padding: 12px 16px;
+    border-top: 1px solid #e8eeea;
     color: #111111;
-
-    font-size: 16px;
-
-    vertical-align: middle;     
-    
-.consultaAlunoTabela td:nth-child(3) {
-    white-space: normal;
+    font-size: 15px;
+    vertical-align: middle;
 }
 
+.consultaAlunoLinha {
+    transition: background-color 0.15s ease;
 }
 
-.consultaAlunoCelulaAcoes {
+.consultaAlunoLinha:nth-child(even) .consultaAlunoCelula { background: #fafcfb; }
+
+.consultaAlunoLinha:hover .consultaAlunoCelula { background: #eef8f2; }
+
+/* Nome com avatar */
+.consultaAlunoCelulaNome {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+}
+
+.consultaAlunoAvatar {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #d8f0e2;
+    color: #0f5c37;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.consultaAlunoNomeTexto { min-width: 0; overflow-wrap: anywhere; }
+
+/* Turno */
+.consultaAlunoTurno {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.turno-manha { background: #fcf0de; color: #9a5b0a; }
+.turno-tarde { background: #e5f0fb; color: #1f5fa8; }
+.turno-noite { background: #e8e6f8; color: #4a41a6; }
+.turno-outro { background: #eef1ef; color: #4d5f56; }
+
+/* Ações */
+.consultaAlunoCelulaAcoes { text-align: center; }
+
+.consultaAlunoBotaoPerfil {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border: 1px solid #168653;
+    border-radius: 20px;
+    background: transparent;
+    color: #168653;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.consultaAlunoBotaoPerfil:hover {
+    background: #168653;
+    color: #ffffff;
+}
+
+/* Nenhum resultado */
+.consultaAlunoLinhaVazia td {
+    padding: 40px 16px;
+    border-top: 1px solid #e8eeea;
+    color: #7b8b83;
+    font-size: 15px;
     text-align: center;
 }
 
-
-/* =====================================================
-   BOTÃO DE AÇÕES
-===================================================== */
-
-.consultaAlunoMenu {
-    position: relative;
-
-    display: inline-block;
-}
-
-.consultaAlunoBotaoAcoes {
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    width: 34px;
-    height: 34px;
-
-    margin: 0 auto;
-
-    color: #000000;
-
-    font-size: 25px;
-
-    line-height: 1;
-
-    cursor: pointer;
-
-    list-style: none;
-}
-
-.consultaAlunoBotaoAcoes::-webkit-details-marker {
-    display: none;
-}
-
-.consultaAlunoBotaoAcoes::marker {
-    display: none;
-}
-
-.consultaAlunoBotaoAcoes:hover {
-    color: #333333;
-}
-
-
-/* =====================================================
-   MENU DE AÇÕES
-===================================================== */
-
-.consultaAlunoMenuOpcoes {
-    position: absolute;
-
-    right: 0;
-    bottom: calc(100% + 5px);
-
-    z-index: 1000;
-
-    min-width: 140px;
-
-    padding: 6px;
-
-    background: #ffffff;
-
-    border: 1px solid #dddddd;
-
-    border-radius: 6px;
-
-    box-shadow:
-        0 4px 12px
-        rgba(0, 0, 0, 0.18);
-}
-
-.consultaAlunoOpcaoMenu {
+.consultaAlunoLinhaVazia .bi {
     display: block;
-
-    width: 100%;
-
-    padding: 9px 12px;
-
-    border: 0;
-    border-radius: 4px;
-
-    background: transparent;
-    color: #111111;
-
-    font-family: Arial, Helvetica, sans-serif;
-
-    font-size: 16px;
-
-    text-align: left;
-
-    cursor: pointer;
-}
-
-.consultaAlunoOpcaoMenu:hover {
-    background: #f1f1f1;
-}
-
-
-/* =====================================================
-   BARRA DE ARRASTAR
-===================================================== */
-
-.consultaAlunoBarraScroll {
-    display: flex;
-
-    align-items: center;
-
-    width: 100%;
-    height: 30px;
-
-    margin-top: 5px;
-
-    padding: 0 2px;
-}
-
-
-/* =====================================================
-   SETAS
-===================================================== */
-
-.consultaAlunoSeta {
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    flex-shrink: 0;
-
-    width: 28px;
-    height: 27px;
-
-    padding: 0;
-
-    border: 0;
-
-    background: transparent;
-    color: #777777;
-
-    font-size: 20px;
-
-    cursor: pointer;
-}
-
-.consultaAlunoSeta:hover {
-    color: #333333;
-}
-
-
-/* =====================================================
-   TRILHO
-===================================================== */
-
-.consultaAlunoTrilho {
-    position: relative;
-
-    flex: 1;
-
-    height: 10px;
-
-    margin: 0 5px;
-
-    background: #eeeeee;
-
-    border-radius: 10px;
-
-    cursor: pointer;
-}
-
-
-/* =====================================================
-   INDICADOR
-===================================================== */
-
-.consultaAlunoIndicador {
-    position: absolute;
-
-    top: 0;
-    left: 0;
-
-    width: 40%;
-
-    min-width: 50px;
-
-    height: 10px;
-
-    background: #888888;
-
-    border-radius: 10px;
-
-    cursor: grab;
-
-    touch-action: none;
-}
-
-.consultaAlunoIndicador:hover {
-    background: #666666;
-}
-
-.consultaAlunoIndicador:active {
-    cursor: grabbing;
+    margin-bottom: 8px;
+    font-size: 28px;
 }
 
 
@@ -592,193 +293,237 @@ body {
    TABLET
 ===================================================== */
 
-@media (max-width: 767px) {
+@media (max-width: 991px) {
 
-    .consultaAlunoPagina {
-        padding: 8px;
+    .consultaAlunoPagina { padding: 6px 16px 26px; }
+
+    .consultaAlunoFiltros {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     }
 
+    .consultaAlunoCampoPesquisa { grid-column: 1 / -1; }
+
+    .consultaAlunoLimpar { grid-column: 1 / -1; }
 }
 
 
 /* =====================================================
-   CELULAR
+   CELULAR: CADA ALUNO VIRA UM CARD (sem rolagem lateral)
 ===================================================== */
 
-@media (max-width: 575px) {
+@media (max-width: 767px) {
 
-    .consultaAlunoPagina {
-        width: 100%;
-        padding: 7px;
-    }
-
-
-    /* FILTROS */
-
-    .consultaAlunoFiltros {
-        display: grid;
-
-        grid-template-columns:
-            minmax(0, 1fr)
-            minmax(0, 1fr);
-
-        gap: 8px;
-    }
-
-    .consultaAlunoCampoPesquisa {
-        grid-column: 1 / -1;
-    }
-
-    .consultaAlunoInputPesquisa {
-        height: 40px;
-
-        padding-left: 33px;
-
-        font-size: 15px;
-    }
-
-    .consultaAlunoIconePesquisa {
-        left: 9px;
-
-        font-size: 15px;
-    }
-
-    .consultaAlunoSelectPerfil,
-    .consultaAlunoSelectTurma {
-        height: 40px;
-
-        font-size: 15px;
-    }
-
-
-    /* RESULTADO */
-
-    .consultaAlunoResultado {
-        min-height: 58px;
-
-        margin-top: 12px;
-        margin-bottom: 13px;
-
-        padding: 8px 10px;
-    }
-
-    .consultaAlunoResultadoIcone {
-        width: 37px;
-        height: 37px;
-
-        margin-right: 8px;
-
-        font-size: 28px;
-    }
-
-    .consultaAlunoResultadoTitulo {
-        font-size: 16px;
-    }
-
-    .consultaAlunoResultadoQuantidade {
-        font-size: 14px;
-    }
-
-
-    /* QUADRADO DA TABELA */
+    .consultaAlunoPagina { padding: 6px 10px 24px; }
 
     .consultaAlunoTabelaContainer {
-        height: 220px;
-
-        border-radius: 8px;
+        max-height: none;
+        overflow: visible;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
     }
 
-
-    /* TABELA */
-
-    .consultaAlunoTabela {
-        width: 850px;
-
-        min-width: 850px;
-
-        height: auto;
+    .consultaAlunoTabela,
+    .consultaAlunoTabela tbody,
+    .consultaAlunoTabela tr,
+    .consultaAlunoTabela td {
+        display: block;
+        width: 100%;
+        min-width: 0;
     }
 
-    .consultaAlunoTabelaCabecalho th {
-        height: 38px;
-
-        padding: 8px 10px;
-
-        font-size: 16px;
+    /* O cabeçalho some; cada célula mostra o próprio rótulo */
+    .consultaAlunoTabelaCabecalho {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
     }
+
+    .consultaAlunoLinha {
+        margin-bottom: 12px;
+        background: #ffffff;
+        border: 1px solid #d8e2dc;
+        border-left: 5px solid #20b455;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(23, 65, 45, 0.10);
+        overflow: hidden;
+    }
+
+    .consultaAlunoLinha:nth-child(even) .consultaAlunoCelula,
+    .consultaAlunoLinha:hover .consultaAlunoCelula { background: transparent; }
 
     .consultaAlunoCelula {
-        height: 38px;
-
-        padding: 8px 10px;
-
-        font-size: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 9px 14px;
+        border-top: 1px solid #eef2ef;
+        font-size: 14px;
+        text-align: right;
     }
 
-
-
-
-    .consultaAlunoBotaoAcoes {
-        font-size: 24px;
+    .consultaAlunoCelula::before {
+        content: attr(data-label);
+        flex-shrink: 0;
+        color: #7b8b83;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        text-align: left;
     }
 
-    /* BARRA */
-
-    .consultaAlunoBarraScroll {
-        height: 30px;
-
-        margin-top: 5px;
+    /* Primeira linha do card: o nome, em destaque */
+    .consultaAlunoCelulaNome {
+        justify-content: flex-start;
+        border-top: 0;
+        padding: 12px 14px;
+        background: #f4faf6 !important;
+        text-align: left;
     }
 
-    .consultaAlunoTrilho {
-        height: 10px;
+    .consultaAlunoCelulaNome::before { display: none; }
 
-        margin: 0 4px;
+    .consultaAlunoCelulaAcoes {
+        justify-content: center;
+        padding: 12px 14px;
     }
 
-    .consultaAlunoIndicador {
-        height: 10px;
+    .consultaAlunoCelulaAcoes::before { display: none; }
 
-        min-width: 55px;
+    .consultaAlunoBotaoPerfil {
+        width: 100%;
+        justify-content: center;
+        padding: 9px 14px;
     }
 
-    .consultaAlunoSeta {
-        width: 28px;
-
-        font-size: 19px;
+    .consultaAlunoLinhaVazia {
+        border-left-color: #cfdcd5;
+        background: #ffffff;
     }
 
+    .consultaAlunoLinhaVazia td { display: block; }
+    .consultaAlunoLinhaVazia td::before { display: none; }
 }
 
 
+@media (max-width: 575px) {
+
+    .consultaAlunoFiltros { grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .consultaAlunoInputPesquisa,
+    .consultaAlunoSelect,
+    .consultaAlunoLimpar { height: 42px; font-size: 14px; }
+
+    .consultaAlunoResultado { min-height: 56px; margin: 14px 0; padding: 8px 12px; }
+
+    .consultaAlunoResultadoIcone { width: 38px; height: 38px; font-size: 19px; }
+
+    .consultaAlunoResultadoTitulo { font-size: 16px; }
+}
 
 
-@media (max-width: 360px) {
+/* =====================================================
+   MODO ESCURO
+===================================================== */
 
-    .consultaAlunoPagina {
-        padding: 6px;
+body.tema-escuro .consultaAlunoInputPesquisa,
+body.tema-escuro .consultaAlunoSelect {
+    background-color: #121a24 !important;
+    border-color: #3a485a !important;
+    color: #ffffff !important;
+    color-scheme: dark;
+}
+
+body.tema-escuro .consultaAlunoInputPesquisa::placeholder { color: #697687 !important; }
+
+body.tema-escuro .consultaAlunoInputPesquisa:focus,
+body.tema-escuro .consultaAlunoSelect:focus {
+    border-color: #69d7a2 !important;
+    box-shadow: 0 0 0 3px rgba(105, 215, 162, 0.15) !important;
+}
+
+body.tema-escuro .consultaAlunoIconePesquisa { color: #8995a5 !important; }
+
+body.tema-escuro .consultaAlunoLimpar {
+    color: #69d7a2 !important;
+    border-color: #69d7a2 !important;
+}
+
+body.tema-escuro .consultaAlunoLimpar:hover {
+    color: #0b1118 !important;
+    background: #69d7a2 !important;
+}
+
+body.tema-escuro .consultaAlunoResultado {
+    background: linear-gradient(90deg, #1f3a30 0%, #1b2430 100%) !important;
+    border-color: #2f5646 !important;
+    border-left-color: #69d7a2 !important;
+}
+
+body.tema-escuro .consultaAlunoResultadoIcone {
+    background: #243244 !important;
+    color: #69d7a2 !important;
+}
+
+body.tema-escuro .consultaAlunoResultadoTitulo { color: #69d7a2 !important; }
+body.tema-escuro .consultaAlunoResultadoQuantidade { color: #d6dde5 !important; }
+
+body.tema-escuro .consultaAlunoTabelaContainer {
+    background: #1b2430 !important;
+    border-color: #3a485a !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45) !important;
+    scrollbar-color: #526174 #121a24;
+}
+
+body.tema-escuro .consultaAlunoTabelaContainer::-webkit-scrollbar-track { background: #121a24; }
+body.tema-escuro .consultaAlunoTabelaContainer::-webkit-scrollbar-thumb { background: #526174; }
+
+body.tema-escuro .consultaAlunoTabelaCabecalho th { background: #0b3d27 !important; }
+
+body.tema-escuro .consultaAlunoCelula {
+    background: #1b2430 !important;
+    border-color: #2c394a !important;
+    color: #ffffff !important;
+}
+
+body.tema-escuro .consultaAlunoLinha:nth-child(even) .consultaAlunoCelula { background: #1f2a38 !important; }
+body.tema-escuro .consultaAlunoLinha:hover .consultaAlunoCelula { background: #243244 !important; }
+
+body.tema-escuro .consultaAlunoAvatar { background: #1f3a30 !important; color: #69d7a2 !important; }
+
+body.tema-escuro .turno-manha { background: #41331d !important; color: #f2b35a !important; }
+body.tema-escuro .turno-tarde { background: #1f3248 !important; color: #6fb1f2 !important; }
+body.tema-escuro .turno-noite { background: #2b2848 !important; color: #a9a2f5 !important; }
+body.tema-escuro .turno-outro { background: #243244 !important; color: #d6dde5 !important; }
+
+body.tema-escuro .consultaAlunoBotaoPerfil {
+    color: #69d7a2 !important;
+    border-color: #69d7a2 !important;
+}
+
+body.tema-escuro .consultaAlunoBotaoPerfil:hover {
+    color: #0b1118 !important;
+    background: #69d7a2 !important;
+}
+
+body.tema-escuro .consultaAlunoLinhaVazia td { color: #8995a5 !important; }
+
+@media (max-width: 767px) {
+
+    body.tema-escuro .consultaAlunoTabelaContainer { background: transparent !important; box-shadow: none !important; border: 0 !important; }
+
+    body.tema-escuro .consultaAlunoLinha {
+        background: #1b2430 !important;
+        border-color: #3a485a !important;
+        border-left-color: #69d7a2 !important;
     }
 
-    .consultaAlunoTabela {
-        width: 850px;
-
-        min-width: 850px;
-    }
-
-    .consultaAlunoTabelaCabecalho th {
-        font-size: 15px;
-    }
-
-    .consultaAlunoCelula {
-        font-size: 14px;
-    }
-
-    .consultaAlunoResultadoTitulo {
-        font-size: 15px;
-    }
-
-    .consultaAlunoResultadoQuantidade {
-        font-size: 13px;
-    }
-
+    body.tema-escuro .consultaAlunoCelula { background: transparent !important; border-color: #2c394a !important; }
+    body.tema-escuro .consultaAlunoCelulaNome { background: #1f3a30 !important; }
+    body.tema-escuro .consultaAlunoCelula::before { color: #8995a5 !important; }
 }

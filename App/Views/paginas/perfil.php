@@ -42,17 +42,15 @@ function perfilValor($valor)
 
         <div class="row align-items-center">
 
-            <div class="col-12 col-md-8 linha-verde">
-                <h1>Perfil</h1>
-                <p>Bem-vindo, <?= $nome ?>!</p>
-            </div>
+            <!-- CABEÇALHO -->
+            <header class="home-topo">
+                <div class="home-titulo">
+                    <h1>Perfil</h1>
+                    <p>Bem-vindo, <?= htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário') ?>!</p>
+                </div>
 
-            <div class="col-12 col-md-4 text-center text-md-end mt-3 mt-md-0">
-                <img
-                    src="<?= URL ?>/img/life-menor.png"
-                    class="logo-home"
-                    alt="Logo Enfermaria">
-            </div>
+                <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
+            </header>
 
         </div>
 
@@ -84,12 +82,12 @@ function perfilValor($valor)
                 <div class="perfil-botoes">
 
                     <a class="btn btn-success button-user"
-                       href="<?= URL ?>/usuarios/editarPerfil">
+                        href="<?= URL ?>/usuarios/editarPerfil">
                         Editar Perfil
                     </a>
 
                     <a class="btn btn-outline-success button-user"
-                       href="<?= URL ?>/usuarios/alterarSenha">
+                        href="<?= URL ?>/usuarios/alterarSenha">
                         Alterar Senha
                     </a>
 

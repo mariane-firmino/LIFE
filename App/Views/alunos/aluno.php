@@ -65,15 +65,17 @@ $cards = [
 
         <div class="row align-items-center">
 
-            <div class="col-12 col-md-8 linha-verde">
-                <h1>Cadastro de Aluno</h1>
-                <p>Faça o cadastro dos alunos nessa página.</p>
-            </div>
+            <!-- CABEÇALHO -->
+            <header class="home-topo">
 
-            <div class="col-12 col-md-4 text-center text-md-end mt-3 mt-md-0">
+                <div class="home-titulo">
+                    <h1>Cadastro de Aluno</h1>
+                    <p>Faça o cadastro dos alunos nessa página.</p>
+                </div>
+
                 <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
-            </div>
 
+            </header>
         </div>
 
     </div>

@@ -1,3 +1,7 @@
+/* =========================================================
+   BASE
+========================================================= */
+
 body {
     min-height: 100vh;
     background: #ffffff;
@@ -16,37 +20,62 @@ body {
 
 .conteudo {
     padding: 30px 34px;
-    display: grid;
-    grid-template-rows: auto 1fr;
-    gap: 32px;
     background: #ffffff;
 }
 
-.topo {
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+.home-topo {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-}
-.titulo-inicio {
-    border-left: 4px solid #00a83b;
-    padding-left: 10px;
-    min-height: 65px;
+    gap: 20px;
+    margin-bottom: 34px;
 }
 
-.topo h1 {
+/* Título com linha verde lateral em destaque */
+.home-titulo {
+    padding: 4px 0 4px 16px;
+    border-left: 6px solid #00a83b;
+    border-radius: 3px;
+}
+
+.home-titulo h1 {
+    margin: 0 0 4px;
+    color: #064d2b;
     font-size: 42px;
     font-weight: 700;
-    margin-bottom: 6px;
+    line-height: 1.1;
 }
 
-.topo p {
+.home-titulo p {
+    margin: 0;
     color: #555;
     font-size: 18px;
 }
+
 .logo-home {
     width: 130px;
+    height: auto;
     border-radius: 16px;
+    flex-shrink: 0;
 }
+
+.home-secao-titulo {
+    margin: 0 0 18px;
+    color: #064d2b;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
 .home-cards {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -54,177 +83,211 @@ body {
 }
 
 .home-card {
-    min-height: 170px;
-    background: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 20px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-    padding: 24px 20px;
-    display: grid;
-    gap: 16px;
-    justify-items: center;
-    align-content: center;
-}
+    --home-cor: #198754;
+    --home-cor-fundo: #e6f4ec;
 
-.home-card h3 {
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 1.3;
+    min-height: 200px;
+    padding: 26px 20px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
     text-align: center;
-    color: #171717;
-}
 
-.home-card span {
-    font-size: 54px;
-    font-weight: 800;
-    color: #111;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-top: 5px solid var(--home-cor);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(23, 65, 45, 0.09);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .home-card:hover {
     transform: translateY(-4px);
-    transition: transform 0.2s ease;
+    box-shadow: 0 14px 30px rgba(23, 65, 45, 0.16);
 }
+
+/* Cor de cada card */
+.home-card--notificacoes { --home-cor: #e5484d; --home-cor-fundo: #fdecec; }
+.home-card--alunos       { --home-cor: #198754; --home-cor-fundo: #e6f4ec; }
+.home-card--hoje         { --home-cor: #2f7fd6; --home-cor-fundo: #e5f0fb; }
+.home-card--periodicos   { --home-cor: #e08a1e; --home-cor-fundo: #fcf0de; }
+
+.home-card-icone {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--home-cor-fundo);
+    color: var(--home-cor);
+    font-size: 24px;
+    line-height: 1;
+}
+
+.home-card-icone .bi { display: block; line-height: 1; }
+
+.home-card h3 {
+    margin: 0;
+    color: #3d4f46;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.home-card-numero {
+    color: var(--home-cor);
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
 
 @media (max-width: 1220px) {
 
-    .layout {
-        padding: 22px 18px 30px;
-    }
+    .layout { padding: 22px 18px 30px; }
 
-    .topo {
-        padding-left: 25px;
-    }
+    .conteudo { padding: 22px; }
 
-    .conteudo {
-        padding: 22px;
-    }
+    .home-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-    .home-cards {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+    .home-titulo h1 { font-size: 36px; }
 }
+
+
+/* =========================================================
+   CELULAR
+========================================================= */
+
 @media (max-width: 600px) {
 
-    body {
-        background: #ffffff;
-    }
-    .topo{
-        padding-left: 10px;
-        padding-top: 35px;
-    }
-
     .layout {
-        width: 100%;
-        min-height: 100vh;
         padding: 0;
         margin: 0;
     }
-    .conteudo {
-        width: 100%;
-        min-height: 100vh;
-        padding: 16px 12px 20px;
-        display: block;
-        background: #ffffff;
-    }
-    .topo {
-        width: 100%;
-        height: 62px;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 18px;
+
+    .conteudo { padding: 56px 14px 24px; }
+
+    .home-topo {
+        margin-bottom: 24px;
+        align-items: center;
     }
 
-    .titulo-inicio {
-        border-left: 3px solid #00a83b;
-        padding-left: 5px;
-        min-height: 28px;
+    .home-titulo {
+        padding-left: 11px;
+        border-left-width: 5px;
     }
 
-    .topo h1 {
-        font-size: 25px;
-        line-height: 25px;
-        margin-bottom: 2px;
-        font-weight: 600;
-    }
-
-    .topo p {
-        font-size: 8px;
-        line-height: 9px;
-        color: #333;
-    }
+    .home-titulo h1 { font-size: 28px; }
+    .home-titulo p  { font-size: 13px; }
 
     .logo-home {
-        width: 65px;
-        height: auto;
-        border-radius: 0;
-        margin-top: 0;
-    }
-    .home-cards {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        grid-template-columns: 1fr;
-        gap: 17px;
-        padding-top: 25px;
+        width: 62px;
+        border-radius: 10px;
     }
 
+    .home-secao-titulo { font-size: 16px; margin-bottom: 14px; }
+
+    .home-cards {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    /* Card horizontal: ícone à esquerda, texto no meio, número à direita */
     .home-card {
-        width: 80%;
-        height: 105px;
-        min-height: 94px;
-        padding: 8px 10px;
-        border-radius: 6px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-        background: #ffffff;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.20);
+        min-height: 0;
+        padding: 14px 16px;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 14px;
+        text-align: left;
+        border-top-width: 1px;
+        border-left: 5px solid var(--home-cor);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+
+    .home-card:hover {
+        transform: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+
+    .home-card-icone {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+        flex-shrink: 0;
     }
 
     .home-card h3 {
-        font-size: 16px;
-        line-height: 13px;
-        font-weight: 700;
-        text-align: center;
+        flex: 1;
+        font-size: 15px;
     }
 
-    .home-card span {
-        font-size: 32px;
-        line-height: 34px;
-        font-weight: 800;
-    }
-    .home-card:hover {
-        transform: none;
+    .home-card-numero {
+        font-size: 30px;
+        flex-shrink: 0;
     }
 }
 
+
+/* =========================================================
+   CELULAR PEQUENO
+========================================================= */
 
 @media (max-width: 350px) {
 
-    .conteudo {
-        padding-left: 10px;
-        padding-right: 10px;
-    }
+    .conteudo { padding-left: 10px; padding-right: 10px; }
 
-    .card {
-        height: 92px;
-        min-height: 92px;
-    }
+    .home-titulo h1 { font-size: 24px; }
 
-    .card h3 {
-        font-size: 10px;
-    }
+    .logo-home { width: 44px; }
 
-    .card span {
-        font-size: 30px;
-    }
+    .home-card { padding: 12px; gap: 10px; }
 
-    .logo-home {
-        width: 40px;
+    .home-card-icone { width: 38px; height: 38px; font-size: 17px; }
+
+    .home-card h3 { font-size: 13px; }
+
+    .home-card-numero { font-size: 26px; }
+}
+
+
+/* =========================================================
+   MODO ESCURO
+========================================================= */
+
+body.tema-escuro .home-titulo h1,
+body.tema-escuro .home-secao-titulo { color: #69d7a2 !important; }
+
+body.tema-escuro .home-titulo { border-left-color: #69d7a2 !important; }
+
+body.tema-escuro .home-titulo p { color: #d6dde5 !important; }
+
+body.tema-escuro .home-card {
+    background: #1b2430 !important;
+    border-color: #3a485a !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45) !important;
+}
+
+body.tema-escuro .home-card--notificacoes { --home-cor: #ff7b80; --home-cor-fundo: #402629; }
+body.tema-escuro .home-card--alunos       { --home-cor: #69d7a2; --home-cor-fundo: #1f3a30; }
+body.tema-escuro .home-card--hoje         { --home-cor: #6fb1f2; --home-cor-fundo: #1f3248; }
+body.tema-escuro .home-card--periodicos   { --home-cor: #f2b35a; --home-cor-fundo: #41331d; }
+
+body.tema-escuro .home-card { border-top-color: var(--home-cor) !important; }
+
+@media (max-width: 600px) {
+    body.tema-escuro .home-card {
+        border-top-color: #3a485a !important;
+        border-left-color: var(--home-cor) !important;
     }
 }
+
+body.tema-escuro .home-card h3 { color: #d6dde5 !important; }
