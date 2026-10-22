@@ -1,26 +1,18 @@
 <?php
 // =========================================================
 // DADOS DO MENU
+// Apenas prepara os valores que serão mostrados.
+// O visual está em Public/css/menu.css e o comportamento
+// (destacar a página atual) em Public/js/menu.js.
 // =========================================================
 
 // Total de notificações (vem do controller em $dados).
 // Se não vier, não mostra a bolinha vermelha.
 $totalNotificacoes = (int) ($dados['totalNotificacoes']->total ?? 0);
 
-// Caminho da página atual, usado para destacar o item ativo.
-$caminhoAtual = strtolower(trim((string) parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/'));
-
-// Devolve os atributos do link; se for a página atual,
-// adiciona a classe "active" do Bootstrap.
-$atributosLink = function ($rota) use ($caminhoAtual) {
-    $rota = strtolower(trim($rota, '/'));
-
-    if (substr($caminhoAtual, -strlen($rota)) === $rota) {
-        return 'class="nav-link active" aria-current="page"';
-    }
-
-    return 'class="nav-link"';
-};
+// Nome e função do usuário logado (escapados por segurança).
+$nomeUsuario = htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário', ENT_QUOTES, 'UTF-8');
+$funcaoUsuario = htmlspecialchars($_SESSION['usuario_funcao'] ?? '', ENT_QUOTES, 'UTF-8');
 ?>
 
 <!-- ===================================== -->
@@ -39,87 +31,112 @@ $atributosLink = function ($rota) use ($caminhoAtual) {
         <!-- MENU LATERAL -->
         <!-- ===================================== -->
 
-        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-label="Menu principal">
+        <div class="offcanvas offcanvas-start menu-lateral" tabindex="-1" id="offcanvasNavbar"
+            aria-labelledby="offcanvasNavbarLabel">
 
-            <div class="offcanvas-header">
+            <!-- Cabeçalho: marca, notificações e fechar -->
+            <div class="offcanvas-header menu-cabecalho">
 
-                <!-- Notificações (só mostra o número se houver) -->
-                <a href="<?= URL ?>/notificacoes/notificacao" class="btn btn-success position-relative"
-                    aria-label="Notificações">
-                    <i class="bi bi-bell text-white fs-4"></i>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="menu-logo">
+                        <i class="bi bi-heart-pulse-fill"></i>
+                    </div>
 
-                    <?php if ($totalNotificacoes > 0): ?>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            <?= $totalNotificacoes > 99 ? '99+' : $totalNotificacoes ?>
-                        </span>
-                    <?php endif; ?>
-                </a>
+                    <div>
+                        <h5 class="menu-titulo" id="offcanvasNavbarLabel">ENFERMARIA</h5>
+                        <small class="menu-subtitulo">Sistema de atendimento</small>
+                    </div>
+                </div>
 
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
-                    aria-label="Fechar"></button>
+                <div class="d-flex align-items-center gap-2">
+
+                    <!-- Notificações (só mostra o número se houver) -->
+                    <a href="<?= URL ?>/notificacoes/notificacao" class="btn menu-sino position-relative"
+                        aria-label="Notificações">
+                        <i class="bi bi-bell text-white fs-5"></i>
+
+                        <?php if ($totalNotificacoes > 0): ?>
+                            <span
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <?= $totalNotificacoes > 99 ? '99+' : $totalNotificacoes ?>
+                            </span>
+                        <?php endif; ?>
+                    </a>
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                        aria-label="Fechar"></button>
+                </div>
 
             </div>
 
             <div class="offcanvas-body">
 
                 <!-- Usuário logado -->
-                <div class="d-flex align-items-center usuario-img gap-2 mb-4">
-                    <img src="<?= URL ?>/img/user.avif" alt="Foto do usuário" class="rounded-circle" width="50"
-                        height="50">
+                <div class="d-flex align-items-center usuario-img gap-2 mb-3">
+                    <div class="position-relative">
+                        <img src="<?= URL ?>/img/user.avif" alt="Foto do usuário" class="rounded-circle" width="50"
+                            height="50">
+                        <span class="usuario-online"></span>
+                    </div>
 
-                    <div>
-                        <h6 class="mb-0 text-white">
-                            <?= htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário', ENT_QUOTES, 'UTF-8') ?>
-                        </h6>
-                        <small class="text-white">
-                            <?= htmlspecialchars($_SESSION['usuario_funcao'] ?? '', ENT_QUOTES, 'UTF-8') ?>
-                        </small>
+                    <div class="overflow-hidden">
+                        <h6 class="mb-0 text-white text-truncate"><?= $nomeUsuario ?></h6>
+                        <small class="text-white"><?= $funcaoUsuario ?></small>
                     </div>
                 </div>
 
                 <!-- Links -->
-                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <ul class="navbar-nav flex-grow-1 pe-3">
+
+                    <li class="menu-secao-titulo">PRINCIPAL</li>
+
                     <li class="nav-item">
-                        <a <?= $atributosLink('paginas/home') ?> href="<?= URL ?>/paginas/home">
+                        <a class="nav-link" href="<?= URL ?>/paginas/home">
                             <i class="bi bi-house-door-fill"></i> HOME
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a <?= $atributosLink('paginas/perfil') ?> href="<?= URL ?>/paginas/perfil">
+                        <a class="nav-link" href="<?= URL ?>/paginas/perfil">
                             <i class="bi bi-person-fill"></i> PERFIL
                         </a>
                     </li>
+
+                    <li class="menu-secao-titulo">ALUNOS</li>
+
                     <li class="nav-item">
-                        <a <?= $atributosLink('alunos/aluno') ?> href="<?= URL ?>/alunos/aluno">
+                        <a class="nav-link" href="<?= URL ?>/alunos/aluno">
                             <i class="bi bi-mortarboard-fill"></i> CADASTRO DE ALUNO
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a <?= $atributosLink('alunos/consulta') ?> href="<?= URL ?>/alunos/consulta">
+                        <a class="nav-link" href="<?= URL ?>/alunos/consulta">
                             <i class="bi bi-file-earmark-person-fill"></i> CONSULTAR ALUNO
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a <?= $atributosLink('calendarios/calendario') ?> href="<?= URL ?>/calendarios/calendario">
+                        <a class="nav-link" href="<?= URL ?>/calendarios/calendario">
                             <i class="bi bi-calendar3"></i> CALENDÁRIO
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a <?= $atributosLink('paginas/relatorio') ?> href="<?= URL ?>/paginas/relatorio">
+                        <a class="nav-link" href="<?= URL ?>/paginas/relatorio">
                             <i class="bi bi-file-earmark-bar-graph-fill"></i> RELATÓRIO
                         </a>
                     </li>
+
+                    <li class="menu-secao-titulo">SISTEMA</li>
+
                     <li class="nav-item">
-                        <a <?= $atributosLink('paginas/configuracao') ?> href="<?= URL ?>/paginas/configuracao">
+                        <a class="nav-link" href="<?= URL ?>/paginas/configuracao">
                             <i class="bi bi-gear-wide-connected"></i> CONFIGURAÇÕES
                         </a>
                     </li>
 
                     <!-- Sair: abre o modal de confirmação -->
-                    <li class="nav-item vermelho">
-                        <button type="button" class="nav-link w-100 text-start" data-bs-toggle="modal"
+                    <li class="nav-item menu-sair-area">
+                        <button type="button" class="nav-link menu-sair w-100 text-start" data-bs-toggle="modal"
                             data-bs-target="#staticBackdrop">
-                            <i class="bi bi-person-walking"></i> SAIR
+                            <i class="bi bi-box-arrow-right"></i> SAIR
                         </button>
                     </li>
                 </ul>
@@ -138,21 +155,31 @@ $atributosLink = function ($rota) use ($caminhoAtual) {
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
 
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content modal-saida">
 
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Sair</h1>
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                    <i class="bi bi-box-arrow-right"></i> Sair do sistema
+                </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
 
-            <div class="modal-body">
-                <strong>Tem certeza que deseja sair?</strong>
-                <p class="mb-0 text-muted">Você precisará fazer login novamente para acessar o sistema.</p>
+            <div class="modal-body d-flex align-items-center gap-3">
+                <div class="modal-saida-icone">
+                    <i class="bi bi-question-circle"></i>
+                </div>
+
+                <div>
+                    <strong>Tem certeza que deseja sair?</strong>
+                    <p class="mb-0 text-muted">Você precisará fazer login novamente para acessar o sistema.</p>
+                </div>
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <a href="<?= URL ?>/usuarios/logout" class="btn btn-danger">Sair</a>
+                <a href="<?= URL ?>/usuarios/logout" class="btn btn-danger">
+                    <i class="bi bi-box-arrow-right"></i> Sair
+                </a>
             </div>
 
         </div>

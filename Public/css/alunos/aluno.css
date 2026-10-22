@@ -1,0 +1,216 @@
+.enf-conteudo {
+    width: 100%;
+    max-width: 1400px !important;
+    margin: 45px auto 0;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.enf-cards {
+    width: 100%;
+    margin: 0;
+}
+
+.enf-cards > div {
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.enf-perfil {
+    width: 100%;
+    height: 220px !important;
+    border: 1px solid #d8d8d8;
+    border-radius: 7px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+}
+
+.enf-corpo {
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.enf-cards .enf-perfil .enf-card-titulo {
+    margin: 0 0 9px 0;
+    padding: 0;
+    text-align: center;
+
+    font-size: 25px !important;
+    line-height: 28px !important;
+    font-weight: 700;
+    color: #000000;
+}
+
+.enf-card-numero {
+    margin: 0;
+    padding: 0;
+
+    font-size: 36px;
+    line-height: 36px;
+    font-weight: 700;
+    color: #000000;
+}
+
+.enf-botao-area {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: 50px !important;
+    margin-bottom: 10px;
+}
+
+.enf-cadastrar {
+    width: 230px;
+    height: 45px;
+    padding: 0;
+
+    border: none;
+    border-radius: 20px;
+
+    background-color: #20b34b;
+    color: #ffffff;
+
+    font-size: 18px;
+    font-weight: 500;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.enf-cadastrar:hover {
+    background-color: #159f40;
+    color: #ffffff;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+
+    .enf-conteudo {
+        margin-top: 40px;
+    }
+
+    .enf-cards .enf-perfil .enf-card-titulo {
+        font-size: 20px !important;
+        line-height: 23px !important;
+    }
+
+    .enf-card-numero {
+        font-size: 35px;
+        line-height: 35px;
+    }
+}
+
+@media (max-width: 767px) {
+
+    .enf-cabecalho {
+        height: 70px;
+        padding: 10px 15px;
+    }
+
+    .enf-titulo h1 {
+        font-size: 17px;
+        line-height: 20px;
+        font-weight: 500;
+    }
+
+    .enf-titulo p {
+        font-size: 9px;
+        line-height: 11px;
+    }
+
+    .enf-logo {
+        width: 58px;
+    }
+
+    .enf-conteudo {
+        width: 100%;
+        max-width: 100%;
+        margin-top: 35px;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .enf-cards > div {
+        padding-left: 5px;
+        padding-right: 5px;
+        margin-bottom: 12px;
+    }
+
+    .enf-perfil {
+        width: 100%;
+        height: 220px !important;
+    }
+
+    .enf-cards .enf-perfil .enf-card-titulo {
+        font-size: 20px !important;
+        line-height: 23px !important;
+    }
+
+    .enf-card-numero {
+        font-size: 35px;
+        line-height: 35px;
+    }
+
+    .enf-botao-area {
+        justify-content: flex-end;
+        margin-top: 50px !important;
+        margin-bottom: 20px;
+    }
+
+    .enf-cadastrar {
+        width: 310px;
+        max-width: 100%;
+        height: 40px;
+
+        border-radius: 18px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 400px) {
+
+    .enf-cabecalho {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .enf-logo {
+        width: 54px;
+    }
+
+    .enf-conteudo {
+        margin-top: 30px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .enf-cards .enf-perfil .enf-card-titulo {
+        font-size: 18px !important;
+        line-height: 21px !important;
+    }
+
+    .enf-card-numero {
+        font-size: 33px;
+        line-height: 33px;
+    }
+
+    .enf-botao-area {
+        margin-bottom: 20px;
+    }
+
+    .enf-cadastrar {
+        width: 310px;
+        max-width: 100%;
+        height: 40px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+}

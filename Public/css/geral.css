@@ -1,0 +1,30 @@
+/* Importando CSS */
+/* Login */
+@import url(./usuarios/login.css);
+
+/* Esqueci minha senha */
+@import url(./usuarios/esqueciSenha.css);
+
+/* Home */
+@import url(./usuarios/home.css);
+
+/* Footer */
+@import url(./footer.css);
+
+/* Menu */
+@import url(./menu.css);
+
+/* Perfil */
+@import url(./paginas/perfil.css);
+
+/* Alterar Senha */
+@import url(./usuarios/alterarSenha.css);
+
+/* Alunos cadastrados */
+@import url(./alunos/aluno.css);
+
+/* Consultar Alunos */
+@import url(./alunos/consulta.css);
+
+/* Calendario */
+@import url(./calendarios/calendario.css);

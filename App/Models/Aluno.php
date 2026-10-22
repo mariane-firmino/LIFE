@@ -36,7 +36,7 @@ class Aluno
         $this->db->query("
             SELECT alun_id
             FROM aluno
-            WHERE alun_matriculal = :m
+            WHERE alun_matricula = :m
         ");
 
         $this->db->bind(":m", $matricula);
@@ -79,9 +79,9 @@ class Aluno
             $this->db->query("
                 INSERT INTO aluno(
                     alun_nome,
-                    alun_dt_nascimetno,
+                    alun_dt_nascimento,
                     alun_sexo,
-                    alun_matriculal,
+                    alun_matricula,
                     alun_tipo_sanguineo,
                     alun_altura,
                     alun_peso,
@@ -266,66 +266,58 @@ class Aluno
 
     private function salvarSaude($alunId, $d)
     {
+        // Chave = nome usado pelo formulário; valor = coluna real no bd_life.
         $campos = [
-            'tipo_escola',
-            'motivo_ifro',
-            'ja_reprovou',
-            'quantas_vezes',
-            'estuda_fora',
-            'quanto_tempo',
-            'nota_curso',
-            'nota_motivacao',
-            'atendimento',
-            'atendimento_porque',
-            'acesso_saude',
-            'alergia_alimentar',
-            'alergia_qual',
-            'doenca_cronica',
-            'doenca_qual',
-            'medicacao_continua',
-            'medicacao_qual',
-            'acompanhamento_psi',
-            'cartao_vacina',
-            'ja_internado',
-            'internado_motivo',
-            'ja_cirurgia',
-            'cirurgia_qual',
-            'padrao_sono',
-            'refeicoes_dia',
-            'alimentacao_habitual',
-            'fuma',
-            'bebida_alcoolica',
-            'pais_sabem',
-            'drogas_ilicitas',
-            'drogas_qual',
-            'atividade_fisica',
-            'frequencia_atividade',
-            'banhos_dia'
+            'tipo_escola' => 'anam_tipo_escola',
+            'motivo_ifro' => 'anam_motivo_ifro',
+            'ja_reprovou' => 'anam_ja_reprovou',
+            'quantas_vezes' => 'anam_quantas_vezes',
+            'estuda_fora' => 'anam_estuda_fora',
+            'quanto_tempo' => 'anam_quanto_tempo',
+            'nota_curso' => 'anam_nota_curso',
+            'nota_motivacao' => 'anam_nota_motivacao',
+            'atendimento' => 'anam_atendimento',
+            'atendimento_porque' => 'anam_atendimento_porque',
+            'acesso_saude' => 'anam_acesso_saude',
+            'alergia_alimentar' => 'anam_alergia_alimentar',
+            'alergia_qual' => 'anam_alergia_qual',
+            'doenca_cronica' => 'anam_doenca_cronica',
+            'doenca_qual' => 'anam_doenca_qual',
+            'medicacao_continua' => 'anam_medicacao_continua',
+            'medicacao_qual' => 'anam_medicacao_qual',
+            'acompanhamento_psi' => 'anam_acompanhamento_psi',
+            'cartao_vacina' => 'anam_cartao_vacina',
+            'ja_internado' => 'anam_ja_internado',
+            'internado_motivo' => 'anam_internado_motivo',
+            'ja_cirurgia' => 'anam_ja_cirurgia',
+            'cirurgia_qual' => 'anam_cirurgia_qual',
+            'padrao_sono' => 'anam_padrao_sono',
+            'refeicoes_dia' => 'anam_refeicoes_dia',
+            'alimentacao_habitual' => 'anam_alimentacao_habitual',
+            'fuma' => 'anam_fuma',
+            'bebida_alcoolica' => 'anam_bebida_alcoolica',
+            'pais_sabem' => 'anam_pais_sabem',
+            'drogas_ilicitas' => 'anam_drogas_ilicitas',
+            'drogas_qual' => 'anam_drogas_qual',
+            'atividade_fisica' => 'anam_atividade_fisica',
+            'frequencia_atividade' => 'anam_frequencia_atividade',
+            'banhos_dia' => 'anam_banhos_dia'
         ];
 
-        // Monta as colunas e os parâmetros a partir da lista acima.
-        $colunas = implode(', ', $campos);
-        $placeholders = ':' . implode(', :', $campos);
+        $colunas = implode(', ', array_values($campos));
+        $placeholders = ':' . implode(', :', array_keys($campos));
 
         $this->db->query("
-            INSERT INTO aluno_saude(
-                alun_id,
-                {$colunas}
-            )
-            VALUES (
-                :alun_id,
-                {$placeholders}
-            )
+            INSERT INTO anamnese (alun_id, {$colunas})
+            VALUES (:alun_id, {$placeholders})
         ");
 
-        $this->db->bind(':alun_id', $alunId);
+        $this->db->bind(':alun_id', (int) $alunId);
 
-        foreach ($campos as $campo) {
-
-            $valor = $d[$campo] ?? '';
-
+        foreach ($campos as $campoFormulario => $colunaBanco) {
+            $valor = $d[$campoFormulario] ?? '';
             $this->db->bind(
-                ':' . $campo,
+                ':' . $campoFormulario,
                 $valor !== '' ? $valor : null
             );
         }
@@ -350,9 +342,9 @@ class Aluno
             SELECT
                 a.alun_id AS id,
                 a.alun_nome AS nome,
-                a.alun_dt_nascimetno AS data_nascimento,
+                a.alun_dt_nascimento AS data_nascimento,
                 a.alun_sexo AS sexo,
-                a.alun_matriculal AS matricula,
+                a.alun_matricula AS matricula,
                 a.alun_data_cadastro AS data_cadastro,
 
                 t.turm_id AS turma_id,
@@ -390,9 +382,9 @@ class Aluno
             SELECT
                 a.alun_id AS id,
                 a.alun_nome AS nome,
-                a.alun_dt_nascimetno AS data_nascimento,
+                a.alun_dt_nascimento AS data_nascimento,
                 a.alun_sexo AS sexo,
-                a.alun_matriculal AS matricula,
+                a.alun_matricula AS matricula,
                 a.alun_rg AS rg,
                 a.alun_foto AS foto,
                 a.alun_tipo_sanguineo AS tipo_sanguineo,
@@ -440,7 +432,50 @@ class Aluno
 
     public function buscarSaude($alunId)
     {
-        $this->db->query("SELECT * FROM aluno_saude WHERE alun_id = :id LIMIT 1");
+        // Usa aliases para que as Views continuem acessando as propriedades
+        // com os nomes antigos do formulário, embora o banco use anam_*.
+        $this->db->query("
+            SELECT
+                anamn_id,
+                alun_id,
+                anam_tipo_escola AS tipo_escola,
+                anam_motivo_ifro AS motivo_ifro,
+                anam_ja_reprovou AS ja_reprovou,
+                anam_quantas_vezes AS quantas_vezes,
+                anam_estuda_fora AS estuda_fora,
+                anam_quanto_tempo AS quanto_tempo,
+                anam_nota_curso AS nota_curso,
+                anam_nota_motivacao AS nota_motivacao,
+                anam_atendimento AS atendimento,
+                anam_atendimento_porque AS atendimento_porque,
+                anam_acesso_saude AS acesso_saude,
+                anam_alergia_alimentar AS alergia_alimentar,
+                anam_alergia_qual AS alergia_qual,
+                anam_doenca_cronica AS doenca_cronica,
+                anam_doenca_qual AS doenca_qual,
+                anam_medicacao_continua AS medicacao_continua,
+                anam_medicacao_qual AS medicacao_qual,
+                anam_acompanhamento_psi AS acompanhamento_psi,
+                anam_cartao_vacina AS cartao_vacina,
+                anam_ja_internado AS ja_internado,
+                anam_internado_motivo AS internado_motivo,
+                anam_ja_cirurgia AS ja_cirurgia,
+                anam_cirurgia_qual AS cirurgia_qual,
+                anam_padrao_sono AS padrao_sono,
+                anam_refeicoes_dia AS refeicoes_dia,
+                anam_alimentacao_habitual AS alimentacao_habitual,
+                anam_fuma AS fuma,
+                anam_bebida_alcoolica AS bebida_alcoolica,
+                anam_pais_sabem AS pais_sabem,
+                anam_drogas_ilicitas AS drogas_ilicitas,
+                anam_drogas_qual AS drogas_qual,
+                anam_atividade_fisica AS atividade_fisica,
+                anam_frequencia_atividade AS frequencia_atividade,
+                anam_banhos_dia AS banhos_dia
+            FROM anamnese
+            WHERE alun_id = :id
+            LIMIT 1
+        ");
         $this->db->bind(':id', (int) $alunId);
 
         $saude = $this->db->resultado();
@@ -536,7 +571,7 @@ class Aluno
     {
         $this->db->query("
             SELECT alun_id FROM aluno
-            WHERE alun_matriculal = :m AND alun_id <> :id
+            WHERE alun_matricula = :m AND alun_id <> :id
             LIMIT 1
         ");
 
@@ -609,9 +644,9 @@ class Aluno
             $this->db->query("
                 UPDATE aluno SET
                     alun_nome = :nome,
-                    alun_dt_nascimetno = :nascimento,
+                    alun_dt_nascimento = :nascimento,
                     alun_sexo = :sexo,
-                    alun_matriculal = :matricula,
+                    alun_matricula = :matricula,
                     alun_rg = :rg,
                     alun_tipo_sanguineo = :tipo_sanguineo,
                     alun_altura = :altura,
@@ -710,33 +745,63 @@ class Aluno
 
     private function atualizarSaude($alunId, $d)
     {
+        // Mantém os nomes dos campos do formulário e atualiza as colunas anam_*.
         $campos = [
-            'tipo_escola', 'motivo_ifro', 'ja_reprovou', 'quantas_vezes', 'estuda_fora',
-            'quanto_tempo', 'nota_curso', 'nota_motivacao', 'atendimento', 'atendimento_porque',
-            'acesso_saude', 'alergia_alimentar', 'alergia_qual', 'doenca_cronica', 'doenca_qual',
-            'medicacao_continua', 'medicacao_qual', 'acompanhamento_psi', 'cartao_vacina',
-            'ja_internado', 'internado_motivo', 'ja_cirurgia', 'cirurgia_qual', 'padrao_sono',
-            'refeicoes_dia', 'alimentacao_habitual', 'fuma', 'bebida_alcoolica', 'pais_sabem',
-            'drogas_ilicitas', 'drogas_qual', 'atividade_fisica', 'frequencia_atividade', 'banhos_dia'
+            'tipo_escola' => 'anam_tipo_escola',
+            'motivo_ifro' => 'anam_motivo_ifro',
+            'ja_reprovou' => 'anam_ja_reprovou',
+            'quantas_vezes' => 'anam_quantas_vezes',
+            'estuda_fora' => 'anam_estuda_fora',
+            'quanto_tempo' => 'anam_quanto_tempo',
+            'nota_curso' => 'anam_nota_curso',
+            'nota_motivacao' => 'anam_nota_motivacao',
+            'atendimento' => 'anam_atendimento',
+            'atendimento_porque' => 'anam_atendimento_porque',
+            'acesso_saude' => 'anam_acesso_saude',
+            'alergia_alimentar' => 'anam_alergia_alimentar',
+            'alergia_qual' => 'anam_alergia_qual',
+            'doenca_cronica' => 'anam_doenca_cronica',
+            'doenca_qual' => 'anam_doenca_qual',
+            'medicacao_continua' => 'anam_medicacao_continua',
+            'medicacao_qual' => 'anam_medicacao_qual',
+            'acompanhamento_psi' => 'anam_acompanhamento_psi',
+            'cartao_vacina' => 'anam_cartao_vacina',
+            'ja_internado' => 'anam_ja_internado',
+            'internado_motivo' => 'anam_internado_motivo',
+            'ja_cirurgia' => 'anam_ja_cirurgia',
+            'cirurgia_qual' => 'anam_cirurgia_qual',
+            'padrao_sono' => 'anam_padrao_sono',
+            'refeicoes_dia' => 'anam_refeicoes_dia',
+            'alimentacao_habitual' => 'anam_alimentacao_habitual',
+            'fuma' => 'anam_fuma',
+            'bebida_alcoolica' => 'anam_bebida_alcoolica',
+            'pais_sabem' => 'anam_pais_sabem',
+            'drogas_ilicitas' => 'anam_drogas_ilicitas',
+            'drogas_qual' => 'anam_drogas_qual',
+            'atividade_fisica' => 'anam_atividade_fisica',
+            'frequencia_atividade' => 'anam_frequencia_atividade',
+            'banhos_dia' => 'anam_banhos_dia'
         ];
 
-        // Monta o "campo = :campo" de cada coluna.
         $sets = [];
-        foreach ($campos as $campo) {
-            $sets[] = "{$campo} = :{$campo}";
+        foreach ($campos as $campoFormulario => $colunaBanco) {
+            $sets[] = "{$colunaBanco} = :{$campoFormulario}";
         }
 
         $this->db->query("
-            UPDATE aluno_saude
+            UPDATE anamnese
             SET " . implode(', ', $sets) . "
             WHERE alun_id = :alun_id
         ");
 
         $this->db->bind(':alun_id', (int) $alunId);
 
-        foreach ($campos as $campo) {
-            $valor = $d[$campo] ?? '';
-            $this->db->bind(':' . $campo, $valor !== '' ? $valor : null);
+        foreach ($campos as $campoFormulario => $colunaBanco) {
+            $valor = $d[$campoFormulario] ?? '';
+            $this->db->bind(
+                ':' . $campoFormulario,
+                $valor !== '' ? $valor : null
+            );
         }
 
         $this->db->executa();

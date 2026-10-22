@@ -1,0 +1,133 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: white;
+    overflow-x: hidden;
+}
+
+/* Centralizar o perfil na tela */
+.perfil-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Quadrado branco do perfil */
+.card-user {
+    width: 850px;
+    max-width: 95%;
+    min-height: 400px;
+    height: auto;
+
+    margin: 0 auto;
+    padding: 40px 35px;
+
+    border: none !important;
+    border-radius: 8px !important;
+    box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.35);
+    background-color: white;
+}
+
+/* Linha verde */
+.linha-verde {
+    border-left: 4px solid #20b455;
+}
+
+/* Foto do usuário */
+.usuario-user {
+    width: 115px;
+    height: 115px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* Botões */
+.button-user {
+    width: 170px;
+    height: 34px;
+    border-radius: 20px !important;
+    font-size: 14px !important;
+}
+
+/* Títulos dos campos */
+.label-user {
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    margin-bottom: 4px;
+    color: #000;
+}
+
+/* Informações */
+.card-user p {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    line-height: 20px;
+}
+
+/* Espaçamento dos campos */
+.campo-user {
+    margin-bottom: 12px;
+}
+
+/* Responsividade */
+@media (max-width: 767px) {
+
+    .perfil-container {
+        min-height: 100vh;
+        padding: 20px 10px;
+    }
+
+    .col-8 > p {
+        font-size: 14px;
+    }
+
+    .card-user {
+        width: 100%;
+        max-width: 100%;
+        min-height: auto;
+        height: auto;
+        margin: 0 auto;
+        padding: 25px 15px;
+        box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.30);
+    }
+
+    .usuario-user {
+        width: 90px;
+        height: 90px;
+        margin-bottom: 0;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .button-user {
+        width: 160px;
+        height: 34px;
+    }
+
+    .card-user .col-12 {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .card-user p {
+        font-size: 15px;
+        margin-bottom: 13px;
+    }
+
+    .label-user {
+        font-size: 12px;
+    }
+
+    .campo-user {
+        margin-bottom: 5px;
+    }
+}

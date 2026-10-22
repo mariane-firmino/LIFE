@@ -1,0 +1,204 @@
+/* =========================================================
+   MENU LATERAL (Bootstrap offcanvas)
+   Arquivo: Public/css/menu.css
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   MENU: cor de fundo, largura e texto
+   --------------------------------------------------------- */
+
+.menu-lateral {
+    --bs-offcanvas-bg: #24B84A;
+    --bs-offcanvas-width: min(310px, 88vw);
+    color: #fff;
+}
+
+
+/* ---------------------------------------------------------
+   CABEÇALHO: marca, sino e botão de fechar
+   --------------------------------------------------------- */
+
+.menu-cabecalho {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.menu-logo {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #00551f;
+    color: #fff;
+    font-size: 21px;
+}
+
+.menu-titulo {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.menu-subtitulo {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.7rem;
+}
+
+.menu-sino {
+    background: #00551f;
+    border: 0;
+}
+
+.menu-sino:hover {
+    background: #003d16;
+}
+
+
+/* ---------------------------------------------------------
+   USUÁRIO LOGADO
+   --------------------------------------------------------- */
+
+.usuario-img {
+    border: 3px solid #00551f;
+    border-radius: 10px;
+    background: #00551f;
+    padding: 10px;
+}
+
+/* Bolinha de "online" no canto da foto */
+.usuario-online {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #20c997;
+    border: 2px solid #00551f;
+}
+
+
+/* ---------------------------------------------------------
+   TÍTULOS DAS SEÇÕES (PRINCIPAL, ALUNOS, SISTEMA)
+   --------------------------------------------------------- */
+
+.menu-secao-titulo {
+    list-style: none;
+    margin: 1rem 0 0.35rem;
+    padding: 0 0.5rem;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+}
+
+
+/* ---------------------------------------------------------
+   LINKS
+   O seletor longo garante que vença as cores padrão do
+   Bootstrap (.navbar-nav .nav-link).
+   --------------------------------------------------------- */
+
+.menu-lateral .navbar-nav .nav-link {
+    color: #fff;
+    border-radius: 5px;
+    transition: padding-left 0.3s, background-color 0.2s;
+}
+
+/* Mouse em cima ou foco pelo teclado */
+.menu-lateral .navbar-nav .nav-link:hover,
+.menu-lateral .navbar-nav .nav-link:focus-visible {
+    color: #fff;
+    background: #00551f;
+    padding-left: 1rem;
+}
+
+/* Página atual (a classe "active" é colocada pelo menu.js) */
+.menu-lateral .navbar-nav .nav-link.active {
+    color: #fff;
+    background: #00551f;
+    font-weight: 600;
+    box-shadow: inset 3px 0 0 #fff;
+}
+
+.menu-lateral .nav-link i {
+    display: inline-block;
+    width: 1.5rem;
+}
+
+
+/* ---------------------------------------------------------
+   SAIR
+   Fica separado dos demais links e muda para vermelho
+   quando o mouse passa por cima.
+   --------------------------------------------------------- */
+
+.menu-sair-area {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.menu-sair {
+    background: transparent;
+    border: 0;
+}
+
+.menu-lateral .navbar-nav .menu-sair:hover,
+.menu-lateral .navbar-nav .menu-sair:focus-visible {
+    background: #c40707;
+}
+
+
+/* ---------------------------------------------------------
+   MODAL DE SAÍDA
+   --------------------------------------------------------- */
+
+.modal-saida {
+    border: 0;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.modal-saida .modal-title i {
+    color: #dc3545;
+}
+
+.modal-saida-icone {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #f8d7da;
+    color: #dc3545;
+    font-size: 23px;
+}
+
+/* Modo escuro */
+body.tema-escuro .modal-saida {
+    background: #242424;
+    color: #fff;
+}
+
+body.tema-escuro .modal-saida .modal-header,
+body.tema-escuro .modal-saida .modal-footer {
+    border-color: #3a3a3a;
+}
+
+
+/* ---------------------------------------------------------
+   ACESSIBILIDADE
+   Quem prefere menos animação não vê as transições.
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .menu-lateral .navbar-nav .nav-link {
+        transition: none;
+    }
+}
