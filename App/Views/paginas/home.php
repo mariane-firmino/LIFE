@@ -17,7 +17,7 @@
             </div>
 
             <div class="col-4 text-end">
-                <img src="<?=URL?>/img/logo_enfermaria.jpeg" class="logo-home" alt="Logo">
+                <img src="<?=URL?>/img/life-menor.png" class="logo-home" alt="Logo">
             </div>
 
         </div>

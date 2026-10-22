@@ -9,13 +9,30 @@ if (!isset($_SESSION['usuario_id'])) {
 // Inclui o menu
 include '../App/Views/menu.php';
 
-// Define a foto do usuário
+// Foto do usuário (ou imagem padrão)
 if (!empty($_SESSION['usuario_foto'])) {
     $fotoPerfil = URL . '/uploads/perfis/' . $_SESSION['usuario_foto'];
 } else {
     $fotoPerfil = URL . '/img/user.avif';
 }
 
+// Dados da sessão já tratados para exibição
+$nome     = htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário');
+$email    = htmlspecialchars($_SESSION['usuario_email'] ?? '');
+$telefone = htmlspecialchars($_SESSION['usuario_telefone'] ?? '');
+$cpf      = htmlspecialchars($_SESSION['usuario_cpf'] ?? '');
+$siape    = htmlspecialchars($_SESSION['usuario_siape'] ?? '');
+$funcao   = htmlspecialchars($_SESSION['usuario_funcao'] ?? '');
+
+$nascimento = !empty($_SESSION['usuario_dt_nascimento'])
+    ? date('d/m/Y', strtotime($_SESSION['usuario_dt_nascimento']))
+    : '';
+
+// Mostra "Não informado" quando o campo estiver vazio
+function perfilValor($valor)
+{
+    return $valor !== '' ? $valor : '<span class="perfil-vazio">Não informado</span>';
+}
 ?>
 
 <div class="layout">
@@ -25,20 +42,14 @@ if (!empty($_SESSION['usuario_foto'])) {
 
         <div class="row align-items-center">
 
-            <!-- TÍTULO -->
             <div class="col-12 col-md-8 linha-verde">
                 <h1>Perfil</h1>
-
-                <p>
-                    Bem-vindo,
-                    <?= htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário') ?>!
-                </p>
+                <p>Bem-vindo, <?= $nome ?>!</p>
             </div>
 
-            <!-- LOGO -->
             <div class="col-12 col-md-4 text-center text-md-end mt-3 mt-md-0">
                 <img
-                    src="<?= URL ?>/img/logo_enfermaria.jpeg"
+                    src="<?= URL ?>/img/life-menor.png"
                     class="logo-home"
                     alt="Logo Enfermaria">
             </div>
@@ -51,161 +62,92 @@ if (!empty($_SESSION['usuario_foto'])) {
     <!-- CARD DO PERFIL -->
     <div class="container pb-5">
 
-        <div class="card-user">
+        <div class="perfil-card">
 
-            <div class="row g-4 align-items-center">
+            <!-- PAINEL LATERAL -->
+            <aside class="perfil-lateral">
 
-                <!-- FOTO E BOTÕES -->
-                <div class="col-12 col-md-4 text-center">
+                <div class="perfil-capa"></div>
 
-                    <img
-                        src="<?= $fotoPerfil ?>"
-                        class="usuario-user img-fluid"
-                        alt="Foto de perfil">
+                <img
+                    src="<?= $fotoPerfil ?>"
+                    class="perfil-foto"
+                    alt="Foto de perfil"
+                    onerror="this.onerror=null;this.src='<?= URL ?>/img/user.avif';">
 
-                    <div class="d-flex flex-column align-items-center gap-2 mt-4">
+                <h2 class="perfil-nome"><?= $nome ?></h2>
 
-                        <a
-                            class="btn btn-success button-user"
-                            href="<?= URL ?>/usuarios/editarPerfil">
-                            Editar Perfil
-                        </a>
+                <?php if ($funcao !== ''): ?>
+                    <span class="perfil-funcao"><?= $funcao ?></span>
+                <?php endif; ?>
 
-                        <a
-                            class="btn btn-outline-success button-user"
-                            href="<?= URL ?>/usuarios/alterarSenha">
-                            Alterar Senha
-                        </a>
+                <div class="perfil-botoes">
 
+                    <a class="btn btn-success button-user"
+                       href="<?= URL ?>/usuarios/editarPerfil">
+                        Editar Perfil
+                    </a>
+
+                    <a class="btn btn-outline-success button-user"
+                       href="<?= URL ?>/usuarios/alterarSenha">
+                        Alterar Senha
+                    </a>
+
+                </div>
+
+            </aside>
+
+
+            <!-- INFORMAÇÕES -->
+            <section class="perfil-conteudo">
+
+                <h3 class="perfil-titulo">Informações pessoais</h3>
+
+                <div class="perfil-grid">
+
+                    <div class="perfil-campo perfil-campo--full">
+                        <span class="perfil-label">Nome completo</span>
+                        <p><?= perfilValor($nome) ?></p>
+                    </div>
+
+                    <div class="perfil-campo perfil-campo--full">
+                        <span class="perfil-label">E-mail</span>
+                        <p><?= perfilValor($email) ?></p>
+                    </div>
+
+                    <div class="perfil-campo">
+                        <span class="perfil-label">Data de nascimento</span>
+                        <p><?= perfilValor($nascimento) ?></p>
+                    </div>
+
+                    <div class="perfil-campo">
+                        <span class="perfil-label">Telefone / Celular</span>
+                        <p><?= perfilValor($telefone) ?></p>
+                    </div>
+
+                    <div class="perfil-campo">
+                        <span class="perfil-label">CPF</span>
+                        <p><?= perfilValor($cpf) ?></p>
+                    </div>
+
+                    <div class="perfil-campo">
+                        <span class="perfil-label">SIAPE</span>
+                        <p><?= perfilValor($siape) ?></p>
+                    </div>
+
+                    <div class="perfil-campo perfil-campo--full">
+                        <span class="perfil-label">Função</span>
+                        <p><?= perfilValor($funcao) ?></p>
                     </div>
 
                 </div>
 
-
-                <!-- INFORMAÇÕES DO USUÁRIO -->
-                <div class="col-12 col-md-8">
-
-                    <div class="row g-3">
-
-                        <!-- NOME -->
-                        <div class="col-12 campo-user">
-
-                            <label class="label-user">
-                                Nome
-                            </label>
-
-                            <p>
-                                <?= htmlspecialchars($_SESSION['usuario_nome'] ?? '') ?>
-                            </p>
-
-                        </div>
-
-
-                        <!-- E-MAIL -->
-                        <div class="col-12 col-md-6 campo-user">
-
-                            <label class="label-user">
-                                E-mail
-                            </label>
-
-                            <p>
-                                <?= htmlspecialchars($_SESSION['usuario_email'] ?? '') ?>
-                            </p>
-
-                        </div>
-
-
-                        <!-- DATA DE NASCIMENTO -->
-                        <div class="col-12 col-md-6 campo-user">
-
-                            <label class="label-user">
-                                Data de Nascimento
-                            </label>
-
-                            <p>
-
-                                <?php
-                                if (!empty($_SESSION['usuario_dt_nascimento'])) {
-                                    echo date(
-                                        'd/m/Y',
-                                        strtotime($_SESSION['usuario_dt_nascimento'])
-                                    );
-                                } else {
-                                    echo 'Não informado';
-                                }
-                                ?>
-
-                            </p>
-
-                        </div>
-
-
-                        <!-- TELEFONE -->
-                        <div class="col-12 col-md-6 campo-user">
-
-                            <label class="label-user">
-                                Telefone/Celular
-                            </label>
-
-                            <p>
-                                <?= htmlspecialchars($_SESSION['usuario_telefone'] ?? 'Não informado') ?>
-                            </p>
-
-                        </div>
-
-
-                        <!-- CPF -->
-                        <div class="col-12 col-md-6 campo-user">
-
-                            <label class="label-user">
-                                CPF
-                            </label>
-
-                            <p>
-                                <?= htmlspecialchars($_SESSION['usuario_cpf'] ?? '') ?>
-                            </p>
-
-                        </div>
-
-
-                        <!-- SIAPE -->
-                        <div class="col-12 col-md-6 campo-user">
-
-                            <label class="label-user">
-                                SIAPE
-                            </label>
-
-                            <p>
-                                <?= htmlspecialchars($_SESSION['usuario_siape'] ?? '') ?>
-                            </p>
-
-                        </div>
-
-
-                        <!-- FUNÇÃO -->
-                        <div class="col-12 col-md-6 campo-user">
-
-                            <label class="label-user">
-                                Função
-                            </label>
-
-                            <p>
-                                <?= htmlspecialchars($_SESSION['usuario_funcao'] ?? '') ?>
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
+            </section>
 
         </div>
 
     </div>
 
 </div>
-
 
 <?php include '../App/Views/footer.php'; ?>

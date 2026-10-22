@@ -2,7 +2,7 @@
     <div class="container" style="max-width: 900px;">
         <div class="row bg-white rounded-4 shadow">
             <div class="col-md-5 d-flex justify-content-center align-items-center p-4">
-                <img src="<?= URL ?>/public/img/logo_enfermaria.jpeg" class="img-fluid w-70" alt="Logo">
+                <img src="<?= URL ?>/public/img/life-menor.png" class="img-fluid w-70" alt="Logo">
             </div>
             <div class="col-md-7 bg-success text-white p-4 rounded-end-4">
                 <h3 class="text-center fw-bold mb-3">

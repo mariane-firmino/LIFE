@@ -459,7 +459,7 @@ body.fonte-extra-grande {
             <div class="col-4 text-end">
 
                 <img
-                    src="<?= URL ?>/img/logo_enfermaria.jpeg"
+                    src="<?= URL ?>/img/life-menor.png"
                     class="logo-home"
                     alt="Logo do sistema Enfermaria"
                 >

@@ -22,7 +22,7 @@ include '../App/Views/menu.php';
 
             <div class="calendario-page-logo">
                 <img
-                    src="<?= URL ?>/img/logo_enfermaria.jpeg"
+                    src="<?= URL ?>/img/life-menor.png"
                     class="logo-home"
                     alt="Logo"
                 >

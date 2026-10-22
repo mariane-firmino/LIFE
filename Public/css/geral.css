@@ -17,6 +17,9 @@
 /* Perfil */
 @import url(./paginas/perfil.css);
 
+/* Editar Perfil */
+@import url(./usuarios/editarPerfil.css);
+
 /* Alterar Senha */
 @import url(./usuarios/alterarSenha.css);
 
@@ -28,3 +31,6 @@
 
 /* Calendario */
 @import url(./calendarios/calendario.css);
+
+/* Notificações */
+@import url(./paginas/notificacao.css);

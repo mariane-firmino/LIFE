@@ -43,7 +43,7 @@ $funcaoUsuario = htmlspecialchars($_SESSION['usuario_funcao'] ?? '', ENT_QUOTES,
                     </div>
 
                     <div>
-                        <h5 class="menu-titulo" id="offcanvasNavbarLabel">ENFERMARIA</h5>
+                        <h5 class="menu-titulo" id="offcanvasNavbarLabel">LIFE</h5>
                         <small class="menu-subtitulo">Sistema de atendimento</small>
                     </div>
                 </div>
@@ -92,35 +92,35 @@ $funcaoUsuario = htmlspecialchars($_SESSION['usuario_funcao'] ?? '', ENT_QUOTES,
 
                     <li class="nav-item">
                         <a class="nav-link" href="<?= URL ?>/paginas/home">
-                            <i class="bi bi-house-door-fill"></i> HOME
+                            <i class="bi bi-house-door-fill espaco-esquerdo"></i> HOME
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= URL ?>/paginas/perfil">
-                            <i class="bi bi-person-fill"></i> PERFIL
+                            <i class="bi bi-person-fill espaco-esquerdo"></i> PERFIL
                         </a>
                     </li>
 
-                    <li class="menu-secao-titulo">ALUNOS</li>
+                    <li class="menu-secao-titulo espaco-esquerdo">ALUNOS</li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="<?= URL ?>/alunos/aluno">
-                            <i class="bi bi-mortarboard-fill"></i> CADASTRO DE ALUNO
+                            <i class="bi bi-mortarboard-fill espaco-esquerdo"></i> CADASTRO DE ALUNO
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= URL ?>/alunos/consulta">
-                            <i class="bi bi-file-earmark-person-fill"></i> CONSULTAR ALUNO
+                            <i class="bi bi-file-earmark-person-fill espaco-esquerdo"></i> CONSULTAR ALUNO
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= URL ?>/calendarios/calendario">
-                            <i class="bi bi-calendar3"></i> CALENDÁRIO
+                            <i class="bi bi-calendar3 espaco-esquerdo"></i> CALENDÁRIO
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= URL ?>/paginas/relatorio">
-                            <i class="bi bi-file-earmark-bar-graph-fill"></i> RELATÓRIO
+                            <i class="bi bi-file-earmark-bar-graph-fill espaco-esquerdo"></i> RELATÓRIO
                         </a>
                     </li>
 
@@ -128,7 +128,7 @@ $funcaoUsuario = htmlspecialchars($_SESSION['usuario_funcao'] ?? '', ENT_QUOTES,
 
                     <li class="nav-item">
                         <a class="nav-link" href="<?= URL ?>/paginas/configuracao">
-                            <i class="bi bi-gear-wide-connected"></i> CONFIGURAÇÕES
+                            <i class="bi bi-gear-wide-connected espaco-esquerdo"></i> CONFIGURAÇÕES
                         </a>
                     </li>
 
@@ -136,7 +136,7 @@ $funcaoUsuario = htmlspecialchars($_SESSION['usuario_funcao'] ?? '', ENT_QUOTES,
                     <li class="nav-item menu-sair-area">
                         <button type="button" class="nav-link menu-sair w-100 text-start" data-bs-toggle="modal"
                             data-bs-target="#staticBackdrop">
-                            <i class="bi bi-box-arrow-right"></i> SAIR
+                            <i class="bi bi-box-arrow-right espaco-esquerdo"></i> SAIR
                         </button>
                     </li>
                 </ul>

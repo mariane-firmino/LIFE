@@ -1,216 +1,269 @@
+/* =========================================================
+   CONTEÚDO PRINCIPAL
+========================================================= */
+
 .enf-conteudo {
     width: 100%;
-    max-width: 1400px !important;
-    margin: 45px auto 0;
-    padding-left: 20px;
-    padding-right: 20px;
+    max-width: 1500px !important;
+    margin: 30px auto 0;
+    padding: 0 25px;
 }
+
+.enf-secao-titulo {
+    margin: 0 8px 16px;
+    color: #064d2b;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
 
 .enf-cards {
     width: 100%;
     margin: 0;
+    row-gap: 16px;
 }
 
 .enf-cards > div {
-    padding-left: 6px;
-    padding-right: 6px;
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
+/* Cada card define a sua cor por variável */
 .enf-perfil {
+    --enf-cor: #198754;
+    --enf-cor-fundo: #e6f4ec;
+
     width: 100%;
-    height: 220px !important;
-    border: 1px solid #d8d8d8;
-    border-radius: 7px;
+    height: 100%;
+    min-height: 175px;
+    border: 1px solid #e0e7e3;
+    border-top: 4px solid var(--enf-cor);
+    border-radius: 12px;
     background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 3px 10px rgba(23, 65, 45, 0.07);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    overflow: hidden;
 }
 
+.enf-perfil:hover {
+    box-shadow: 0 8px 20px rgba(23, 65, 45, 0.14);
+    transform: translateY(-3px);
+}
+
+/* Cores de cada card */
+.enf-perfil--total   { --enf-cor: #198754; --enf-cor-fundo: #e6f4ec; }
+.enf-perfil--meninos { --enf-cor: #2f7fd6; --enf-cor-fundo: #e5f0fb; }
+.enf-perfil--meninas { --enf-cor: #d6478f; --enf-cor-fundo: #fbe8f2; }
+.enf-perfil--saude   { --enf-cor: #e08a1e; --enf-cor-fundo: #fcf0de; }
+
+/* Conteúdo interno */
 .enf-corpo {
     width: 100%;
     height: 100%;
-    padding: 8px;
-
+    padding: 20px 20px 18px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-between;
+}
+
+.enf-card-topo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
 }
 
 .enf-cards .enf-perfil .enf-card-titulo {
-    margin: 0 0 9px 0;
-    padding: 0;
-    text-align: center;
-
-    font-size: 25px !important;
-    line-height: 28px !important;
-    font-weight: 700;
-    color: #000000;
-}
-
-.enf-card-numero {
     margin: 0;
     padding: 0;
-
-    font-size: 36px;
-    line-height: 36px;
-    font-weight: 700;
-    color: #000000;
+    color: #53645b;
+    font-size: 15px !important;
+    line-height: 21px !important;
+    font-weight: 600;
+    text-align: left;
 }
+
+/* Ícone em círculo colorido */
+.enf-card-icone {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--enf-cor-fundo);
+    color: var(--enf-cor);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* Número */
+.enf-card-numero {
+    margin: 14px 0 4px;
+    color: var(--enf-cor);
+    font-size: 40px;
+    line-height: 44px;
+    font-weight: 700;
+}
+
+.enf-card-sub {
+    color: #7b8b83;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   BOTÃO CADASTRAR
+========================================================= */
 
 .enf-botao-area {
     width: 100%;
+    margin-top: 28px;
+    margin-bottom: 25px;
     display: flex;
     justify-content: flex-end;
-
-    margin-top: 50px !important;
-    margin-bottom: 10px;
 }
 
 .enf-cadastrar {
-    width: 230px;
-    height: 45px;
-    padding: 0;
-
-    border: none;
-    border-radius: 20px;
-
-    background-color: #20b34b;
-    color: #ffffff;
-
-    font-size: 18px;
-    font-weight: 500;
-
-    display: flex;
+    min-width: 220px;
+    min-height: 46px;
+    padding: 0 24px;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
+
+    border: 1px solid #198754;
+    border-radius: 25px;
+    background-color: #198754;
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 3px 8px rgba(25, 135, 84, 0.25);
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
 
-.enf-cadastrar:hover {
-    background-color: #159f40;
+.enf-cadastrar:hover,
+.enf-cadastrar:focus {
+    background-color: #146c43;
+    border-color: #146c43;
     color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(25, 135, 84, 0.35);
 }
+
+
+/* =========================================================
+   TABLET
+========================================================= */
 
 @media (min-width: 768px) and (max-width: 991px) {
 
-    .enf-conteudo {
-        margin-top: 40px;
-    }
+    .enf-conteudo { padding-left: 18px; padding-right: 18px; }
 
-    .enf-cards .enf-perfil .enf-card-titulo {
-        font-size: 20px !important;
-        line-height: 23px !important;
-    }
+    .enf-cards > div { padding-left: 7px; padding-right: 7px; }
 
-    .enf-card-numero {
-        font-size: 35px;
-        line-height: 35px;
-    }
+    .enf-perfil { min-height: 165px; }
+
+    .enf-corpo { padding: 18px 16px 16px; }
+
+    .enf-card-numero { font-size: 34px; line-height: 38px; }
 }
+
+
+/* =========================================================
+   CELULAR
+========================================================= */
 
 @media (max-width: 767px) {
 
-    .enf-cabecalho {
-        height: 70px;
-        padding: 10px 15px;
-    }
-
-    .enf-titulo h1 {
-        font-size: 17px;
-        line-height: 20px;
-        font-weight: 500;
-    }
-
-    .enf-titulo p {
-        font-size: 9px;
-        line-height: 11px;
-    }
-
-    .enf-logo {
-        width: 58px;
-    }
-
     .enf-conteudo {
-        width: 100%;
         max-width: 100%;
-        margin-top: 35px;
+        margin-top: 22px;
         padding-left: 15px;
         padding-right: 15px;
     }
 
-    .enf-cards > div {
-        padding-left: 5px;
-        padding-right: 5px;
-        margin-bottom: 12px;
-    }
+    .enf-secao-titulo { margin-left: 6px; font-size: 17px; }
 
-    .enf-perfil {
-        width: 100%;
-        height: 220px !important;
-    }
+    .enf-cards > div { padding-left: 6px; padding-right: 6px; }
 
-    .enf-cards .enf-perfil .enf-card-titulo {
-        font-size: 20px !important;
-        line-height: 23px !important;
-    }
+    .enf-perfil { min-height: 150px; border-radius: 10px; }
 
-    .enf-card-numero {
-        font-size: 35px;
-        line-height: 35px;
-    }
+    .enf-corpo { padding: 16px 16px 14px; }
 
-    .enf-botao-area {
-        justify-content: flex-end;
-        margin-top: 50px !important;
-        margin-bottom: 20px;
-    }
+    .enf-card-numero { font-size: 32px; line-height: 36px; margin-top: 10px; }
+
+    .enf-botao-area { margin-top: 22px; justify-content: center; }
 
     .enf-cadastrar {
-        width: 310px;
-        max-width: 100%;
-        height: 40px;
-
-        border-radius: 18px;
+        width: 100%;
+        max-width: 360px;
+        min-width: 0;
+        min-height: 44px;
         font-size: 14px;
-        font-weight: 600;
     }
 }
 
+
+/* =========================================================
+   CELULAR PEQUENO
+========================================================= */
+
 @media (max-width: 400px) {
 
-    .enf-cabecalho {
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-
-    .enf-logo {
-        width: 54px;
-    }
-
-    .enf-conteudo {
-        margin-top: 30px;
-        padding-left: 10px;
-        padding-right: 10px;
-    }
+    .enf-conteudo { padding-left: 10px; padding-right: 10px; }
 
     .enf-cards .enf-perfil .enf-card-titulo {
-        font-size: 18px !important;
-        line-height: 21px !important;
+        font-size: 14px !important;
+        line-height: 19px !important;
     }
 
-    .enf-card-numero {
-        font-size: 33px;
-        line-height: 33px;
-    }
+    .enf-card-icone { width: 34px; height: 34px; font-size: 17px; }
 
-    .enf-botao-area {
-        margin-bottom: 20px;
-    }
+    .enf-card-numero { font-size: 28px; line-height: 32px; }
+}
 
-    .enf-cadastrar {
-        width: 310px;
-        max-width: 100%;
-        height: 40px;
-        font-size: 14px;
-        font-weight: 600;
-    }
+
+/* =========================================================
+   MODO ESCURO
+========================================================= */
+
+body.tema-escuro .enf-secao-titulo { color: #69d7a2 !important; }
+
+body.tema-escuro .enf-perfil {
+    background-color: #1b2430 !important;
+    border-color: #3a485a !important;
+    border-top-color: var(--enf-cor) !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45) !important;
+}
+
+body.tema-escuro .enf-perfil:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.60) !important;
+}
+
+body.tema-escuro .enf-perfil--total   { --enf-cor: #69d7a2; --enf-cor-fundo: #1f3a30; }
+body.tema-escuro .enf-perfil--meninos { --enf-cor: #6fb1f2; --enf-cor-fundo: #1f3248; }
+body.tema-escuro .enf-perfil--meninas { --enf-cor: #f08bbd; --enf-cor-fundo: #402636; }
+body.tema-escuro .enf-perfil--saude   { --enf-cor: #f2b35a; --enf-cor-fundo: #41331d; }
+
+body.tema-escuro .enf-cards .enf-perfil .enf-card-titulo { color: #d6dde5 !important; }
+body.tema-escuro .enf-card-sub { color: #8995a5 !important; }
+
+body.tema-escuro .enf-cadastrar {
+    background-color: #168653 !important;
+    border-color: #168653 !important;
+    box-shadow: none !important;
+}
+
+body.tema-escuro .enf-cadastrar:hover {
+    background-color: #20a066 !important;
+    border-color: #20a066 !important;
 }

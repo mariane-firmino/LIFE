@@ -1,0 +1,152 @@
+/* =========================================================
+   EDITAR PERFIL
+   Complemento do perfil.css (usa perfil-card, perfil-lateral,
+   perfil-capa, perfil-foto, perfil-conteudo, perfil-grid, etc.)
+========================================================= */
+
+/* Foto com botão de editar */
+.perfil-foto-wrap {
+    position: relative;
+    display: block;
+    width: 140px;
+    margin: -70px auto 0;
+}
+
+/* A margem negativa agora fica no wrapper */
+.perfil-foto-wrap .perfil-foto {
+    margin: 0;
+}
+
+.perfil-foto-editar {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border: 2px solid #168653;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.20);
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.perfil-foto-editar:hover {
+    background: #eef8f2;
+    transform: scale(1.08);
+}
+
+.perfil-foto-editar img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.perfil-foto-dica {
+    margin: 12px 0 0;
+    color: #71827a;
+    font-size: 12px;
+}
+
+/* Campos do formulário */
+.perfil-campo-form {
+    min-width: 0;
+}
+
+.perfil-campo-form .perfil-label {
+    margin-bottom: 6px;
+}
+
+.perfil-campo-form .form-control {
+    min-height: 44px;
+    border: 1px solid #cfdcd5;
+    border-radius: 10px;
+    background-color: #f8fbf9;
+    color: #203b32;
+    font-size: 15px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.perfil-campo-form .form-control:focus {
+    background-color: #ffffff;
+    border-color: #168653;
+    box-shadow: 0 0 0 3px rgba(32, 180, 85, 0.18);
+}
+
+.perfil-campo-form .form-control::placeholder {
+    color: #9aa8a1;
+}
+
+/* Aviso sob o formulário */
+.perfil-aviso {
+    margin: 22px 0 0;
+    padding: 10px 14px;
+    background: #f1f8f4;
+    border-radius: 8px;
+    color: #5b6e65;
+    font-size: 13px;
+}
+
+/* Breadcrumb */
+.breadcrumb a {
+    color: #168653;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover { text-decoration: underline; }
+
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (max-width: 560px) {
+
+    .perfil-foto-wrap {
+        width: 110px;
+        margin-top: -55px;
+    }
+
+    .perfil-foto-editar {
+        width: 34px;
+        height: 34px;
+    }
+}
+
+
+/* =========================================================
+   MODO ESCURO
+========================================================= */
+
+body.tema-escuro .perfil-foto-editar {
+    background: #243244 !important;
+    border-color: #69d7a2 !important;
+}
+
+body.tema-escuro .perfil-foto-dica { color: #8995a5 !important; }
+
+body.tema-escuro .perfil-campo-form .form-control {
+    background-color: #121a24 !important;
+    border-color: #3a485a !important;
+    color: #ffffff !important;
+    color-scheme: dark;
+}
+
+body.tema-escuro .perfil-campo-form .form-control:focus {
+    border-color: #69d7a2 !important;
+    box-shadow: 0 0 0 3px rgba(105, 215, 162, 0.15) !important;
+}
+
+body.tema-escuro .perfil-campo-form .form-control::placeholder {
+    color: #697687 !important;
+}
+
+body.tema-escuro .perfil-aviso {
+    background: #243244 !important;
+    color: #8995a5 !important;
+}
+
+body.tema-escuro .breadcrumb a { color: #69d7a2 !important; }

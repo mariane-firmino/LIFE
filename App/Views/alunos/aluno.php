@@ -5,85 +5,129 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 include '../App/Views/menu.php';
+
+/*
+ * Números dos cards.
+ * O controller deve enviar em $dados:
+ *   total, meninos, meninas, com_doenca
+ * Enquanto não enviar, aparece 0.
+ */
+$total     = (int) ($dados['total']      ?? 0);
+$meninos   = (int) ($dados['meninos']    ?? 0);
+$meninas   = (int) ($dados['meninas']    ?? 0);
+$comDoenca = (int) ($dados['com_doenca'] ?? 0);
+
+// Porcentagem em relação ao total de alunos
+function enfPorcentagem($parte, $total)
+{
+    return $total > 0 ? round(($parte / $total) * 100) : 0;
+}
+
+$cards = [
+    [
+        'classe' => 'enf-perfil--total',
+        'icone'  => 'bi-people-fill',
+        'titulo' => 'Alunos cadastrados',
+        'valor'  => $total,
+        'sub'    => $total === 1 ? '1 aluno no sistema' : $total . ' alunos no sistema',
+    ],
+    [
+        'classe' => 'enf-perfil--meninos',
+        'icone'  => 'bi-gender-male',
+        'titulo' => 'Meninos',
+        'valor'  => $meninos,
+        'sub'    => enfPorcentagem($meninos, $total) . '% do total',
+    ],
+    [
+        'classe' => 'enf-perfil--meninas',
+        'icone'  => 'bi-gender-female',
+        'titulo' => 'Meninas',
+        'valor'  => $meninas,
+        'sub'    => enfPorcentagem($meninas, $total) . '% do total',
+    ],
+    [
+        'classe' => 'enf-perfil--saude',
+        'icone'  => 'bi-heart-pulse-fill',
+        'titulo' => 'Alunos com doenças',
+        'valor'  => $comDoenca,
+        'sub'    => enfPorcentagem($comDoenca, $total) . '% do total',
+    ],
+];
 ?>
+
+<!-- Bootstrap Icons (remova esta linha se já estiver carregado no menu.php ou no <head>) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 <div class="layout">
-    <div class="container-fluid ps-4 pe-4 pt-5 pb-3">
-        <div class="row align-items-start">
-            <div class="col-8 linha-verde">
+
+    <!-- CABEÇALHO -->
+    <div class="container-fluid px-4 pt-5 pb-3">
+
+        <div class="row align-items-center">
+
+            <div class="col-12 col-md-8 linha-verde">
                 <h1>Cadastro de Aluno</h1>
                 <p>Faça o cadastro dos alunos nessa página.</p>
             </div>
-            <div class="col-4 text-end">
-                <img src="<?= URL ?>/img/logo_enfermaria.jpeg" class="logo-home" alt="Logo">
+
+            <div class="col-12 col-md-4 text-center text-md-end mt-3 mt-md-0">
+                <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
             </div>
+
         </div>
+
     </div>
 
+
     <main class="container-fluid enf-conteudo">
+
+        <!-- RESUMO -->
+        <h2 class="enf-secao-titulo">Resumo</h2>
+
         <div class="row enf-cards">
-            <div class="col-12 col-sm-6 col-md-3">
-                <div class="card enf-perfil">
-                    <div class="card-body enf-corpo">
-                        <h2 class="enf-card-titulo">
-                            Quantidade de Alunos<br>
-                            Cadastrados
-                        </h2>
 
-                        <div class="enf-card-numero">
-                            000
+            <?php foreach ($cards as $card): ?>
+
+                <div class="col-12 col-sm-6 col-lg-3">
+
+                    <article class="card enf-perfil <?= $card['classe'] ?>">
+
+                        <div class="card-body enf-corpo">
+
+                            <div class="enf-card-topo">
+                                <h3 class="enf-card-titulo">
+                                    <?= htmlspecialchars($card['titulo']) ?>
+                                </h3>
+
+                                <span class="enf-card-icone" aria-hidden="true">
+                                    <i class="bi <?= $card['icone'] ?>"></i>
+                                </span>
+                            </div>
+
+                            <div class="enf-card-numero">
+                                <?= number_format($card['valor'], 0, ',', '.') ?>
+                            </div>
+
+                            <div class="enf-card-sub">
+                                <?= htmlspecialchars($card['sub']) ?>
+                            </div>
+
                         </div>
-                    </div>
+
+                    </article>
+
                 </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-3">
-                <div class="card enf-perfil">
-                    <div class="card-body enf-corpo">
-                        <h2 class="enf-card-titulo">
-                            Quantidade de<br>
-                            Meninos
-                        </h2>
-                        <div class="enf-card-numero">
-                            00
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-3">
-                <div class="card enf-perfil">
-                    <div class="card-body enf-corpo">
-                        <h2 class="enf-card-titulo">
-                            Quantidade de<br>
-                            Meninas
-                        </h2>
 
-                        <div class="enf-card-numero">
-                            00
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php endforeach; ?>
 
-
-            <div class="col-12 col-sm-6 col-md-3">
-                <div class="card enf-perfil">
-                    <div class="card-body enf-corpo">
-
-                        <h2 class="enf-card-titulo">
-                            Quantidade de<br>
-                            Alunos com doenças
-                        </h2>
-
-                        <div class="enf-card-numero">
-                            00
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
+
+        <!-- BOTÃO -->
         <div class="enf-botao-area">
 
-            <a type="button" class="btn enf-cadastrar" href="<?= URL ?>/alunos/cadastrar">
+            <a class="btn enf-cadastrar" href="<?= URL ?>/alunos/cadastrar">
+                <i class="bi bi-person-plus-fill"></i>
                 Cadastrar Aluno
             </a>
 
@@ -92,4 +136,5 @@ include '../App/Views/menu.php';
     </main>
 
 </div>
-<?php include '../App/Views/footer.php' ?>
+
+<?php include '../App/Views/footer.php'; ?>

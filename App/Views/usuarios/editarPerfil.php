@@ -15,33 +15,20 @@ $fotoPerfil = !empty($usuario->serv_foto)
 
 ?>
 
-
-
 <div class="layout">
 
-    <!-- ============================= -->
     <!-- CABEÇALHO -->
-    <!-- ============================= -->
+    <div class="container-fluid px-4 pt-5 pb-3">
 
-    <div class="container-fluid ps-4 pe-4 pt-5 pb-3">
+        <div class="row align-items-center">
 
-        <div class="row align-items-start">
-
-            <div class="col-8 linha-verde">
-
+            <div class="col-12 col-md-8 linha-verde">
                 <h1>Perfil</h1>
-
-                <p>
-                    Bem-Vindo,
-                    <?= htmlspecialchars($_SESSION['usuario_nome']); ?>!
-                </p>
-
+                <p>Bem-vindo, <?= htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário') ?>!</p>
             </div>
 
-            <div class="col-4 text-end">
-
-                <img src="<?= URL ?>/img/logo_enfermaria.jpeg" class="logo-home" alt="Logo">
-
+            <div class="col-12 col-md-4 text-center text-md-end mt-3 mt-md-0">
+                <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo Enfermaria">
             </div>
 
         </div>
@@ -49,294 +36,198 @@ $fotoPerfil = !empty($usuario->serv_foto)
     </div>
 
 
-    <!-- ============================= -->
     <!-- BREADCRUMB -->
-    <!-- ============================= -->
-
-    <nav style="--bs-breadcrumb-divider: '>';" class="m-3" aria-label="breadcrumb">
-
-        <ol class="breadcrumb">
-
+    <nav style="--bs-breadcrumb-divider: '>';" class="px-4 pb-2" aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item">
-
-                <a href="<?= URL ?>/paginas/perfil">
-                    Perfil
-                </a>
-
+                <a href="<?= URL ?>/paginas/perfil">Perfil</a>
             </li>
-
-            <li class="breadcrumb-item active" aria-current="page">
-                Editar Perfil
-            </li>
-
+            <li class="breadcrumb-item active" aria-current="page">Editar Perfil</li>
         </ol>
-
     </nav>
 
 
-    <!-- ============================= -->
     <!-- FORMULÁRIO -->
-    <!-- ============================= -->
+    <div class="container mt-4 mb-5">
 
-    <div class="container mt-5 mb-5">
+        <form
+            class="perfil-card"
+            action="<?= URL ?>/usuarios/editarPerfil"
+            method="POST"
+            enctype="multipart/form-data">
 
-        <div class="card p-4 mx-auto" style="max-width: 850px;">
+            <!-- PAINEL LATERAL: FOTO E BOTÕES -->
+            <aside class="perfil-lateral">
 
-            <form action="<?= URL ?>/usuarios/editarPerfil" method="POST" enctype="multipart/form-data">
+                <div class="perfil-capa"></div>
 
-                <div class="row align-items-center">
+                <div class="perfil-foto-wrap">
 
+                    <img
+                        src="<?= htmlspecialchars($fotoPerfil) ?>"
+                        id="fotoPreview"
+                        class="perfil-foto"
+                        alt="Foto do usuário"
+                        onerror="this.onerror=null;this.src='<?= URL ?>/img/user.avif';">
 
-                    <!-- ============================= -->
-                    <!-- FOTO E BOTÕES -->
-                    <!-- ============================= -->
+                    <label for="foto" class="perfil-foto-editar" title="Alterar foto">
+                        <i class="bi bi-pencil text-success"></i>
+                    </label>
 
-                    <div class="col-12 col-md-4 text-center mb-4 mb-md-0">
+                    <input
+                        type="file"
+                        name="foto"
+                        id="foto"
+                        accept="image/jpeg,image/png,image/webp"
+                        hidden>
 
-                        <div class="position-relative d-inline-block">
+                </div>
 
-                            <img src="<?= htmlspecialchars($fotoPerfil) ?>" id="fotoPreview" alt="Foto do usuário"
-                                style="
-        width: 150px !important;
-        height: 150px !important;
-        border-radius: 50% !important;
-        object-fit: cover !important;
-        display: block;
-">
+                <p class="perfil-foto-dica">JPG, PNG ou WEBP</p>
 
+                <div class="perfil-botoes">
 
-                            <!-- BOTÃO PARA TROCAR FOTO -->
+                    <button type="submit" class="btn btn-success button-user">
+                        Salvar alterações
+                    </button>
 
-                            <label for="foto" class="position-absolute" style="
-                                    bottom: 10px;
-                                    right: 10px;
-                                    cursor: pointer;
-                                ">
+                    <a href="<?= URL ?>/usuarios/alterarSenha"
+                       class="btn btn-outline-success button-user">
+                        Alterar senha
+                    </a>
 
-                                <img src="<?= URL ?>/img/Canetinha.png" width="30" alt="Alterar foto">
+                </div>
 
-                            </label>
-
-
-                            <!-- INPUT DA FOTO -->
-
-                            <input type="file" name="foto" id="foto" accept="image/jpeg,image/png,image/webp"
-                                style="display: none;">
-
-                        </div>
-
-
-                        <!-- ============================= -->
-                        <!-- BOTÕES -->
-                        <!-- ============================= -->
-
-                        <div class="mt-4">
-
-                            <button type="submit" class="btn btn-success rounded-pill w-100 mb-2">
-                                Salvar alterações
-                            </button>
+            </aside>
 
 
-                            <a href="<?= URL ?>/usuarios/alterarSenha"
-                                class="btn btn-outline-success rounded-pill w-100">
-                                Alterar senha
-                            </a>
+            <!-- CAMPOS -->
+            <section class="perfil-conteudo">
 
-                        </div>
+                <h3 class="perfil-titulo">Editar informações</h3>
 
+                <div class="perfil-grid">
+
+                    <div class="perfil-campo-form perfil-campo--full">
+                        <label for="nome" class="perfil-label">Nome</label>
+                        <input
+                            type="text"
+                            name="nome"
+                            id="nome"
+                            class="form-control"
+                            placeholder="Nome completo"
+                            autocomplete="name"
+                            required
+                            value="<?= htmlspecialchars($usuario->serv_nome ?? '') ?>">
                     </div>
 
+                    <div class="perfil-campo-form">
+                        <label for="email" class="perfil-label">E-mail</label>
+                        <input
+                            type="email"
+                            name="email"
+                            id="email"
+                            class="form-control"
+                            placeholder="Email completo"
+                            autocomplete="email"
+                            required
+                            value="<?= htmlspecialchars($usuario->serv_email ?? '') ?>">
+                    </div>
 
-                    <!-- ============================= -->
-                    <!-- DADOS DO USUÁRIO -->
-                    <!-- ============================= -->
+                    <div class="perfil-campo-form">
+                        <label for="data_nascimento" class="perfil-label">Data de nascimento</label>
+                        <input
+                            type="date"
+                            name="data_nascimento"
+                            id="data_nascimento"
+                            class="form-control"
+                            value="<?= htmlspecialchars($usuario->serv_dt_nascimento ?? '') ?>">
+                    </div>
 
-                    <div class="col-12 col-md-8">
-
-                        <div class="row g-2">
-
-
-                            <!-- ============================= -->
-                            <!-- NOME -->
-                            <!-- ============================= -->
-
-                            <div class="col-12">
-
-                                <label for="nome" class="form-label mb-1">
-                                    Nome
-                                </label>
-
-                                <input type="text" name="nome" id="nome" class="form-control"
-                                    placeholder="Nome completo"
-                                    value="<?= htmlspecialchars($usuario->serv_nome ?? '') ?>">
-
-                            </div>
-
-
-                            <!-- ============================= -->
-                            <!-- EMAIL -->
-                            <!-- ============================= -->
-
-                            <div class="col-12 col-md-6">
-
-                                <label for="email" class="form-label mb-1">
-                                    E-mail
-                                </label>
-
-                                <input type="email" name="email" id="email" class="form-control"
-                                    placeholder="Email completo"
-                                    value="<?= htmlspecialchars($usuario->serv_email ?? '') ?>">
-
-                            </div>
-
-
-                            <!-- ============================= -->
-                            <!-- DATA DE NASCIMENTO -->
-                            <!-- ============================= -->
-
-                            <div class="col-12 col-md-6">
-
-                                <label for="data_nascimento" class="form-label mb-1">
-                                    Data de Nascimento
-                                </label>
-
-                                <input type="date" name="data_nascimento" id="data_nascimento" class="form-control"
-                                    value="<?= htmlspecialchars($usuario->serv_dt_nascimento ?? '') ?>">
-
-                            </div>
-
-
-                            <!-- ============================= -->
-                            <!-- TELEFONE -->
-                            <!-- ============================= -->
-
-                            <div class="col-12">
-
-                                <label for="telefone" class="form-label mb-1">
-                                    Telefone/Celular
-                                </label>
-
-                                <input type="text" name="telefone" id="telefone" class="form-control"
-                                    placeholder="(00) 00000-0000" maxlength="15"
-                                    value="<?= htmlspecialchars($usuario->tele_numero ?? '') ?>">
-
-                            </div>
-
-                        </div>
-
+                    <div class="perfil-campo-form perfil-campo--full">
+                        <label for="telefone" class="perfil-label">Telefone / Celular</label>
+                        <input
+                            type="text"
+                            name="telefone"
+                            id="telefone"
+                            class="form-control"
+                            placeholder="(00) 00000-0000"
+                            maxlength="15"
+                            inputmode="tel"
+                            autocomplete="tel"
+                            value="<?= htmlspecialchars($usuario->tele_numero ?? '') ?>">
                     </div>
 
                 </div>
 
-            </form>
+                <p class="perfil-aviso">
+                    CPF, SIAPE e função não podem ser alterados por aqui.
+                </p>
 
-        </div>
+            </section>
+
+        </form>
 
     </div>
 
 </div>
 
 
-<!-- ============================= -->
 <!-- PRÉVIA DA FOTO -->
-<!-- ============================= -->
-
 <script>
-
     const campoFoto = document.getElementById('foto');
 
     if (campoFoto) {
-
         campoFoto.addEventListener('change', function (event) {
-
             const arquivo = event.target.files[0];
 
             if (arquivo) {
-
                 const imagem = document.getElementById('fotoPreview');
 
-                imagem.src = URL.createObjectURL(arquivo);
+                if (imagem.dataset.blob) {
+                    URL.revokeObjectURL(imagem.dataset.blob);
+                }
 
+                const novaUrl = URL.createObjectURL(arquivo);
+                imagem.dataset.blob = novaUrl;
+                imagem.src = novaUrl;
             }
-
         });
-
     }
-
 </script>
 
 
-<!-- ============================= -->
 <!-- MÁSCARA DO TELEFONE -->
-<!-- ============================= -->
-
 <script>
-
     const telefone = document.getElementById('telefone');
 
-
     function aplicarMascaraTelefone(input) {
-
         let valor = input.value.replace(/\D/g, '');
 
-
         // Máximo de 11 números
-
         if (valor.length > 11) {
-
             valor = valor.substring(0, 11);
-
         }
-
-
-        // Celular
 
         if (valor.length > 10) {
-
-            valor = valor.replace(
-                /^(\d{2})(\d{5})(\d{0,4}).*/,
-                '($1) $2-$3'
-            );
-
+            // Celular
+            valor = valor.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3');
+        } else {
+            // Telefone fixo
+            valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
         }
-
-        // Telefone fixo
-
-        else {
-
-            valor = valor.replace(
-                /^(\d{2})(\d{4})(\d{0,4}).*/,
-                '($1) $2-$3'
-            );
-
-        }
-
 
         input.value = valor;
-
     }
-
 
     if (telefone) {
+        telefone.addEventListener('input', function () {
+            aplicarMascaraTelefone(this);
+        });
 
-        // Aplica a máscara enquanto digita
-
-        telefone.addEventListener(
-            'input',
-            function () {
-
-                aplicarMascaraTelefone(this);
-
-            }
-        );
-
-
-        // Aplica a máscara quando abre a página
-
+        // Aplica a máscara ao abrir a página
         aplicarMascaraTelefone(telefone);
-
     }
-
 </script>
 
 

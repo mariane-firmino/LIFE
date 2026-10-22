@@ -1,17 +1,195 @@
-.formulario-senha {
-    width: 50%;
+/* =========================================================
+   ALTERAR SENHA
+   (reaproveita .perfil-capa, .perfil-label e .button-user
+    do perfil.css)
+========================================================= */
+
+.senha-card {
+    width: 100%;
+    max-width: 800;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #e3ece7;
+    border-radius: 18px;
+    box-shadow: 0 6px 24px rgba(6, 77, 43, 0.10);
+    overflow: hidden;
 }
 
-/* Tablet */
-@media (max-width: 991px) {
-    .formulario-senha {
-        width: 70%;
+.senha-capa { height: 70px; }
+
+.senha-corpo { padding: 28px 34px 32px; }
+
+.senha-titulo {
+    margin: 0 0 6px;
+    color: #064d2b;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.senha-sub {
+    margin: 0 0 22px;
+    color: #71827a;
+    font-size: 14px;
+}
+
+.senha-corpo .alert { border-radius: 10px; font-size: 14px; }
+
+
+/* =========================================================
+   CAMPOS
+========================================================= */
+
+.senha-campo { margin-bottom: 20px; }
+
+.senha-campo .perfil-label { margin-bottom: 6px; }
+
+.senha-input { position: relative; }
+
+.senha-input .form-control {
+    min-height: 44px;
+    padding-right: 84px;
+    border: 1px solid #cfdcd5;
+    border-radius: 10px;
+    background-color: #f8fbf9;
+    color: #203b32;
+    font-size: 15px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.senha-input .form-control:focus {
+    background-color: #ffffff;
+    border-color: #168653;
+    box-shadow: 0 0 0 3px rgba(32, 180, 85, 0.18);
+}
+
+.senha-mostrar {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    padding: 4px 10px;
+    border: none;
+    background: transparent;
+    color: #168653;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.senha-mostrar:hover { background: #eef8f2; }
+
+.senha-dica {
+    display: block;
+    margin-top: 6px;
+    color: #71827a;
+    font-size: 12px;
+}
+
+.senha-ok   { color: #168653; font-weight: 600; }
+.senha-erro { color: #d9534f; font-weight: 600; }
+
+/* Medidor de força */
+.senha-forca {
+    height: 6px;
+    margin-top: 10px;
+    background: #e3ece7;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.senha-forca span {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.25s ease, background-color 0.25s ease;
+}
+
+/* Campos inválidos após tentar enviar */
+.foi-validado .form-control:invalid {
+    border-color: #d9534f;
+}
+
+
+/* =========================================================
+   BOTÕES
+========================================================= */
+
+.senha-botoes {
+    margin-top: 28px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.senha-botoes .button-user {
+    width: auto;
+    min-width: 150px;
+}
+
+
+/* =========================================================
+   CELULAR
+========================================================= */
+
+@media (max-width: 560px) {
+
+    .senha-card { border-radius: 14px; }
+
+    .senha-corpo { padding: 22px 18px 26px; }
+
+    .senha-titulo { font-size: 20px; }
+
+    .senha-botoes { flex-direction: column-reverse; }
+
+    .senha-botoes .button-user {
+        width: 100%;
+        max-width: none;
     }
 }
 
-/* Celular */
-@media (max-width: 576px) {
-    .formulario-senha {
-        width: 90%;
-    }
+
+/* =========================================================
+   MODO ESCURO
+========================================================= */
+
+body.tema-escuro .senha-card {
+    background: #1b2430 !important;
+    border-color: #3a485a !important;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.50) !important;
+}
+
+body.tema-escuro .senha-titulo { color: #69d7a2 !important; }
+body.tema-escuro .senha-sub,
+body.tema-escuro .senha-dica { color: #8995a5 !important; }
+
+body.tema-escuro .senha-ok   { color: #69d7a2 !important; }
+body.tema-escuro .senha-erro { color: #ff8a80 !important; }
+
+body.tema-escuro .senha-input .form-control {
+    background-color: #121a24 !important;
+    border-color: #3a485a !important;
+    color: #ffffff !important;
+}
+
+body.tema-escuro .senha-input .form-control:focus {
+    border-color: #69d7a2 !important;
+    box-shadow: 0 0 0 3px rgba(105, 215, 162, 0.15) !important;
+}
+
+body.tema-escuro .senha-mostrar { color: #69d7a2 !important; }
+body.tema-escuro .senha-mostrar:hover { background: #243244 !important; }
+
+body.tema-escuro .senha-forca { background: #121a24 !important; }
+
+body.tema-escuro .perfil-card .btn-outline-success,
+body.tema-escuro .senha-botoes .btn-outline-success {
+    color: #69d7a2 !important;
+    border-color: #69d7a2 !important;
+}
+
+body.tema-escuro .senha-botoes .btn-outline-success:hover {
+    color: #0b1118 !important;
+    background-color: #69d7a2 !important;
 }

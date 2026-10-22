@@ -8,9 +8,13 @@
    --------------------------------------------------------- */
 
 .menu-lateral {
-    --bs-offcanvas-bg: #24B84A;
+    --bs-offcanvas-bg: #06402B;
     --bs-offcanvas-width: min(310px, 88vw);
     color: #fff;
+}
+
+.espaco-esquerdo{
+    margin-left: 15px;
 }
 
 
@@ -50,6 +54,7 @@
 .menu-sino {
     background: #00551f;
     border: 0;
+    margin-left: 15px;
 }
 
 .menu-sino:hover {
@@ -64,7 +69,7 @@
 .usuario-img {
     border: 3px solid #00551f;
     border-radius: 10px;
-    background: #00551f;
+    background: #0b3d2e;
     padding: 10px;
 }
 

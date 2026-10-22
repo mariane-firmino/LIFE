@@ -5,7 +5,7 @@
         <!-- LADO DA LOGO -->
         <div class="lado-logo">
             <img
-                src="<?= URL ?>/public/img/logo_enfermaria.jpeg"
+                src="<?= URL ?>/public/img/logo-life.png"
                 alt="Logo Enfermaria"
             >
         </div>

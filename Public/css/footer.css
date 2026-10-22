@@ -7,9 +7,9 @@
 .rodape-principal {
     background: linear-gradient(
         to right,
-        #009c3b,
         #008f38,
-        #006b2d
+        #006b2d,
+        #06402B
     );
 
     color: white;

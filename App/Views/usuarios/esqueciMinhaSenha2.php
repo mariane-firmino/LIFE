@@ -5,7 +5,7 @@
         <div class="left">
 
             <img
-                src="<?= URL ?>/img/logo_enfermaria.jpeg"
+                src="<?= URL ?>/img/life-menor.png"
                 alt="Logo Enfermaria"
                 class="logo"
             >
