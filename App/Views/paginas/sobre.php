@@ -10,14 +10,16 @@ include '../App/Views/menu.php';
     <div class="container-fluid ps-4 pe-4 pt-5 pb-3">
         <div class="row align-items-start">
 
-            <div class="col-8 linha-verde">
-                <h1>Sobre Nós</h1>
-                <p>Informações sobre os desenvolvedores e o sistema.</p>
-            </div>
+            <header class="home-topo">
 
-            <div class="col-4 text-end">
+                <div class="home-titulo">
+                    <h1>Sobre Nós</h1>
+                    <p>Informações sobre os desenvolvedores e o sistema.</p>
+                </div>
+
                 <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
-            </div>
+
+            </header>
         </div>
     </div>
 
@@ -25,9 +27,18 @@ include '../App/Views/menu.php';
         <div class="row shadow-sm p-3 mb-5 rounded">
             <div class="col">
                 <h4>Objetivo do sistema</h4>
-                <p>O Enfermaria foi pensado e desenvolvido com o objetivo de solucionar uma problemática que ocorre no ambiente escolar em relação ao bem-estar dos estudantes, oferecendo uma ferramenta específica para atuar nesse setor, promovendo maior eficiência e integridade. Um site com comportamentos de cadastro e consulta que promove o armazenamento e agilidade de informações durante a triagem, proporcionando um ambiente seguro onde os dados são gerenciados e acessados por meio da administração dos servidores da CAED.</p>
+                <p>O Enfermaria foi pensado e desenvolvido com o objetivo de solucionar uma problemática que ocorre no
+                    ambiente escolar em relação ao bem-estar dos estudantes, oferecendo uma ferramenta específica para
+                    atuar nesse setor, promovendo maior eficiência e integridade. Um site com comportamentos de cadastro
+                    e consulta que promove o armazenamento e agilidade de informações durante a triagem, proporcionando
+                    um ambiente seguro onde os dados são gerenciados e acessados por meio da administração dos
+                    servidores da CAED.</p>
                 <p>
-                    O Enfermaria apresenta uma interface eficiente e simples, para ser utilizada até por pessoas com pouco conhecimento tecnológico, permitindo-lhes cadastrar alunos, adicionar triagens e consultar os dados dos alunos. Os usuários podem utilizar diversos recursos proporcionados pelo sistema com os fins de zelar pela saúde dos estudantes no meio escolar. Além de contar com notificações personalizadas para alertar sobre consultas com alunos que precisem de atendimento periódico.
+                    O Enfermaria apresenta uma interface eficiente e simples, para ser utilizada até por pessoas com
+                    pouco conhecimento tecnológico, permitindo-lhes cadastrar alunos, adicionar triagens e consultar os
+                    dados dos alunos. Os usuários podem utilizar diversos recursos proporcionados pelo sistema com os
+                    fins de zelar pela saúde dos estudantes no meio escolar. Além de contar com notificações
+                    personalizadas para alertar sobre consultas com alunos que precisem de atendimento periódico.
                 </p>
             </div>
         </div>
@@ -40,8 +51,7 @@ include '../App/Views/menu.php';
                 <div class="col-12 col-sm-6 col-lg-3">
                     <div class="card h-100 shadow-sm text-center">
                         <div>
-                            <img src="<?= URL ?>/img/gabriel.jpeg"
-                                class="card-img-top rounded-top"
+                            <img src="<?= URL ?>/img/gabriel.jpeg" class="card-img-top rounded-top"
                                 alt="Gabriel Caminha">
                         </div>
 
@@ -67,8 +77,7 @@ include '../App/Views/menu.php';
                 <div class="col-12 col-sm-6 col-lg-3">
                     <div class="card h-100 shadow-sm text-center">
                         <div>
-                            <img src="<?= URL ?>/img/gustavo.jpeg"
-                                class="card-img-top rounded-top"
+                            <img src="<?= URL ?>/img/gustavo.jpeg" class="card-img-top rounded-top"
                                 alt="Gustavo Henrique Braga Silva">
                         </div>
 
@@ -92,9 +101,7 @@ include '../App/Views/menu.php';
                 <div class="col-12 col-sm-6 col-lg-3">
                     <div class="card h-100 shadow-sm text-center">
                         <div>
-                            <img src="<?= URL ?>/img/laís.jpeg"
-                                class="card-img-top rounded-top"
-                                alt="Laís Lima">
+                            <img src="<?= URL ?>/img/laís.jpeg" class="card-img-top rounded-top" alt="Laís Lima">
                         </div>
 
                         <div class="card-body d-flex flex-column">
@@ -119,8 +126,7 @@ include '../App/Views/menu.php';
                 <div class="col-12 col-sm-6 col-lg-3">
                     <div class="card h-100 shadow-sm text-center">
                         <div>
-                            <img src="<?= URL ?>/img/mariaC.jpeg"
-                                class="card-img-top rounded-top"
+                            <img src="<?= URL ?>/img/mariaC.jpeg" class="card-img-top rounded-top"
                                 alt="Foto de Maria Clara">
                         </div>
 
@@ -155,8 +161,7 @@ include '../App/Views/menu.php';
                 <div class="col-12 col-sm-6 col-lg-3">
                     <div class="card h-100 shadow-sm text-center">
                         <div>
-                            <img src="<?= URL ?>/img/maia.jpeg"
-                                class="card-img-top rounded-top"
+                            <img src="<?= URL ?>/img/maia.jpeg" class="card-img-top rounded-top"
                                 alt="Foto de Maria Eduarda">
                         </div>
 
@@ -170,7 +175,9 @@ include '../App/Views/menu.php';
                             </h6>
 
                             <p class="card-text mt-2">
-                                Mesmo com algumas dificuldades, gostei muito de fazer parte disso e de ver o projeto ficando pronto aos poucos. Espero que ele dê certo e que realmente possa ajudar a escola.
+                                Mesmo com algumas dificuldades, gostei muito de fazer parte disso e de ver o projeto
+                                ficando pronto aos poucos. Espero que ele dê certo e que realmente possa ajudar a
+                                escola.
                             </p>
                         </div>
                     </div>
@@ -180,8 +187,7 @@ include '../App/Views/menu.php';
                 <div class="col-12 col-sm-6 col-lg-3">
                     <div class="card h-100 shadow-sm text-center">
                         <div>
-                            <img src="<?= URL ?>/img/mari-ft.jpeg"
-                                class="card-img-top rounded-top"
+                            <img src="<?= URL ?>/img/mari-ft.jpeg" class="card-img-top rounded-top"
                                 alt="Foto de Mariane">
                         </div>
 
@@ -209,8 +215,7 @@ include '../App/Views/menu.php';
                 <div class="col-12 col-sm-6 col-lg-3">
                     <div class="card h-100 shadow-sm text-center">
                         <div>
-                            <img src="<?= URL ?>/img/rafael-ft.jpeg"
-                                class="card-img-top rounded-top"
+                            <img src="<?= URL ?>/img/rafael-ft.jpeg" class="card-img-top rounded-top"
                                 alt="Foto de Rafael">
                         </div>
 
@@ -238,10 +243,21 @@ include '../App/Views/menu.php';
     <div class="row shadow-sm p-4 mb-5 rounded">
         <div class="col">
             <h4>Justificativa do sistema</h4>
-            <p>A priori, esse projeto surgiu da necessidade de uma ferramenta tecnológica capaz de cadastrar os alunos, inserindo informações pessoais não requisitadas durante a matrícula no IFRO, mas que é de suma importância para equipe responsável por ajudá-los em questões de saúde. Com isso, os alunos responsáveis entraram em contato com a servidora que relatou o problema e fizeram alguns questionamentos iniciais, entre eles, foi revelado que o SUAP (Ferramenta utilizada para encontrar dados dos alunos), não possui a especificidade que é necessária durante a triagem dos estudantes, e por isso começaram a usar o Google Forms como forma de suprir o déficit, porém, o mesmo contava com mais de 20 páginas, entre elas, perguntas padrão que tem q ser repetidas toda vez já que não há um cadastro.
+            <p>A priori, esse projeto surgiu da necessidade de uma ferramenta tecnológica capaz de cadastrar os alunos,
+                inserindo informações pessoais não requisitadas durante a matrícula no IFRO, mas que é de suma
+                importância para equipe responsável por ajudá-los em questões de saúde. Com isso, os alunos responsáveis
+                entraram em contato com a servidora que relatou o problema e fizeram alguns questionamentos iniciais,
+                entre eles, foi revelado que o SUAP (Ferramenta utilizada para encontrar dados dos alunos), não possui a
+                especificidade que é necessária durante a triagem dos estudantes, e por isso começaram a usar o Google
+                Forms como forma de suprir o déficit, porém, o mesmo contava com mais de 20 páginas, entre elas,
+                perguntas padrão que tem q ser repetidas toda vez já que não há um cadastro.
             </p>
-            <p>Além de trazer um incremento na área da saúde no setor educacional local, a implementação do software proposta neste trabalho pode trazer benefícios para outros ambientes escolares futuramente, contribuindo para um lugar mais acolhedor e seguro. </p>
-            <p>Ademais, outro aspecto que leva ao desenvolvimento desse tema é poder mostrar aos avaliadores, aprendizados que a equipe desse projeto obteve ao longo do curso Técnico em Informática, trazendo as tecnologias e ferramentas de desenvolvimento e aplicando de forma prática.</p>
+            <p>Além de trazer um incremento na área da saúde no setor educacional local, a implementação do software
+                proposta neste trabalho pode trazer benefícios para outros ambientes escolares futuramente, contribuindo
+                para um lugar mais acolhedor e seguro. </p>
+            <p>Ademais, outro aspecto que leva ao desenvolvimento desse tema é poder mostrar aos avaliadores,
+                aprendizados que a equipe desse projeto obteve ao longo do curso Técnico em Informática, trazendo as
+                tecnologias e ferramentas de desenvolvimento e aplicando de forma prática.</p>
         </div>
     </div>
 </div>

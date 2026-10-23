@@ -35,13 +35,17 @@ if (!function_exists('opcoes')) {
 <div class="layout">
     <div class="container-fluid ps-4 pe-4 pt-5 pb-3">
         <div class="row align-items-start">
-            <div class="col-8 linha-verde">
-                <h1>Cadastro de Aluno</h1>
-                <p>Faça o cadastro dos alunos nessa página.</p>
-            </div>
-            <div class="col-4 text-end">
+            <!-- CABEÇALHO -->
+            <header class="home-topo">
+
+                <div class="home-titulo">
+                    <h1>Cadastro de Aluno</h1>
+                    <p>Faça o cadastro dos alunos nessa página.</p>
+                </div>
+
                 <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
-            </div>
+
+            </header>
         </div>
     </div>
 

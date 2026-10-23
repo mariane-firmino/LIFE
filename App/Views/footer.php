@@ -25,11 +25,11 @@
                 </strong>
 
                 <p class="rodape-suporte-email">
-                    email@alguma.coisa
+                    <a class="text-decoration-none text-white" href="mailto:enfermariaifro@gmail.com">enfermariaifro@gmail.com</a>
                 </p>
 
                 <p class="rodape-suporte-telefone">
-                    (99) 9999-9999
+                    (69) 99926-2045
                 </p>
 
             </div>

@@ -550,7 +550,7 @@ body.fonte-extra-grande {
 
                                 <a
                                     class="text-decoration-none text-black"
-                                    href="<?= URL ?>/paginas/alterarSenha"
+                                    href="<?= URL ?>/usuarios/alterarSenha"
                                 >
 
                                     <b>Alterar Senha</b>
@@ -1108,7 +1108,7 @@ body.fonte-extra-grande {
                             </div>
 
                             <div class="col">
-                                email@tal | 99 9999-0000
+                                enfermariaifro@gmail.com | (69) 99926-2045
                             </div>
 
                         </div>

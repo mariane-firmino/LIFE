@@ -7,18 +7,18 @@ if (!isset($_SESSION['usuario_id'])) {
 include '../App/Views/menu.php';
 ?>
 <div class="layout">
-    <div class="container-fluid ps-4 pe-4 pt-5 pb-3">
-        <div class="row align-items-start">
+    <!-- CABEÇALHO -->
+    <div class="container-fluid px-4 pt-5 pb-3">
+        <div class="row align-items-center">
+            <!-- CABEÇALHO -->
+            <header class="home-topo">
+                <div class="home-titulo">
+                    <h1>Relatório</h1>
+                    <p>Relatório das ações realizadas durante o mês.</p>
+                </div>
 
-            <div class="col-8 linha-verde">
-                <h1>Relatório</h1>
-                <p>Relatório das ações realizadas durante o mês.</p>
-            </div>
-
-            <div class="col-4 text-end">
                 <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
-            </div>
-
+            </header>
         </div>
     </div>
 

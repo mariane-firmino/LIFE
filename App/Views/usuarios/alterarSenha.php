@@ -22,14 +22,15 @@ unset($_SESSION['erro']);
 
         <div class="row align-items-center">
 
-            <div class="col-12 col-md-8 linha-verde">
-                <h1>Perfil</h1>
-                <p>Bem-vindo, <?= htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário') ?>!</p>
-            </div>
+            <!-- CABEÇALHO -->
+            <header class="home-topo">
+                <div class="home-titulo">
+                    <h1>Perfil</h1>
+                    <p>Bem-vindo, <?= htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário') ?>!</p>
+                </div>
 
-            <div class="col-12 col-md-4 text-center text-md-end mt-3 mt-md-0">
-                <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo Enfermaria">
-            </div>
+                <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
+            </header>
 
         </div>
 
