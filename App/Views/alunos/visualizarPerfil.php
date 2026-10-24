@@ -1,4 +1,9 @@
 <?php
+// =====================================================================
+// VIEW: PERFIL DO ALUNO  ->  App/Views/alunos/visualizarPerfil.php
+// =====================================================================
+
+// Só usuários logados acessam esta página.
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: ' . URL . '/login');
     exit;
@@ -6,11 +11,25 @@ if (!isset($_SESSION['usuario_id'])) {
 
 include '../App/Views/menu.php';
 
-$aluno = $dados['aluno'];
-$saude = $dados['saude'];
-$historico = $dados['historico'] ?? [];
+// CSS adicional deste perfil.
+echo '<link rel="stylesheet" href="' . URL . '/css/alunos/perfilAluno.css">';
 
-// Escapa para HTML (decodifica entidades gravadas por cadastros antigos) e mostra "Não informado" quando vazio
+// ---------------------------------------------------------------------
+// DADOS RECEBIDOS DO CONTROLLER
+// ---------------------------------------------------------------------
+$aluno      = $dados['aluno'];
+$saude      = $dados['saude'];
+$historico  = $dados['historico'] ?? [];
+$imc        = $dados['imc'] ?? null;        // array ou null (sem altura/peso)
+$atencao    = $dados['atencao'];            // nível, rótulo e motivos
+$condicoes  = $dados['condicoes'] ?? [];    // lista de condições especiais
+
+
+// ---------------------------------------------------------------------
+// FUNÇÕES AUXILIARES (só são criadas se ainda não existirem)
+// ---------------------------------------------------------------------
+
+// Escapa para HTML e mostra "Não informado" quando o valor está vazio.
 if (!function_exists('vp')) {
     function vp($valor, $padrao = 'Não informado')
     {
@@ -22,7 +41,7 @@ if (!function_exists('vp')) {
     }
 }
 
-// "Sim" + detalhe (ex.: "Sim — poeira")
+// "Sim" + detalhe (ex.: "Sim — poeira").
 if (!function_exists('vpSimQual')) {
     function vpSimQual($resposta, $qual)
     {
@@ -38,6 +57,7 @@ if (!function_exists('vpSimQual')) {
     }
 }
 
+// Telefone formatado: (69) 99999-9999.
 if (!function_exists('vpTelefone')) {
     function vpTelefone($numero)
     {
@@ -52,13 +72,45 @@ if (!function_exists('vpTelefone')) {
     }
 }
 
-$nascimento = !empty($aluno->data_nascimento) ? date('d/m/Y', strtotime($aluno->data_nascimento)) : '';
-$cadastro = !empty($aluno->data_cadastro) ? date('d/m/Y', strtotime($aluno->data_cadastro)) : '';
-$idadeTexto = $dados['idade'] !== null ? $dados['idade'] . ' anos' : 'Idade não informada';
-$id = (int) $aluno->id;
-$atualizado = !empty($aluno->atualizado_em) ? date('d/m/Y H:i', strtotime($aluno->atualizado_em)) : '';
+// Cartão da seção "Informações rápidas".
+// $estado: alerta (vermelho) | aviso (amarelo) | info (azul) | ok (verde).
+// $valorHtml já deve vir escapado (use vp / vpSimQual).
+if (!function_exists('paCartaoRapido')) {
+    function paCartaoRapido($icone, $rotulo, $valorHtml, $estado = 'ok')
+    {
+        // Ícone + texto escondido: o estado não depende só da cor.
+        $selos = [
+            'alerta' => ['bi-exclamation-triangle-fill text-danger', 'Alerta'],
+            'aviso'  => ['bi-exclamation-circle-fill text-warning', 'Aviso'],
+            'info'   => ['bi-info-circle-fill text-info', 'Informação'],
+            'ok'     => ['bi-check-circle-fill text-success', 'Sem alerta'],
+        ];
+        [$classeSelo, $textoSelo] = $selos[$estado] ?? $selos['ok'];
 
-// Altura (m) e peso (kg) formatados
+        return '<div class="col">'
+            . '<div class="pa-rapida__item pa-rapida__item--' . $estado . '">'
+            .   '<i class="bi ' . $icone . ' pa-rapida__icone" aria-hidden="true"></i>'
+            .   '<div class="flex-grow-1">'
+            .     '<div class="pa-rapida__rotulo">' . $rotulo . '</div>'
+            .     '<div class="pa-rapida__valor">' . $valorHtml . '</div>'
+            .   '</div>'
+            .   '<i class="bi ' . $classeSelo . '" aria-hidden="true"></i>'
+            .   '<span class="visually-hidden">' . $textoSelo . '</span>'
+            . '</div></div>';
+    }
+}
+
+
+// ---------------------------------------------------------------------
+// PREPARAÇÃO DOS VALORES PARA EXIBIR
+// ---------------------------------------------------------------------
+$nascimento = !empty($aluno->data_nascimento) ? date('d/m/Y', strtotime($aluno->data_nascimento)) : '';
+$cadastro   = !empty($aluno->data_cadastro) ? date('d/m/Y', strtotime($aluno->data_cadastro)) : '';
+$atualizado = !empty($aluno->atualizado_em) ? date('d/m/Y H:i', strtotime($aluno->atualizado_em)) : '';
+$idadeTexto = $dados['idade'] !== null ? $dados['idade'] . ' anos' : 'Idade não informada';
+$id         = (int) $aluno->id;
+
+// Altura (m) e peso (kg) formatados.
 $alturaTexto = ($aluno->altura !== null && $aluno->altura !== '')
     ? number_format((float) $aluno->altura, 2, ',', '') . ' m'
     : '';
@@ -66,31 +118,57 @@ $pesoTexto = ($aluno->peso !== null && $aluno->peso !== '')
     ? rtrim(rtrim(number_format((float) $aluno->peso, 2, ',', ''), '0'), ',') . ' kg'
     : '';
 
-// Foto do aluno (arquivo em Public/uploads/alunos/) ou imagem padrão
+// Foto do aluno (Public/uploads/alunos/) ou imagem padrão.
 $fotoAluno = (!empty($aluno->foto) && is_file(dirname(__DIR__, 3) . '/Public/uploads/alunos/' . basename((string) $aluno->foto)))
     ? URL . '/uploads/alunos/' . basename((string) $aluno->foto)
     : URL . '/img/user.avif';
 
-// Triagem pelo sexo do aluno
+// Rota da triagem conforme o sexo do aluno.
 $rotaTriagem = ($aluno->sexo === 'Masculino') ? 'triagemMasculina' : 'triagemFeminina';
 
-$campoSaude = function ($campo) use ($saude) {
-    return $saude ? ($saude->$campo ?? null) : null;
+// --- Indicador de atenção: ícone e texto do tooltip ---
+$iconesAtencao = [
+    'alta'      => 'bi-exclamation-octagon-fill',
+    'media'     => 'bi-exclamation-triangle-fill',
+    'baixa'     => 'bi-check-circle-fill',
+    'sem-dados' => 'bi-question-circle-fill',
+];
+$iconeAtencao   = $iconesAtencao[$atencao['nivel']] ?? $iconesAtencao['sem-dados'];
+$tooltipAtencao = $atencao['motivos'] ? implode(' • ', $atencao['motivos']) : 'Nenhum alerta encontrado na ficha.';
+
+// --- Responsável: telefone, link de ligação e WhatsApp ---
+$telResp       = (string) $dados['telefone_responsavel'];
+$digitosResp   = preg_replace('/\D/', '', $telResp);
+$temTelResp    = strlen($digitosResp) >= 10;
+// WhatsApp precisa do DDI do Brasil (55) na frente.
+$linkWhatsApp  = 'https://wa.me/' . (strlen($digitosResp) <= 11 ? '55' : '') . $digitosResp;
+
+// Atalho: a resposta é "Sim"?
+$ehSim = function ($valor) {
+    return trim((string) $valor) === 'Sim';
 };
 ?>
 <div class="layout">
-    <div class="container-fluid ps-4 pe-4 pt-5 pb-3">
-        <div class="row align-items-start">
-            
-            <div class="col-8 linha-verde">
-                <h1>Perfil do Aluno</h1>
-                <p>Visualize as informações do estudante aqui.</p>
-            </div>
-            <div class="col-4 text-end">
+    <!-- CABEÇALHO -->
+    <div class="container-fluid px-4 pt-5 pb-3">
+
+        <div class="row align-items-center">
+
+            <!-- CABEÇALHO -->
+            <header class="home-topo">
+
+                <div class="home-titulo">
+                    <h1>Perfil do Aluno</h1>
+                    <p>Visualize as informações do estudante aqui.</p>
+                </div>
+
                 <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
-            </div>
+
+            </header>
         </div>
+
     </div>
+
 
     <nav style="--bs-breadcrumb-divider: '>';" class="m-3" aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -137,23 +215,37 @@ $campoSaude = function ($campo) use ($saude) {
                 <div class="col-12 col-lg-5">
                     <div class="d-flex flex-column flex-sm-row align-items-center gap-3 text-center text-sm-start">
 
-                        <div class="position-relative flex-shrink-0">
-                            <img src="<?= htmlspecialchars($fotoAluno) ?>"
-                                class="rounded-circle border border-3 border-success-subtle"
-                                style="width: 130px; height: 130px; object-fit: cover;"
-                                alt="Foto do aluno">
+                        <!-- Coluna da foto: INDICADOR DE ATENÇÃO fica ACIMA da foto -->
+                        <div class="d-flex flex-column align-items-center gap-2 flex-shrink-0">
 
-                            <form action="<?= URL ?>/alunos/atualizarFoto/<?= $id ?>" method="POST" enctype="multipart/form-data">
-                                <label for="fotoAluno"
-                                    class="btn btn-success btn-sm rounded-circle position-absolute bottom-0 end-0 d-flex align-items-center justify-content-center"
-                                    style="width: 34px; height: 34px; padding: 0;"
-                                    title="Alterar foto">
-                                    <i class="bi bi-camera-fill"></i>
-                                </label>
-                                <input type="file" name="foto" id="fotoAluno" class="d-none"
-                                    accept="image/jpeg,image/png,image/webp"
-                                    onchange="if (this.files[0] && this.files[0].size > 5 * 1024 * 1024) { alert('A imagem deve ter no máximo 5 MB.'); this.value = ''; } else if (this.files[0]) { this.form.submit(); }">
-                            </form>
+                            <!-- Selo de atenção (passe o mouse / toque para ver os motivos) -->
+                            <span class="pa-atencao pa-atencao--<?= $atencao['nivel'] ?>"
+                                tabindex="0"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                title="<?= htmlspecialchars($tooltipAtencao) ?>">
+                                <i class="bi <?= $iconeAtencao ?>" aria-hidden="true"></i>
+                                <?= htmlspecialchars($atencao['rotulo']) ?>
+                            </span>
+
+                            <div class="position-relative">
+                                <img src="<?= htmlspecialchars($fotoAluno) ?>"
+                                    class="rounded-circle border border-3 border-success-subtle"
+                                    style="width: 130px; height: 130px; object-fit: cover;"
+                                    alt="Foto do aluno">
+
+                                <form action="<?= URL ?>/alunos/atualizarFoto/<?= $id ?>" method="POST" enctype="multipart/form-data">
+                                    <label for="fotoAluno"
+                                        class="btn btn-success btn-sm rounded-circle position-absolute bottom-0 end-0 d-flex align-items-center justify-content-center"
+                                        style="width: 34px; height: 34px; padding: 0;"
+                                        title="Alterar foto">
+                                        <i class="bi bi-camera-fill"></i>
+                                    </label>
+                                    <input type="file" name="foto" id="fotoAluno" class="d-none"
+                                        accept="image/jpeg,image/png,image/webp"
+                                        onchange="if (this.files[0] && this.files[0].size > 5 * 1024 * 1024) { alert('A imagem deve ter no máximo 5 MB.'); this.value = ''; } else if (this.files[0]) { this.form.submit(); }">
+                                </form>
+                            </div>
                         </div>
 
                         <div style="min-width: 0;">
@@ -175,22 +267,32 @@ $campoSaude = function ($campo) use ($saude) {
                                     Mat.: <?= vp($aluno->matricula, '--') ?>
                                 </span>
                             </div>
+
+                            <!-- CONDIÇÕES ESPECIAIS (autismo, paralisia, etc.) -->
+                            <?php if (!empty($condicoes)): ?>
+                                <div class="pa-cond d-flex flex-wrap justify-content-center justify-content-sm-start gap-2 mt-3">
+                                    <?php foreach ($condicoes as $condicao): ?>
+                                        <span class="pa-cond__item">
+                                            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                                            <?= vp($condicao) ?>
+                                        </span>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                     </div>
                 </div>
 
-                <!-- Indicadores -->
+                <!-- Indicadores (altura, peso, IMC...) -->
                 <div class="col-12 col-lg-7">
                     <div class="row row-cols-2 row-cols-md-3 g-2 text-center">
+
                         <?php
+                        // Quadros simples (ícone, valor, rótulo).
                         $indicadores = [
                             ['bi-rulers', $alturaTexto, 'Altura'],
                             ['bi-speedometer2', $pesoTexto, 'Peso'],
-                            ['bi-droplet-fill', $aluno->tipo_sanguineo, 'Tipo sanguíneo'],
-                            ['bi-gender-ambiguous', $aluno->sexo, 'Sexo biológico'],
-                            ['bi-calendar-fill', $cadastro, 'Data de cadastro'],
-                            ['bi-clock-history', $atualizado, 'Última atualização'],
                         ];
                         foreach ($indicadores as [$icone, $valor, $rotulo]): ?>
                             <div class="col">
@@ -201,22 +303,202 @@ $campoSaude = function ($campo) use ($saude) {
                                 </div>
                             </div>
                         <?php endforeach; ?>
+
+                        <!-- IMC calculado automaticamente (peso ÷ altura²) -->
+                        <div class="col">
+                            <div class="pa-imc <?= $imc ? 'pa-imc--' . $imc['nivel'] : '' ?> h-100 p-3 rounded border bg-body-tertiary d-flex flex-column align-items-center justify-content-center"
+                                <?php if ($imc && $imc['nota'] !== ''): ?>
+                                data-bs-toggle="tooltip" title="<?= htmlspecialchars($imc['nota']) ?>"
+                                <?php endif; ?>>
+                                <i class="bi bi-calculator-fill text-success fs-4 mb-1"></i>
+                                <?php if ($imc): ?>
+                                    <div class="fw-bold fs-6 text-nowrap"><?= $imc['texto'] ?> <small class="fw-normal">kg/m²</small></div>
+                                    <small class="text-muted">
+                                        IMC<?= $imc['classe'] ? ' · ' . htmlspecialchars($imc['classe']) : '' ?>
+                                    </small>
+                                    <?php if ($imc['nota'] !== ''): ?>
+                                        <small class="text-muted" style="font-size: .7rem;">Ver curva da OMS (idade/sexo)</small>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <div class="fw-bold fs-6"><span class="text-muted fw-normal">--</span></div>
+                                    <small class="text-muted">IMC (falta altura/peso)</small>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <?php
+                        $indicadores2 = [
+                            ['bi-droplet-fill', $aluno->tipo_sanguineo, 'Tipo sanguíneo'],
+                            ['bi-gender-ambiguous', $aluno->sexo, 'Sexo biológico'],
+                            ['bi-calendar-fill', $cadastro, 'Data de cadastro'],
+                        ];
+                        foreach ($indicadores2 as [$icone, $valor, $rotulo]): ?>
+                            <div class="col">
+                                <div class="h-100 p-3 rounded border bg-body-tertiary d-flex flex-column align-items-center justify-content-center">
+                                    <i class="bi <?= $icone ?> text-success fs-4 mb-1"></i>
+                                    <div class="fw-bold fs-6 text-nowrap"><?= vp($valor, '--') ?></div>
+                                    <small class="text-muted"><?= $rotulo ?></small>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
+
+                    <?php if ($atualizado !== ''): ?>
+                        <p class="text-muted small text-end mt-2 mb-0">
+                            <i class="bi bi-clock-history me-1"></i>Última atualização: <?= $atualizado ?>
+                        </p>
+                    <?php endif; ?>
                 </div>
 
             </div>
         </div>
     </div>
 
-    <!-- ===================================== Dados pessoais + Informações rápidas ======================================= -->
+    <!-- ===================================== INFORMAÇÕES RÁPIDAS (destaque) ======================================= -->
     <div class="container text-start">
-        <div class="row g-3 mb-3">
+        <section class="pa-rapida p-3 mb-3" aria-labelledby="titulo-rapidas">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <i class="bi bi-heart-pulse-fill text-success fs-3"></i>
+                <h2 id="titulo-rapidas" class="h5 mb-0"><b>Informações Rápidas</b></h2>
 
-            <div class="col-12 col-lg-6">
+                <!-- Selo no canto superior direito (ms-auto empurra para a direita) -->
+                <span class="pa-rapida__selo ms-auto">
+                    <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+                    IMPORTANTE
+                </span>
+            </div>
+
+            <?php if (!$saude): ?>
+                <p class="text-muted mb-0">
+                    Este aluno ainda não possui ficha de saúde registrada.
+                    <a href="<?= URL ?>/alunos/editarPerfil/<?= $id ?>">Preencher agora</a>
+                </p>
+            <?php else: ?>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-2">
+                    <?php
+                    // Cada cartão: ícone, rótulo, valor e estado (cor).
+                    // Os estados seguem a gravidade: "Sim" em risco = alerta.
+
+                    // Condição especial (autismo, paralisia...).
+                    echo paCartaoRapido(
+                        'bi-person-wheelchair',
+                        'Condição especial',
+                        $condicoes ? vp(implode(', ', $condicoes)) : vp('Nenhuma informada'),
+                        $condicoes ? 'alerta' : 'ok'
+                    );
+
+                    echo paCartaoRapido(
+                        'bi-flower1',
+                        'Alergias / restrições alimentares',
+                        vpSimQual($saude->alergia_alimentar, $saude->alergia_qual),
+                        $ehSim($saude->alergia_alimentar) ? 'alerta' : 'ok'
+                    );
+
+                    echo paCartaoRapido(
+                        'bi-clipboard2-pulse-fill',
+                        'Doença crônica',
+                        vpSimQual($saude->doenca_cronica, $saude->doenca_qual),
+                        $ehSim($saude->doenca_cronica) ? 'alerta' : 'ok'
+                    );
+
+                    echo paCartaoRapido(
+                        'bi-capsule',
+                        'Uso contínuo de medicação',
+                        vpSimQual($saude->medicacao_continua, $saude->medicacao_qual),
+                        $ehSim($saude->medicacao_continua) ? 'aviso' : 'ok'
+                    );
+
+                    echo paCartaoRapido(
+                        'bi-chat-heart-fill',
+                        'Acompanhamento psicológico',
+                        vp($saude->acompanhamento_psi),
+                        $ehSim($saude->acompanhamento_psi) ? 'info' : 'ok'
+                    );
+
+                    // Vacina: "Não" merece aviso.
+                    echo paCartaoRapido(
+                        'bi-shield-plus',
+                        'Cartão de vacina',
+                        vp($saude->cartao_vacina),
+                        trim((string) $saude->cartao_vacina) === 'Não' ? 'aviso' : 'ok'
+                    );
+
+                    echo paCartaoRapido(
+                        'bi-hospital-fill',
+                        'Acesso ao serviço de saúde',
+                        vp($saude->acesso_saude),
+                        'ok'
+                    );
+
+                    echo paCartaoRapido(
+                        'bi-hospital',
+                        'Já foi internado(a)',
+                        vpSimQual($saude->ja_internado, $saude->internado_motivo),
+                        $ehSim($saude->ja_internado) ? 'info' : 'ok'
+                    );
+
+                    echo paCartaoRapido(
+                        'bi-bandaid-fill',
+                        'Já fez cirurgia',
+                        vpSimQual($saude->ja_cirurgia, $saude->cirurgia_qual),
+                        $ehSim($saude->ja_cirurgia) ? 'info' : 'ok'
+                    );
+                    ?>
+                </div>
+            <?php endif; ?>
+        </section>
+    </div>
+
+    <!-- ===================================== RESPONSÁVEL (destaque) + Dados pessoais ======================================= -->
+    <div class="container text-start">
+        <div class="row g-3 mb-3 mt-4">
+
+            <!-- Responsável: nome grande e botões para ligar / WhatsApp -->
+            <div class="col-12 col-lg-5">
+                <section class="pa-resp <?= $temTelResp ? '' : 'pa-resp--sem-tel' ?> shadow-sm h-100" aria-labelledby="titulo-resp">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-people-fill text-success fs-3"></i>
+                        <h2 id="titulo-resp" class="h5 mb-0"><b>Responsável</b></h2>
+                    </div>
+
+                    <div class="pa-resp__nome mb-3"><?= vp($aluno->responsavel) ?></div>
+
+                    <?php if ($temTelResp): ?>
+                        <!-- Link tel: abre o discador no celular -->
+                        <a class="pa-resp__tel d-inline-flex align-items-center gap-2 mb-3"
+                            href="tel:<?= $digitosResp ?>">
+                            <i class="bi bi-telephone-fill text-success"></i>
+                            <?= vpTelefone($telResp) ?>
+                        </a>
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="tel:<?= $digitosResp ?>" class="btn btn-success fw-bold">
+                                <i class="bi bi-telephone-outbound-fill me-1"></i> Ligar
+                            </a>
+                            <a href="<?= htmlspecialchars($linkWhatsApp) ?>" target="_blank" rel="noopener noreferrer"
+                                class="btn btn-outline-success fw-bold">
+                                <i class="bi bi-whatsapp me-1"></i> WhatsApp
+                            </a>
+                        </div>
+                    <?php else: ?>
+                        <!-- Sem telefone válido: alerta, pois é contato de emergência -->
+                        <p class="fw-bold text-danger-emphasis mb-2">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                            Telefone do responsável não informado
+                        </p>
+                        <a href="<?= URL ?>/alunos/editarPerfil/<?= $id ?>" class="btn btn-danger btn-sm fw-bold">
+                            <i class="bi bi-pencil-fill me-1"></i> Cadastrar telefone
+                        </a>
+                    <?php endif; ?>
+                </section>
+            </div>
+
+            <!-- Dados pessoais (sem o responsável, que agora tem bloco próprio) -->
+            <div class="col-12 col-lg-7">
                 <div class="shadow-sm p-3 bg-body-tertiary rounded h-100">
                     <div class="d-flex align-items-center gap-2 mb-3">
                         <i class="bi bi-person-fill text-success fs-3"></i>
-                        <h5 class="mb-0"><b>Dados Pessoais</b></h5>
+                        <h2 class="h5 mb-0"><b>Dados Pessoais</b></h2>
                     </div>
 
                     <div class="row">
@@ -244,234 +526,28 @@ $campoSaude = function ($campo) use ($saude) {
                             <small>Telefone do aluno</small>
                             <p><b><?= vpTelefone($dados['telefone_aluno']) ?></b></p>
                         </div>
-                        <div class="col-12 col-sm-6">
-                            <small>Responsável</small>
-                            <p class="text-break"><b><?= vp($aluno->responsavel) ?></b></p>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <small>Telefone do responsável</small>
-                            <p><b><?= vpTelefone($dados['telefone_responsavel']) ?></b></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-6">
-                <div class="shadow-sm p-3 bg-success-subtle rounded h-100">
-                    <div class="d-flex align-items-center gap-2 mb-3">
-                        <i class="bi bi-heart-fill text-success fs-3"></i>
-                        <h5 class="mb-0"><b>Informações Rápidas</b></h5>
-                    </div>
-
-                    <?php if (!$saude): ?>
-                        <p class="text-muted">Este aluno ainda não possui histórico de saúde registrado.</p>
-                    <?php else: ?>
-                        <div class="row">
-                            <div class="col-12 col-sm-6">
-                                <small class="text-success"><b>Alergias / restrições alimentares</b></small>
-                                <p class="text-break"><b><?= vpSimQual($saude->alergia_alimentar, $saude->alergia_qual) ?></b></p>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <small class="text-success"><b>Doença crônica</b></small>
-                                <p class="text-break"><b><?= vpSimQual($saude->doenca_cronica, $saude->doenca_qual) ?></b></p>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <small class="text-success"><b>Uso contínuo de medicação</b></small>
-                                <p class="text-break"><b><?= vpSimQual($saude->medicacao_continua, $saude->medicacao_qual) ?></b></p>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <small class="text-success"><b>Acompanhamento psicológico</b></small>
-                                <p><b><?= vp($saude->acompanhamento_psi) ?></b></p>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <small class="text-success"><b>Cartão de vacina</b></small>
-                                <p><b><?= vp($saude->cartao_vacina) ?></b></p>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <small class="text-success"><b>Acesso ao serviço de saúde</b></small>
-                                <p><b><?= vp($saude->acesso_saude) ?></b></p>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <small class="text-success"><b>Já foi internado(a)</b></small>
-                                <p class="text-break"><b><?= vpSimQual($saude->ja_internado, $saude->internado_motivo) ?></b></p>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <small class="text-success"><b>Já fez cirurgia</b></small>
-                                <p class="text-break"><b><?= vpSimQual($saude->ja_cirurgia, $saude->cirurgia_qual) ?></b></p>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- ===================================== Hábitos e educação ======================================= -->
-    <?php if ($saude): ?>
-    <div class="container text-start">
-        <div class="row g-3 mb-3">
-
-            <div class="col-12 col-lg-6">
-                <div class="shadow-sm p-3 bg-body-tertiary rounded h-100">
-                    <div class="d-flex align-items-center gap-2 mb-3">
-                        <i class="bi bi-activity text-success fs-3"></i>
-                        <h5 class="mb-0"><b>Hábitos de Vida</b></h5>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-sm-6">
-                            <small>Padrão de sono</small>
-                            <p class="text-break"><b><?= vp($saude->padrao_sono) ?></b></p>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <small>Refeições por dia</small>
-                            <p><b><?= vp($saude->refeicoes_dia) ?></b></p>
-                        </div>
-                        <div class="col-12">
-                            <small>Alimentação habitual</small>
-                            <p class="text-break"><b><?= vp($saude->alimentacao_habitual) ?></b></p>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <small>Fuma</small>
-                            <p><b><?= vp($saude->fuma) ?></b></p>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <small>Bebida alcoólica</small>
-                            <p><b><?= vp($saude->bebida_alcoolica) ?></b></p>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <small>Pais sabem</small>
-                            <p><b><?= vp($saude->pais_sabem) ?></b></p>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <small>Contato com drogas ilícitas</small>
-                            <p class="text-break"><b><?= vpSimQual($saude->drogas_ilicitas, $saude->drogas_qual) ?></b></p>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <small>Atividade física</small>
-                            <p><b><?= vpSimQual($saude->atividade_fisica, $saude->frequencia_atividade) ?></b></p>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <small>Banhos por dia</small>
-                            <p><b><?= vp($saude->banhos_dia) ?></b></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-6">
-                <div class="shadow-sm p-3 bg-body-tertiary rounded h-100">
-                    <div class="d-flex align-items-center gap-2 mb-3">
-                        <i class="bi bi-mortarboard-fill text-success fs-3"></i>
-                        <h5 class="mb-0"><b>Educação Formal</b></h5>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-sm-6">
-                            <small>Tipo de escola anterior</small>
-                            <p><b><?= vp($saude->tipo_escola) ?></b></p>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <small>Motivo da escolha do IFRO</small>
-                            <p class="text-break"><b><?= vp($saude->motivo_ifro) ?></b></p>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <small>Já reprovou</small>
-                            <p><b><?= vpSimQual($saude->ja_reprovou, $saude->quantas_vezes !== null ? $saude->quantas_vezes . ' vez(es)' : '') ?></b></p>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <small>Estuda fora do horário de aula</small>
-                            <p><b><?= vpSimQual($saude->estuda_fora, $saude->quanto_tempo) ?></b></p>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <small>Gosta do curso (0–10)</small>
-                            <p><b><?= vp($saude->nota_curso) ?></b></p>
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <small>Motivação para estudar (0–10)</small>
-                            <p><b><?= vp($saude->nota_motivacao) ?></b></p>
-                        </div>
-                        <div class="col-12">
-                            <small>Comparece ao atendimento individual com o professor</small>
-                            <p class="text-break"><b>
-                                <?php
-                                $att = trim((string) $saude->atendimento);
-                                echo ($att === 'Não' && trim((string) $saude->atendimento_porque) !== '')
-                                    ? vp('Não — ' . $saude->atendimento_porque)
-                                    : vp($att);
-                                ?>
-                            </b></p>
-                        </div>
                     </div>
                 </div>
             </div>
 
         </div>
     </div>
-    <?php endif; ?>
 
-    <!-- ===================================== Histórico de visitas ======================================= -->
-    <div class="container text-start">
-        <div class="row">
-            <div class="col-12">
-                <div class="shadow-sm p-3 mb-5 bg-body-tertiary rounded">
-                    <div class="d-flex align-items-center gap-2 mb-3">
-                        <i class="bi bi-clipboard-pulse text-success fs-3"></i>
-                        <h3 class="text-success mb-0 fs-4"><b>Histórico de Visitas Recentes</b></h3>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
-                                <tr class="fw-bold">
-                                    <th scope="col" class="text-success">Data</th>
-                                    <th scope="col" class="text-success">Tipo</th>
-                                    <th scope="col" class="text-success">Descrição</th>
-                                    <th scope="col" class="text-success">Observação</th>
-                                    <th scope="col" class="text-success">Profissional</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($historico)): ?>
-                                    <?php foreach ($historico as $visita): ?>
-                                        <?php
-                                        $descricaoVisita = !empty($visita->cons_descricao)
-                                            ? $visita->cons_descricao
-                                            : (!empty($visita->total_respostas) ? 'Triagem com ' . (int) $visita->total_respostas . ' respostas' : '');
-                                        ?>
-                                        <tr>
-                                            <td class="text-muted">
-                                                <?php if (!empty($visita->cons_data)): ?>
-                                                    <?= date('d/m/Y', strtotime($visita->cons_data)) ?>
-                                                    <?= !empty($visita->cons_horario) ? substr($visita->cons_horario, 0, 5) : '' ?>
-                                                <?php else: ?>
-                                                    --
-                                                <?php endif; ?>
-                                            </td>
-                                            <td><?= vp($visita->cons_tipo, '--') ?></td>
-                                            <td class="text-break"><?= vp($descricaoVisita, '--') ?></td>
-                                            <td class="text-break"><?= vp($visita->cons_observacao, '--') ?></td>
-                                            <td>
-                                                <?= vp($visita->serv_nome, '--') ?>
-                                                <?php if (!empty($visita->func_nome)): ?>
-                                                    <br><small class="text-muted"><?= vp($visita->func_nome) ?></small>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="5" class="text-center text-muted p-4">
-                                            Nenhuma visita registrada para este aluno.
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- ===================================== ABAS (saúde, vacina, SUS, laudos, anotações...) ======================================= -->
+    <!-- Arquivo: App/Views/alunos/_abasPerfil.php (usa as variáveis e funções desta página) -->
+    <?php include __DIR__ . '/_abasPerfil.php'; ?>
 
 </div>
+
+<!-- Ativa os tooltips do Bootstrap (motivos da atenção e nota do IMC) -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.bootstrap && bootstrap.Tooltip) {
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+                new bootstrap.Tooltip(el);
+            });
+        }
+    });
+</script>
+
 <?php include '../App/Views/footer.php' ?>

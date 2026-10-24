@@ -233,6 +233,11 @@
     font-weight: 700;
 }
 
+img.consultaAlunoAvatar {
+    display: block;
+    object-fit: cover;
+}
+
 .consultaAlunoNomeTexto { min-width: 0; overflow-wrap: anywhere; }
 
 /* Turno */

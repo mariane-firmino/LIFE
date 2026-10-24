@@ -13,6 +13,13 @@ $totalNotificacoes = (int) ($dados['totalNotificacoes']->total ?? 0);
 // Nome e função do usuário logado (escapados por segurança).
 $nomeUsuario = htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário', ENT_QUOTES, 'UTF-8');
 $funcaoUsuario = htmlspecialchars($_SESSION['usuario_funcao'] ?? '', ENT_QUOTES, 'UTF-8');
+
+// O nome da foto na sessão vem do campo serv_foto do banco de dados.
+$nomeFotoUsuario = basename((string) ($_SESSION['usuario_foto'] ?? ''));
+$caminhoFotoUsuario = dirname(__DIR__, 2) . '/Public/uploads/perfis/' . $nomeFotoUsuario;
+$fotoUsuario = $nomeFotoUsuario !== '' && is_file($caminhoFotoUsuario)
+    ? URL . '/uploads/perfis/' . rawurlencode($nomeFotoUsuario)
+    : URL . '/img/user.avif';
 ?>
 
 <!-- ===================================== -->
@@ -74,7 +81,7 @@ $funcaoUsuario = htmlspecialchars($_SESSION['usuario_funcao'] ?? '', ENT_QUOTES,
                 <!-- Usuário logado -->
                 <div class="d-flex align-items-center usuario-img gap-2 mb-3">
                     <div class="position-relative">
-                        <img src="<?= URL ?>/img/user.avif" alt="Foto do usuário" class="rounded-circle" width="50"
+                        <img src="<?= htmlspecialchars($fotoUsuario, ENT_QUOTES, 'UTF-8') ?>" alt="Foto do usuário" class="rounded-circle" width="50"
                             height="50">
                         <span class="usuario-online"></span>
                     </div>

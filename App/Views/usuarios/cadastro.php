@@ -33,7 +33,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">CPF</label>
-                        <input type="text" id="cpf" maxlength="14" name="cpf" class="form-control <?= !empty($dados['cpf_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu CPF" value="<?= isset($dados['cpf']) ? $dados['cpf'] : '' ?>">
+                        <input type="text" id="cpf" maxlength="14" nputmode="numeric" name="cpf" class="form-control <?= !empty($dados['cpf_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu CPF" value="<?= isset($dados['cpf']) ? $dados['cpf'] : '' ?>">
                         <?php if (!empty($dados['cpf_erro'])) : ?>
                             <div class="invalid-feedback">
                                 <?= $dados['cpf_erro'] ?>
@@ -51,7 +51,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Telefone/Celular</label>
-                        <input type="text" id="telefone" maxlength="15" name="telefone" class="form-control <?= !empty($dados['telefone_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu telefone/celular" value="<?= isset($dados['telefone']) ? $dados['telefone'] : '' ?>">
+                        <input type="text" id="telefone" inputmode="numeric" maxlength="15" name="telefone" class="form-control <?= !empty($dados['telefone_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu telefone/celular" value="<?= isset($dados['telefone']) ? $dados['telefone'] : '' ?>">
                         <?php if (!empty($dados['telefone_erro'])) : ?>
                             <div class="invalid-feedback">
                                 <?= $dados['telefone_erro'] ?>
@@ -60,7 +60,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">SIAPE</label>
-                        <input type="text" name="siape" maxlength="7" class="form-control <?= !empty($dados['siape_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu SIAPE" value="<?= isset($dados['siape']) ? $dados['siape'] : '' ?>">
+                        <input type="text" id="siape" inputmode="numeric" maxlength="7" name="siape" class="form-control <?= !empty($dados['siape_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu SIAPE" value="<?= isset($dados['siape']) ? $dados['siape'] : '' ?>">
                         <?php if (!empty($dados['siape_erro'])) : ?>
                             <div class="invalid-feedback">
                                 <?= $dados['siape_erro'] ?>
@@ -89,15 +89,48 @@
                     <div class="col-12 mt-2">
                         <h6>Segurança</h6>
                     </div>
+
                     <div class="col-md-6">
-                        <label class="form-label">Senha</label>
-                        <input type="password" name="senha" class="form-control <?= !empty($dados['senha_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite sua senha">
+                        <label for="senha" class="form-label">Senha</label>
+
+                        <input
+                            type="password"
+                            id="senha"
+                            name="senha"
+                            class="form-control <?= !empty($dados['senha_erro']) ? 'is-invalid' : '' ?>"
+                            placeholder="Crie uma senha forte"
+                            minlength="8"
+                            required>
+
+                        <!-- Barra de força -->
+                        <div class="progress mt-2" style="height: 6px;">
+                            <div
+                                id="barra-forca"
+                                class="progress-bar"
+                                role="progressbar"
+                                style="width: 0%; transition: width 0.3s;"></div>
+                        </div>
+
+                        <small id="texto-forca" class="d-block mt-1">
+                            Digite uma senha para ver sua força.
+                        </small>
+
+                        <!-- Requisitos da senha -->
+                        <ul class="list-unstyled small mt-2 mb-0">
+                            <li id="req-tamanho">○ Pelo menos 8 caracteres</li>
+                            <li id="req-maiuscula">○ Uma letra maiúscula</li>
+                            <li id="req-minuscula">○ Uma letra minúscula</li>
+                            <li id="req-numero">○ Um número</li>
+                            <li id="req-especial">○ Um caractere especial (@, #, !...)</li>
+                        </ul>
+
                         <?php if (!empty($dados['senha_erro'])) : ?>
-                            <div class="invalid-feedback">
+                            <div class="invalid-feedback d-block">
                                 <?= $dados['senha_erro'] ?>
                             </div>
                         <?php endif; ?>
                     </div>
+
                     <div class="col-md-6">
                         <label class="form-label">Confirmar Senha</label>
                         <input type="password" name="confirmar_senha" class="form-control <?= !empty($dados['confirmar_senha_erro']) ? 'is-invalid' : '' ?>" placeholder="Confirme sua senha">
@@ -113,7 +146,8 @@
                         </button>
                     </div>
                 </form>
+                <p class="mt-3">Já tem uma conta? <a href="<?= URL ?>/usuarios/login">Faça login</a></p>
             </div>
         </div>
-    </div>   
+    </div>
 </div>

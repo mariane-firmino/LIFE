@@ -1,335 +1,280 @@
 /* =========================================================
-   CALENDÁRIO DA ENFERMARIA
-   Busca as consultas reais no banco através da AgendaAPI.
+   CALENDÁRIO DA ENFERMARIA — FullCalendar + Bootstrap
+   Depende de: FullCalendar (global), bootstrap.bundle,
+   window.CALENDARIO_CONFIG = { url, cores }
 ========================================================= */
 
-const calendarioAgendaMonths = [
-    "Janeiro", "Fevereiro", "Março", "Abril",
-    "Maio", "Junho", "Julho", "Agosto",
-    "Setembro", "Outubro", "Novembro", "Dezembro"
-];
-
-const calendarioAgendaWeekDays = [
-    "Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"
-];
-
-let calendarioAgendaDate = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    1
-);
-
-let calendarioAgendaEvents = [];
-let calendarioAgendaLoadError = false;
-
-
-/* =========================================================
-   INICIALIZAÇÃO
-========================================================= */
-
-document.addEventListener("DOMContentLoaded", async function () {
-    const grid = document.getElementById("calendario-agenda-grid");
-    const week = document.getElementById("calendario-agenda-week");
-    const monthButton = document.getElementById("calendario-agenda-month-button");
-    const yearButton = document.getElementById("calendario-agenda-year-button");
-    const monthMenu = document.getElementById("calendario-agenda-month-menu");
-    const yearMenu = document.getElementById("calendario-agenda-year-menu");
-    const upcoming = document.getElementById("calendario-agenda-upcoming");
-    const completed = document.getElementById("calendario-agenda-completed");
-
-    if (!grid || !week || !monthButton || !yearButton ||
-        !monthMenu || !yearMenu || !upcoming || !completed) {
-        console.error("Calendário: não foi possível encontrar todos os elementos HTML.");
+document.addEventListener("DOMContentLoaded", function () {
+    const cfg = window.CALENDARIO_CONFIG;
+    const el = document.getElementById("calendario");
+    if (!el || !cfg || typeof FullCalendar === "undefined") {
+        console.error("Calendário: FullCalendar ou configuração não encontrados.");
         return;
     }
 
-    // Dias da semana
-    week.innerHTML = "";
-    calendarioAgendaWeekDays.forEach(function (nome) {
-        const elemento = document.createElement("div");
-        elemento.className = "calendario-agenda-week-day";
-        elemento.textContent = nome;
-        week.appendChild(elemento);
-    });
+    const modalForm = new bootstrap.Modal(document.getElementById("modalConsulta"));
+    const modalDet = new bootstrap.Modal(document.getElementById("modalDetalhes"));
+    const form = document.getElementById("form-consulta");
+    const erroBox = document.getElementById("form-consulta-erro");
+    const btnSalvar = document.getElementById("form-consulta-salvar");
+    const $ = (id) => document.getElementById(id);
 
-    criarMenuMeses();
-    criarMenuAnos();
+    let eventoAtual = null; // evento aberto nos detalhes
+    const celular = () => window.innerWidth < 768;
 
-    // Botões de mês e ano
-    monthButton.addEventListener("click", function (event) {
-        event.stopPropagation();
-        yearMenu.classList.remove("is-open");
-        monthMenu.classList.toggle("is-open");
-    });
+    /* ---------------------------------------------------
+       Utilidades
+    --------------------------------------------------- */
+    const pad = (n) => String(n).padStart(2, "0");
+    const dataISO = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const horaHM = (d) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    const realizado = (ev) => ev.start < new Date();
 
-    yearButton.addEventListener("click", function (event) {
-        event.stopPropagation();
-        monthMenu.classList.remove("is-open");
-        yearMenu.classList.toggle("is-open");
-    });
-
-    // Setas
-    const botaoAnterior = document.getElementById("calendario-agenda-prev");
-    const botaoProximo = document.getElementById("calendario-agenda-next");
-
-    if (botaoAnterior) {
-        botaoAnterior.addEventListener("click", function () {
-            calendarioAgendaDate.setMonth(calendarioAgendaDate.getMonth() - 1);
-            renderizarCalendario();
+    async function post(rota, dados) {
+        const resp = await fetch(`${cfg.url}/${rota}`, {
+            method: "POST",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "Accept": "application/json"
+            },
+            body: new URLSearchParams(dados)
         });
-    }
 
-    if (botaoProximo) {
-        botaoProximo.addEventListener("click", function () {
-            calendarioAgendaDate.setMonth(calendarioAgendaDate.getMonth() + 1);
-            renderizarCalendario();
-        });
-    }
+        let json = {};
+        try { json = await resp.json(); } catch (e) { /* resposta sem JSON */ }
 
-    // Fecha os menus ao clicar fora
-    document.addEventListener("click", fecharMenus);
-    monthMenu.addEventListener("click", function (e) { e.stopPropagation(); });
-    yearMenu.addEventListener("click", function (e) { e.stopPropagation(); });
-
-    // Carrega as consultas e desenha
-    await carregarConsultas();
-    renderizarCalendario();
-
-
-    /* =====================================================
-       MENUS
-    ===================================================== */
-
-    function criarMenuMeses() {
-        monthMenu.innerHTML = "";
-
-        calendarioAgendaMonths.forEach(function (nome, indice) {
-            const botao = document.createElement("button");
-            botao.type = "button";
-            botao.className = "calendario-agenda-dropdown-button";
-            botao.textContent = nome;
-
-            botao.addEventListener("click", function () {
-                calendarioAgendaDate.setMonth(indice);
-                fecharMenus();
-                renderizarCalendario();
-            });
-
-            monthMenu.appendChild(botao);
-        });
-    }
-
-    function criarMenuAnos() {
-        yearMenu.innerHTML = "";
-        const anoAtual = new Date().getFullYear();
-
-        for (let ano = anoAtual - 10; ano <= anoAtual + 20; ano++) {
-            const botao = document.createElement("button");
-            botao.type = "button";
-            botao.className = "calendario-agenda-dropdown-button";
-            botao.textContent = ano;
-
-            botao.addEventListener("click", function () {
-                calendarioAgendaDate.setFullYear(ano);
-                fecharMenus();
-                renderizarCalendario();
-            });
-
-            yearMenu.appendChild(botao);
+        if (!resp.ok || json.ok === false) {
+            throw new Error(json.mensagem || json.erro || "Não foi possível concluir a ação.");
         }
+        return json;
     }
 
-    function fecharMenus() {
-        monthMenu.classList.remove("is-open");
-        yearMenu.classList.remove("is-open");
-    }
+    /* ---------------------------------------------------
+       Calendário
+    --------------------------------------------------- */
+    const calendar = new FullCalendar.Calendar(el, {
+        locale: "pt-br",
+        initialView: celular() ? "listMonth" : "dayGridMonth",
+        height: "auto",
+        firstDay: 0,
+        nowIndicator: true,
+        navLinks: true,
+        dayMaxEvents: 3,
+        editable: true,           // arrastar para reagendar
+        eventStartEditable: true,
+        eventDurationEditable: false,
+        slotMinTime: "07:00:00",
+        slotMaxTime: "20:00:00",
+        allDaySlot: false,
+        eventTimeFormat: { hour: "2-digit", minute: "2-digit", hour12: false },
+        slotLabelFormat: { hour: "2-digit", minute: "2-digit", hour12: false },
+        noEventsText: "Nenhuma consulta neste período",
 
+        headerToolbar: {
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,listMonth"
+        },
+        buttonText: { today: "Hoje", month: "Mês", week: "Semana", list: "Lista" },
 
-    /* =====================================================
-       CARREGAR CONSULTAS DO BANCO
-    ===================================================== */
+        events: `${cfg.url}/listarConsultas`,
 
-    async function carregarConsultas() {
-        try {
-            if (
-                typeof AgendaAPI === "undefined" ||
-                typeof AgendaAPI.listarCompromissos !== "function"
-            ) {
-                throw new Error("AgendaAPI não foi carregada corretamente.");
+        eventClassNames: (arg) => (realizado(arg.event) ? ["cal-evento-passado"] : []),
+
+        eventDidMount: (arg) => {
+            const p = arg.event.extendedProps;
+            arg.el.title =
+                `${horaHM(arg.event.start)} - ${p.tipo}` +
+                (p.responsavel ? `\nResponsável: ${p.responsavel}` : "") +
+                (p.descricao ? `\n${p.descricao}` : "");
+        },
+
+        // Clicar em um dia vazio: abre o formulário já com a data
+        dateClick: (info) => {
+            if (calendar.view.type === "dayGridMonth" && celular()) {
+                calendar.changeView("listMonth", info.date);
+                return;
             }
+            abrirFormulario(null, info.date);
+        },
 
-            const resposta = await AgendaAPI.listarCompromissos();
+        eventClick: (info) => {
+            info.jsEvent.preventDefault();
+            abrirDetalhes(info.event);
+        },
 
-            if (!Array.isArray(resposta)) {
-                throw new Error("A API não retornou uma lista de consultas.");
+        // Arrastou: salva a nova data/hora
+        eventDrop: async (info) => {
+            const ev = info.event;
+            try {
+                await post("reagendarConsulta", {
+                    cons_id: ev.id,
+                    data: dataISO(ev.start),
+                    horario: horaHM(ev.start)
+                });
+                atualizarPainel();
+            } catch (e) {
+                info.revert();
+                alert(e.message);
             }
+        },
 
-            // Mantém somente eventos com data válida (AAAA-MM-DD)
-            calendarioAgendaEvents = resposta.filter(function (evento) {
-                return evento && /^\d{4}-\d{2}-\d{2}$/.test(evento.data || "");
-            });
+        // Atualiza o painel lateral sempre que a lista de eventos/visão muda
+        eventsSet: atualizarPainel,
+        datesSet: atualizarPainel
+    });
 
-            calendarioAgendaLoadError = false;
+    calendar.render();
 
-        } catch (erro) {
-            console.error("Erro ao carregar consultas:", erro);
-            calendarioAgendaEvents = [];
-            calendarioAgendaLoadError = true;
+    // Ajusta a visão ao girar/redimensionar o celular
+    let ultimoCelular = celular();
+    window.addEventListener("resize", function () {
+        if (celular() !== ultimoCelular) {
+            ultimoCelular = celular();
+            calendar.changeView(ultimoCelular ? "listMonth" : "dayGridMonth");
         }
+    });
+
+    /* ---------------------------------------------------
+       Painel lateral (mês visível)
+    --------------------------------------------------- */
+    function atualizarPainel() {
+        const ref = calendar.getDate(); // dentro do mês exibido
+        const ano = ref.getFullYear();
+        const mes = ref.getMonth();
+
+        const doMes = calendar.getEvents()
+            .filter((e) => e.start.getFullYear() === ano && e.start.getMonth() === mes)
+            .sort((a, b) => a.start - b.start);
+
+        preencher($("cal-upcoming"), doMes.filter((e) => !realizado(e)), $("cal-count-upcoming"));
+        preencher($("cal-done"), doMes.filter(realizado), $("cal-count-done"));
     }
 
+    function preencher(container, eventos, contador) {
+        container.replaceChildren();
+        contador.textContent = eventos.length;
 
-    /* =====================================================
-       DESENHAR O CALENDÁRIO
-    ===================================================== */
-
-    function renderizarCalendario() {
-        const ano = calendarioAgendaDate.getFullYear();
-        const mes = calendarioAgendaDate.getMonth();
-
-        monthButton.textContent = calendarioAgendaMonths[mes];
-        yearButton.textContent = ano;
-        grid.innerHTML = "";
-
-        const primeiroDia = new Date(ano, mes, 1).getDay();
-        const totalDias = new Date(ano, mes + 1, 0).getDate();
-        const diasMesAnterior = new Date(ano, mes, 0).getDate();
-
-        // Dias do mês anterior
-        for (let i = primeiroDia - 1; i >= 0; i--) {
-            criarDia(diasMesAnterior - i, true);
-        }
-
-        // Dias do mês atual
-        for (let dia = 1; dia <= totalDias; dia++) {
-            criarDia(dia, false, ano, mes);
-        }
-
-        // Completa a última semana com dias do próximo mês
-        let proximoDia = 1;
-        while (grid.children.length % 7 !== 0) {
-            criarDia(proximoDia++, true);
-        }
-
-        renderizarPainelLateral();
-    }
-
-    function criarDia(numero, outroMes, ano, mes) {
-        const celula = document.createElement("div");
-        celula.className = "calendario-agenda-day";
-
-        if (outroMes) {
-            celula.classList.add("is-other-month");
-        }
-
-        const numeroElemento = document.createElement("span");
-        numeroElemento.className = "calendario-agenda-day-number";
-        numeroElemento.textContent = numero;
-        celula.appendChild(numeroElemento);
-
-        if (!outroMes) {
-            obterEventos(ano, mes, numero).forEach(function (evento) {
-                const item = document.createElement("div");
-                item.className = "calendario-agenda-event";
-
-                const bolinha = document.createElement("span");
-                bolinha.className = "calendario-agenda-event-dot";
-                bolinha.style.backgroundColor = evento.cor || "#198754";
-
-                // No calendário aparece só o tipo (sem horário)
-                const nome = document.createElement("span");
-                nome.className = "calendario-agenda-event-name";
-                nome.textContent = evento.tipo || "Consulta";
-
-                item.appendChild(bolinha);
-                item.appendChild(nome);
-                celula.appendChild(item);
-            });
-        }
-
-        grid.appendChild(celula);
-    }
-
-    function obterEventos(ano, mes, dia) {
-        return calendarioAgendaEvents.filter(function (evento) {
-            const partes = evento.data.split("-");
-
-            return (
-                Number(partes[0]) === ano &&
-                Number(partes[1]) - 1 === mes &&
-                Number(partes[2]) === dia
-            );
-        });
-    }
-
-
-    /* =====================================================
-       PAINEL LATERAL
-       O PHP retorna "concluido"/"realizado" ou "proximo".
-    ===================================================== */
-
-    function eventoRealizado(evento) {
-        return evento.status === "concluido" || evento.status === "realizado";
-    }
-
-    function renderizarPainelLateral() {
-        upcoming.innerHTML = "";
-        completed.innerHTML = "";
-
-        // Se a API falhou, mantém a mensagem de erro (não "Nenhuma consulta")
-        if (calendarioAgendaLoadError) {
-            upcoming.innerHTML =
-                '<div class="calendario-agenda-empty">' +
-                'Não foi possível carregar as consultas.' +
-                '</div>';
-            completed.innerHTML =
-                '<div class="calendario-agenda-empty">' +
-                'Verifique a conexão com a API.' +
-                '</div>';
+        if (!eventos.length) {
+            const vazio = document.createElement("div");
+            vazio.className = "cal-empty";
+            vazio.textContent = "Nenhuma consulta";
+            container.appendChild(vazio);
             return;
         }
 
-        const ano = calendarioAgendaDate.getFullYear();
-        const mes = calendarioAgendaDate.getMonth();
+        eventos.forEach((ev) => {
+            const item = document.createElement("button");
+            item.type = "button";
+            item.className = "cal-item";
+            item.addEventListener("click", () => abrirDetalhes(ev));
 
-        const eventosDoMes = calendarioAgendaEvents.filter(function (evento) {
-            const partes = evento.data.split("-");
-            return Number(partes[0]) === ano && Number(partes[1]) - 1 === mes;
-        });
+            const dot = document.createElement("span");
+            dot.className = "cal-dot";
+            dot.style.background = ev.backgroundColor;
 
-        preencherPainel(eventosDoMes.filter(function (e) { return !eventoRealizado(e); }), upcoming);
-        preencherPainel(eventosDoMes.filter(eventoRealizado), completed);
-    }
+            const dia = document.createElement("span");
+            dia.className = "cal-item-dia";
+            dia.textContent = `${pad(ev.start.getDate())}/${pad(ev.start.getMonth() + 1)}`;
 
-    function preencherPainel(eventos, container) {
-        if (eventos.length === 0) {
-            container.innerHTML =
-                '<div class="calendario-agenda-empty">Nenhuma consulta</div>';
-            return;
-        }
+            const txt = document.createElement("span");
+            txt.className = "cal-item-txt";
+            txt.textContent = `${horaHM(ev.start)} · ${ev.extendedProps.tipo}`;
 
-        // Ordena por data e depois por horário
-        eventos.sort(function (a, b) {
-            return (a.data + (a.horario || "")).localeCompare(b.data + (b.horario || ""));
-        });
-
-        eventos.forEach(function (evento) {
-            const item = document.createElement("div");
-            item.className = "calendario-agenda-list-item";
-
-            const bolinha = document.createElement("span");
-            bolinha.className = "calendario-agenda-list-dot";
-            bolinha.style.backgroundColor = evento.cor || "#198754";
-
-            // No painel o horário aparece (HH:MM)
-            const texto = document.createElement("span");
-            texto.textContent =
-                (evento.horario || "").substring(0, 5) +
-                " - " + (evento.tipo || "Consulta");
-
-            item.appendChild(bolinha);
-            item.appendChild(texto);
+            item.append(dot, dia, txt);
             container.appendChild(item);
         });
     }
+
+    /* ---------------------------------------------------
+       Detalhes
+    --------------------------------------------------- */
+    function abrirDetalhes(ev) {
+        eventoAtual = ev;
+        const p = ev.extendedProps;
+
+        $("det-data").textContent = ev.start.toLocaleDateString("pt-BR", {
+            weekday: "long", day: "2-digit", month: "long", year: "numeric"
+        });
+        $("det-hora").textContent = horaHM(ev.start);
+        $("det-tipo").textContent = p.tipo;
+        $("det-responsavel").textContent = p.responsavel || "Não informado";
+        $("det-descricao").textContent = p.descricao || "—";
+        $("det-observacao").textContent = p.observacao || "—";
+
+        const badge = $("det-badge");
+        badge.textContent = realizado(ev) ? "Realizada" : "Agendada";
+        badge.className = "cal-badge " + (realizado(ev) ? "cal-badge-done" : "cal-badge-next");
+        badge.style.borderColor = ev.backgroundColor;
+
+        modalDet.show();
+    }
+
+    $("det-editar").addEventListener("click", function () {
+        modalDet.hide();
+        abrirFormulario(eventoAtual);
+    });
+
+    $("det-excluir").addEventListener("click", async function () {
+        if (!eventoAtual) return;
+        if (!confirm("Excluir este compromisso? Essa ação não pode ser desfeita.")) return;
+
+        try {
+            await post("excluirConsulta", { cons_id: eventoAtual.id });
+            eventoAtual.remove();
+            modalDet.hide();
+        } catch (e) {
+            alert(e.message);
+        }
+    });
+
+    /* ---------------------------------------------------
+       Formulário (adicionar / editar)
+    --------------------------------------------------- */
+    function abrirFormulario(ev, dataSugerida) {
+        form.reset();
+        erroBox.hidden = true;
+
+        const editando = !!ev;
+        $("modalConsultaLabel").textContent = editando ? "Editar Consulta" : "Adicionar Consulta";
+        form.action = `${cfg.url}/${editando ? "editarConsulta" : "cadastrarConsulta"}`;
+        $("cons_id").value = editando ? ev.id : "";
+
+        if (editando) {
+            const p = ev.extendedProps;
+            $("dataConsulta").value = dataISO(ev.start);
+            $("horaConsulta").value = horaHM(ev.start);
+            $("tipoConsulta").value = p.tipo;
+            $("responsavelConsulta").value = p.responsavel || "";
+            $("descricaoConsulta").value = p.descricao || "";
+            $("observacaoConsulta").value = p.observacao || "";
+        } else {
+            $("dataConsulta").value = dataISO(dataSugerida || new Date());
+        }
+
+        modalForm.show();
+    }
+
+    $("cal-btn-novo").addEventListener("click", () => abrirFormulario(null));
+
+    // Envia sem recarregar a página; só atualiza o calendário.
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        erroBox.hidden = true;
+        btnSalvar.disabled = true;
+
+        try {
+            await post(
+                form.action.split("/").pop(),
+                Object.fromEntries(new FormData(form))
+            );
+            modalForm.hide();
+            calendar.refetchEvents();
+        } catch (err) {
+            erroBox.textContent = err.message;
+            erroBox.hidden = false;
+        } finally {
+            btnSalvar.disabled = false;
+        }
+    });
 });

@@ -9,6 +9,7 @@ class Alunos extends Controller
     // =========================================================
 
     private $alunoModel;
+    private $anexoModel;
 
 
     // =========================================================
@@ -51,6 +52,24 @@ class Alunos extends Controller
         'atividade_fisica',
         'frequencia_atividade',
         'banhos_dia',
+        'condicoes',        // <- NOVO
+        'condicao_outra',   // <- NOVO
+    ];
+
+    // 1b) Nova constante: condições que podem ser marcadas no formulário.
+    //     Só estes valores são aceitos (lista branca). Para incluir outra
+    //     condição no futuro, basta acrescentar aqui e no formulário.
+    private const CONDICOES_ESPECIAIS = [
+        'Autismo (TEA)',
+        'TDAH',
+        'Paralisia cerebral',
+        'Deficiência física / motora',
+        'Deficiência visual',
+        'Deficiência auditiva',
+        'Deficiência intelectual',
+        'Síndrome de Down',
+        'Epilepsia',
+        'Outra',
     ];
 
 
@@ -104,6 +123,7 @@ class Alunos extends Controller
     public function __construct()
     {
         $this->alunoModel = $this->model('Aluno');
+        $this->anexoModel = $this->model('AlunoAnexo');
     }
 
 
@@ -164,6 +184,12 @@ class Alunos extends Controller
         // Recebe os dados do formulário de cadastro (já sanitizados).
         $formulario = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
 
+        // Checkboxes chegam como array e o filtro acima os descartaria;
+        // por isso lemos direto do $_POST e convertemos para texto.
+        if (is_array($formulario)) {
+            $formulario['condicoes'] = $this->normalizarCondicoes($_POST['condicoes'] ?? []);
+        }
+
         // =====================================================
         // VERIFICA SE O FORMULÁRIO FOI ENVIADO
         // =====================================================
@@ -181,6 +207,8 @@ class Alunos extends Controller
                 $dados[$campo] = trim($formulario[$campo] ?? '');
                 $dados[$campo . '_erro'] = '';
             }
+            $dados['foto_erro'] = '';
+            $fotoValida = $this->validarFotoCadastro($_FILES['foto'] ?? null, $dados['foto_erro']);
 
             // -------------------------------------------------
             // VERIFICA CAMPOS OBRIGATÓRIOS
@@ -201,9 +229,17 @@ class Alunos extends Controller
 
             if (!$temCampoVazio):
 
+                // Valida a foto opcional antes dos demais dados.
+                if (!$fotoValida) :
+                // Mensagem de erro já definida em foto_erro.
+
                 // Valida tipo sanguíneo, altura e peso.
-                if ($this->validarMedidas($dados)) :
-                    // As mensagens de erro já foram definidas em $dados.
+                elseif ($this->validarMedidas($dados)) :
+                // As mensagens de erro já foram definidas em $dados.
+
+                // NOVO: valida as condições especiais.
+                elseif ($this->validarCondicoes($dados)) :
+                // Mensagem de erro já definida em $dados.
 
                 // Verifica o nome do aluno.
                 elseif (Checa::checarNome($dados['nome'])) :
@@ -219,15 +255,30 @@ class Alunos extends Controller
 
                 // Se tudo estiver correto, salva o aluno no banco.
                 else :
-                    if ($this->alunoModel->armazenar($dados)) :
-                        // Mostra mensagem de sucesso.
-                        Sessao::mensagem('alunos', 'Aluno cadastrado com sucesso');
+                    $fotoSalva = null;
 
-                        // Depois do cadastro, volta para a página principal de alunos.
-                        URL::redirecionar('alunos/aluno');
-                    else :
-                        // Caso o cadastro falhe.
-                        $dados['matricula_erro'] = 'Erro ao cadastrar o aluno. Tente novamente.';
+                    if (isset($_FILES['foto']) && $_FILES['foto']['error'] !== UPLOAD_ERR_NO_FILE) {
+                        $pastaFotos = dirname(__DIR__, 2) . '/Public/uploads/alunos/';
+                        $resultadoFoto = Upload::imagem($_FILES['foto'], $pastaFotos);
+
+                        if (!$resultadoFoto['status']) {
+                            $dados['foto_erro'] = $resultadoFoto['mensagem'];
+                        } else {
+                            $fotoSalva = $resultadoFoto['arquivo'];
+                            $dados['foto'] = $fotoSalva;
+                        }
+                    }
+
+                    if ($dados['foto_erro'] === '') :
+                        if ($this->alunoModel->armazenar($dados)) :
+                            Sessao::mensagem('alunos', 'Aluno cadastrado com sucesso');
+                            URL::redirecionar('alunos/aluno');
+                        else :
+                            if ($fotoSalva !== null) {
+                                @unlink($pastaFotos . $fotoSalva);
+                            }
+                            $dados['matricula_erro'] = 'Erro ao cadastrar o aluno. Tente novamente.';
+                        endif;
                     endif;
                 endif;
             endif;
@@ -244,6 +295,7 @@ class Alunos extends Controller
                 $dados[$campo] = '';
                 $dados[$campo . '_erro'] = '';
             }
+            $dados['foto_erro'] = '';
         endif;
 
         // Abre a view de cadastro.
@@ -285,13 +337,45 @@ class Alunos extends Controller
             }
         }
 
+        // Ficha de saúde (buscada uma vez só, usada em vários cálculos).
+        $saude = $this->alunoModel->buscarSaude($aluno->id);
+
+        // IMC calculado automaticamente (null se faltar altura ou peso).
+        $imc = $this->calcularImc($aluno->altura, $aluno->peso, $idade);
+
+        // Lista de condições especiais para exibir.
+        $condicoes = $this->listarCondicoes($saude);
+
+        // Dados complementares exibidos nas abas do perfil.
+        $complemento = $this->anexoModel->buscarComplemento($aluno->id);
+
+        $docs = ['vacina' => [], 'sus' => [], 'laudo' => []];
+        foreach ($this->anexoModel->listarDocumentos($aluno->id) as $doc) {
+            $docs[$doc->tipo][] = $doc;
+        }
+
+        $notasRapidas = $this->anexoModel->listarAnotacoes($aluno->id, 'rapida');
+
+        $podePsico = $this->anexoModel->usuarioPodeVerPsicologico($_SESSION['usuario_id'] ?? 0);
+        $notasPsico = $podePsico
+            ? $this->anexoModel->listarAnotacoes($aluno->id, 'psicologica')
+            : [];
+
         // Dados que serão enviados para a View.
         $dados = [
             'titulo' => 'Perfil do Aluno',
             'descricao' => 'Visualização do perfil do aluno',
             'aluno' => $aluno,
             'idade' => $idade,
-            'saude' => $this->alunoModel->buscarSaude($aluno->id),
+            'saude' => $saude,
+            'imc' => $imc,
+            'condicoes' => $condicoes,
+            'complemento' => $complemento,
+            'docs' => $docs,
+            'notas_rapidas' => $notasRapidas,
+            'notas_psico' => $notasPsico,
+            'pode_psico' => $podePsico,
+            'atencao' => $this->calcularAtencao($saude, $imc, $condicoes),
             'telefone_aluno' => $this->alunoModel->buscarTelefoneAluno($aluno->id),
             'telefone_responsavel' => $this->alunoModel->buscarTelefoneResponsavel($aluno->responsavel_id),
             'historico' => $this->alunoModel->buscarHistorico($aluno->id),
@@ -335,6 +419,11 @@ class Alunos extends Controller
 
         // Recebe os dados do formulário (sem sanitizar; a view escapa na saída).
         $formulario = filter_input_array(INPUT_POST);
+
+        // Converte os checkboxes de condições em texto ("A;B;C").
+        if (is_array($formulario)) {
+            $formulario['condicoes'] = $this->normalizarCondicoes($_POST['condicoes'] ?? []);
+        }
 
         // =====================================================
         // FORMULÁRIO ENVIADO
@@ -429,6 +518,11 @@ class Alunos extends Controller
 
                 // Tipo sanguíneo, altura e peso.
                 if ($this->validarMedidas($dados)) :
+                    $temErro = true;
+                endif;
+
+                // Condições especiais.
+                if ($this->validarCondicoes($dados)) :
                     $temErro = true;
                 endif;
 
@@ -575,7 +669,6 @@ class Alunos extends Controller
             }
 
             Sessao::mensagem('alunos', 'Foto do aluno atualizada com sucesso');
-
         } else {
 
             // Se falhar no banco, remove o arquivo recém-enviado.
@@ -587,6 +680,46 @@ class Alunos extends Controller
         exit;
     }
 
+
+    // Valida a imagem opcional enviada no cadastro sem movê-la para o armazenamento.
+    private function validarFotoCadastro($arquivo, &$mensagem)
+    {
+        $mensagem = '';
+
+        if ($arquivo === null || (isset($arquivo['error']) && $arquivo['error'] === UPLOAD_ERR_NO_FILE)) {
+            return true;
+        }
+
+        if (!is_array($arquivo) || !isset($arquivo['error'])) {
+            $mensagem = 'Não foi possível enviar a foto. Tente novamente.';
+            return false;
+        }
+
+        if ($arquivo['error'] === UPLOAD_ERR_INI_SIZE || $arquivo['error'] === UPLOAD_ERR_FORM_SIZE
+            || (isset($arquivo['size']) && $arquivo['size'] > 5 * 1024 * 1024)) {
+            $mensagem = 'A imagem deve ter no máximo 5 MB.';
+            return false;
+        }
+
+        if ($arquivo['error'] !== UPLOAD_ERR_OK) {
+            $mensagem = 'Não foi possível enviar a foto. Tente novamente.';
+            return false;
+        }
+
+        if (empty($arquivo['tmp_name']) || !is_uploaded_file($arquivo['tmp_name'])) {
+            $mensagem = 'Não foi possível validar a foto enviada.';
+            return false;
+        }
+
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->file($arquivo['tmp_name']);
+        if (!in_array($mime, ['image/jpeg', 'image/png', 'image/webp'], true)) {
+            $mensagem = 'Use uma imagem JPG, PNG ou WEBP.';
+            return false;
+        }
+
+        return true;
+    }
 
     // =========================================================
     // VALIDAR MEDIDAS
@@ -624,5 +757,225 @@ class Alunos extends Controller
         }
 
         return $erro;
+    }
+
+    // ---------------------------------------------------------------------
+    // NORMALIZAR CONDIÇÕES
+    // Recebe o array de checkboxes e devolve um texto "A;B;C".
+    // Só aceita valores da lista CONDICOES_ESPECIAIS (ignora qualquer
+    // outra coisa que alguém tente enviar).
+    // ---------------------------------------------------------------------
+    private function normalizarCondicoes($lista)
+    {
+        if (!is_array($lista)) {
+            return '';
+        }
+
+        // Mantém apenas textos (descarta arrays aninhados).
+        $lista = array_filter($lista, 'is_string');
+
+        // array_intersect mantém a ordem da lista oficial e remove repetidos.
+        $validas = array_intersect(self::CONDICOES_ESPECIAIS, $lista);
+
+        return implode(';', $validas);
+    }
+
+    // ---------------------------------------------------------------------
+    // VALIDAR CONDIÇÕES
+    // - Se "Outra" estiver marcada, o campo de descrição é obrigatório
+    //   (máx. 100 caracteres).
+    // - Se "Outra" NÃO estiver marcada, a descrição é limpa.
+    // Recebe $dados por referência. Retorna true se houver erro.
+    // ---------------------------------------------------------------------
+    private function validarCondicoes(array &$dados)
+    {
+        $marcadas = ($dados['condicoes'] ?? '') === '' ? [] : explode(';', $dados['condicoes']);
+
+        if (!in_array('Outra', $marcadas, true)) {
+            $dados['condicao_outra'] = '';
+            return false;
+        }
+
+        if (($dados['condicao_outra'] ?? '') === '') {
+            $dados['condicao_outra_erro'] = 'Descreva a condição';
+            return true;
+        }
+
+        if (mb_strlen($dados['condicao_outra']) > 100) {
+            $dados['condicao_outra_erro'] = 'Máximo de 100 caracteres';
+            return true;
+        }
+
+        return false;
+    }
+
+    // ---------------------------------------------------------------------
+    // LISTAR CONDIÇÕES
+    // Transforma o texto salvo no banco ("A;B;Outra") em uma lista para
+    // a View. Em "Outra", mostra a descrição digitada.
+    // ---------------------------------------------------------------------
+    private function listarCondicoes($saude)
+    {
+        if (!$saude || trim((string) $saude->condicoes) === '') {
+            return [];
+        }
+
+        $lista = [];
+        foreach (explode(';', $saude->condicoes) as $item) {
+            $item = trim($item);
+            if ($item === '') {
+                continue;
+            }
+
+            if ($item === 'Outra') {
+                $detalhe = trim((string) $saude->condicao_outra);
+                $item = $detalhe !== '' ? 'Outra: ' . $detalhe : 'Outra condição';
+            }
+
+            $lista[] = $item;
+        }
+
+        return $lista;
+    }
+
+
+    // ---------------------------------------------------------------------
+    // CALCULAR IMC
+    // IMC = peso (kg) ÷ altura (m)². Retorna null se faltar algum dado.
+    //
+    // ATENÇÃO: a tabela abaixo (OMS) vale para ADULTOS (19 anos ou mais).
+    // Para menores de 19 anos o correto é comparar com as curvas de
+    // IMC por idade e sexo; por isso, nesses casos mostramos só o valor
+    // e um aviso, sem classificar (evita um diagnóstico errado).
+    // ---------------------------------------------------------------------
+    private function calcularImc($altura, $peso, $idade)
+    {
+        $a = (float) $altura;
+        $p = (float) $peso;
+
+        if ($a <= 0 || $p <= 0) {
+            return null;
+        }
+
+        $valor = $p / ($a * $a);
+
+        $imc = [
+            'valor' => round($valor, 1),
+            'texto' => number_format($valor, 1, ',', ''),
+            'classe' => null,       // classificação (só para adultos)
+            'nivel' => 'neutro',    // ok | aviso | alerta | neutro (cor da borda)
+            'nota' => '',           // observação exibida no tooltip
+        ];
+
+        // Menor de 19 anos (ou idade desconhecida): não classifica.
+        if ($idade === null || $idade < 19) {
+            $imc['nota'] = 'Para menores de 19 anos, a classificação depende da idade e do sexo (curvas de IMC da OMS). Avalie com o profissional de saúde.';
+            return $imc;
+        }
+
+        // Faixas da OMS para adultos.
+        if ($valor < 18.5) {
+            $imc['classe'] = 'Abaixo do peso';
+            $imc['nivel'] = 'aviso';
+        } elseif ($valor < 25) {
+            $imc['classe'] = 'Peso normal';
+            $imc['nivel'] = 'ok';
+        } elseif ($valor < 30) {
+            $imc['classe'] = 'Sobrepeso';
+            $imc['nivel'] = 'aviso';
+        } elseif ($valor < 35) {
+            $imc['classe'] = 'Obesidade grau I';
+            $imc['nivel'] = 'alerta';
+        } elseif ($valor < 40) {
+            $imc['classe'] = 'Obesidade grau II';
+            $imc['nivel'] = 'alerta';
+        } else {
+            $imc['classe'] = 'Obesidade grau III';
+            $imc['nivel'] = 'alerta';
+        }
+
+        return $imc;
+    }
+
+
+    // ---------------------------------------------------------------------
+    // CALCULAR ATENÇÃO
+    // Define o selo de atenção do aluno a partir da ficha de saúde.
+    //
+    //   ALTA  (vermelho): condição especial, doença crônica ou alergia.
+    //   MÉDIA (amarelo) : medicação contínua, acompanhamento psicológico,
+    //                     cartão de vacina "Não" ou IMC fora do normal
+    //                     (somente adultos).
+    //   BAIXA (verde)   : nenhum alerta.
+    //   SEM DADOS (cinza): aluno sem ficha de saúde.
+    //
+    // Retorna ['nivel' => ..., 'rotulo' => ..., 'motivos' => [...]].
+    // Para mudar as regras, basta editar este método.
+    // ---------------------------------------------------------------------
+    private function calcularAtencao($saude, $imc, array $condicoes)
+    {
+        // Sem ficha de saúde: não dá para avaliar.
+        if (!$saude) {
+            return [
+                'nivel' => 'sem-dados',
+                'rotulo' => 'Sem ficha de saúde',
+                'motivos' => ['A ficha de saúde ainda não foi preenchida.'],
+            ];
+        }
+
+        $sim = function ($valor) {
+            return trim((string) $valor) === 'Sim';
+        };
+
+        $motivosAltos = [];
+        $motivosMedios = [];
+
+        // ----- Gravidade ALTA -----
+        if (!empty($condicoes)) {
+            $motivosAltos[] = 'Condição especial: ' . implode(', ', $condicoes);
+        }
+        if ($sim($saude->doenca_cronica)) {
+            $motivosAltos[] = 'Doença crônica';
+        }
+        if ($sim($saude->alergia_alimentar)) {
+            $motivosAltos[] = 'Alergia / restrição alimentar';
+        }
+
+        // ----- Gravidade MÉDIA -----
+        if ($sim($saude->medicacao_continua)) {
+            $motivosMedios[] = 'Uso contínuo de medicação';
+        }
+        if ($sim($saude->acompanhamento_psi)) {
+            $motivosMedios[] = 'Acompanhamento psicológico';
+        }
+        if (trim((string) $saude->cartao_vacina) === 'Não') {
+            $motivosMedios[] = 'Cartão de vacina em falta';
+        }
+        if ($imc && $imc['classe'] !== null && $imc['nivel'] !== 'ok') {
+            $motivosMedios[] = 'IMC: ' . $imc['classe'];
+        }
+
+        // ----- Resultado -----
+        if ($motivosAltos) {
+            return [
+                'nivel' => 'alta',
+                'rotulo' => 'Atenção alta',
+                'motivos' => array_merge($motivosAltos, $motivosMedios),
+            ];
+        }
+
+        if ($motivosMedios) {
+            return [
+                'nivel' => 'media',
+                'rotulo' => 'Atenção moderada',
+                'motivos' => $motivosMedios,
+            ];
+        }
+
+        return [
+            'nivel' => 'baixa',
+            'rotulo' => 'Sem alertas',
+            'motivos' => [],
+        ];
     }
 }

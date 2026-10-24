@@ -31,6 +31,25 @@ class Usuarios extends Controller
         $this->usuarioModel = $this->model('Usuario');
     }
 
+    // =========================================================
+    // SENHA FORTE
+    // Verifica se a senha atende aos critérios de segurança:
+    // - Pelo menos 8 caracteres
+    // - Pelo menos uma letra maiúscula
+    // - Pelo menos uma letra minúscula
+    // - Pelo menos um número
+    // - Pelo menos um caractere especial
+    // =========================================================
+    private function senhaForte(string $senha): bool
+    {
+        return strlen($senha) >= 8
+            && preg_match('/[A-Z]/', $senha)
+            && preg_match('/[a-z]/', $senha)
+            && preg_match('/[0-9]/', $senha)
+            && preg_match('/[^A-Za-z0-9\s]/', $senha);
+    }
+
+
 
     // =========================================================
     // CADASTRAR USUÁRIO
@@ -139,8 +158,9 @@ class Usuarios extends Controller
                     $dados['siape_erro'] = 'O SIAPE informado já está cadastrado';
 
                 // Verifica o tamanho mínimo da senha.
-                elseif (strlen($formulario['senha']) < 6):
-                    $dados['senha_erro'] = 'A senha deve ter no mínimo 6 caracteres';
+                elseif (!$this->senhaForte($formulario['senha'])):
+                    $dados['senha_erro'] =
+                        'A senha deve ter pelo menos 8 caracteres, incluindo maiúscula, minúscula, número e caractere especial';
 
                 // Verifica se as senhas são iguais.
                 elseif ($formulario['senha'] != $formulario['confirmar_senha']):
@@ -222,7 +242,7 @@ class Usuarios extends Controller
 
     // =========================================================
     // LOGIN
-    // Recebe e-mail e senha, valida e, se estiverem corretos,
+    // Recebe e-mail ou SIAPE e senha, valida e, se estiverem corretos,
     // cria a sessão do usuário.
     // =========================================================
 
@@ -238,51 +258,42 @@ class Usuarios extends Controller
         if (isset($formulario)):
 
             $dados = [
-                'email' => trim($formulario['email']),
-                'senha' => trim($formulario['senha']),
+                'identificador' => trim($formulario['identificador'] ?? ''),
+                'senha' => trim($formulario['senha'] ?? ''),
             ];
 
             // Verifica se algum campo está vazio.
-            if (in_array("", $formulario)):
+            if ($dados['identificador'] === '' || $dados['senha'] === ''):
 
-                if (empty($formulario['email'])):
-                    $dados['email_erro'] = 'Preencha o campo e-mail';
+                if ($dados['identificador'] === ''):
+                    $dados['identificador_erro'] = 'Preencha o campo e-mail ou SIAPE';
                 endif;
 
-                if (empty($formulario['senha'])):
+                if ($dados['senha'] === ''):
                     $dados['senha_erro'] = 'Preencha o campo senha';
                 endif;
 
             else:
 
-                // Verifica o formato do e-mail.
-                if (Checa::checarEmail($formulario['email'])):
+                // Confere e-mail ou SIAPE e senha no banco de dados.
+                $usuario = $this->usuarioModel->checarLogin(
+                    $dados['identificador'],
+                    $dados['senha']
+                );
 
-                    $dados['email_erro'] = 'O e-mail informado é invalido';
+                if ($usuario):
+
+                    // Login correto: cria a sessão e redireciona.
+                    $this->criarSessaoUsuario($usuario);
 
                 else:
 
-                    // Confere e-mail e senha no banco de dados.
-                    $usuario = $this->usuarioModel->checarLogin(
-                        $formulario['email'],
-                        $formulario['senha']
+                    // Login incorreto.
+                    Sessao::mensagem(
+                        'usuario',
+                        'Usuário/SIAPE ou senha inválidos',
+                        'alert alert-danger'
                     );
-
-                    if ($usuario):
-
-                        // Login correto: cria a sessão e redireciona.
-                        $this->criarSessaoUsuario($usuario);
-
-                    else:
-
-                        // Login incorreto.
-                        Sessao::mensagem(
-                            'usuario',
-                            'Usuario ou senha invalidos',
-                            'alert alert-danger'
-                        );
-
-                    endif;
 
                 endif;
 
@@ -292,9 +303,9 @@ class Usuarios extends Controller
 
             // Primeiro acesso à página: campos vazios.
             $dados = [
-                'email' => '',
+                'identificador' => '',
                 'senha' => '',
-                'email_erro' => '',
+                'identificador_erro' => '',
                 'senha_erro' => ''
             ];
 
@@ -376,11 +387,9 @@ class Usuarios extends Controller
             if (empty($email)) {
 
                 $dados['erro'] = 'Informe seu e-mail.';
-
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
                 $dados['erro'] = 'Informe um e-mail válido.';
-
             } else {
 
                 // Procura o usuário pelo e-mail.
@@ -528,7 +537,6 @@ class Usuarios extends Controller
             $mail->send();
 
             return true;
-
         } catch (Exception $e) {
 
             // Registra o erro no log do servidor.
@@ -574,10 +582,9 @@ class Usuarios extends Controller
             $confirmarSenha = $_POST['confirmarSenha'] ?? '';
 
             // Tamanho mínimo da senha.
-            if (strlen($senha) < 6) {
-
+            if (!$this->senhaForte($senha)) {
                 $this->view('usuarios/esqueciMinhaSenha2', [
-                    'erro' => 'A senha deve ter no mínimo 6 caracteres.',
+                    'erro' => 'Use pelo menos 8 caracteres, incluindo maiúscula, minúscula, número e caractere especial.',
                     'token' => $token
                 ]);
 
@@ -734,8 +741,10 @@ class Usuarios extends Controller
         // TAMANHO DA NOVA SENHA
         // -----------------------------------------------------
 
-        if (strlen($novaSenha) < 6) {
-            $_SESSION['erro'] = "A nova senha deve ter no mínimo 6 caracteres.";
+        if (!$this->senhaForte($novaSenha)) {
+            $_SESSION['erro'] =
+                'A nova senha deve ter 8 caracteres ou mais, com maiúscula, minúscula, número e caractere especial.';
+
             header("Location: " . URL . "/usuarios/alterarSenha");
             exit;
         }
@@ -783,7 +792,6 @@ class Usuarios extends Controller
             $_SESSION['sucesso'] = "Senha alterada com sucesso.";
             header("Location: " . URL . "/paginas/perfil");
             exit;
-
         } else {
 
             $_SESSION['erro'] = "Erro ao alterar a senha.";

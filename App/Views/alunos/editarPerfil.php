@@ -196,6 +196,48 @@ $id = (int) $dados['aluno_id'];
                     </h5>
                     <div class="row g-3">
                         <?php
+                        $opcoesCondicoes = [
+                            'Autismo (TEA)',
+                            'TDAH',
+                            'Paralisia cerebral',
+                            'Deficiência física / motora',
+                            'Deficiência visual',
+                            'Deficiência auditiva',
+                            'Deficiência intelectual',
+                            'Síndrome de Down',
+                            'Epilepsia',
+                            'Outra',
+                        ];
+                        $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
+                            ? []
+                            : explode(';', $dados['condicoes']);
+                        ?>
+                        <fieldset class="col-12 mb-3">
+                            <legend class="fs-6 fw-bold">O aluno possui alguma condição especial? (opcional)</legend>
+                            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-1">
+                                <?php foreach ($opcoesCondicoes as $i => $opcao): ?>
+                                    <div class="col">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="condicoes[]"
+                                                id="condicao-edicao-<?= $i ?>"
+                                                value="<?= htmlspecialchars($opcao, ENT_QUOTES, 'UTF-8') ?>"
+                                                <?= in_array($opcao, $condicoesMarcadas, true) ? 'checked' : '' ?>>
+                                            <label class="form-check-label" for="condicao-edicao-<?= $i ?>">
+                                                <?= htmlspecialchars($opcao, ENT_QUOTES, 'UTF-8') ?>
+                                            </label>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <div class="mt-2">
+                                <label for="condicao_outra_edicao" class="form-label">Qual? (somente se marcou "Outra")</label>
+                                <input type="text" name="condicao_outra" id="condicao_outra_edicao" maxlength="100"
+                                    class="form-control<?= !empty($dados['condicao_outra_erro']) ? ' is-invalid' : '' ?>"
+                                    value="<?= ep_val($dados, 'condicao_outra') ?>">
+                                <div class="invalid-feedback"><?= htmlspecialchars($dados['condicao_outra_erro'] ?? '', ENT_QUOTES, 'UTF-8') ?></div>
+                            </div>
+                        </fieldset>
+                        <?php
                         ep_select($dados, 'acesso_saude', 'Como é realizado o acesso ao serviço de saúde?', ['SUS', 'Privado', 'Convênio']);
                         ep_select($dados, 'alergia_alimentar', 'Possui alergia ou restrição alimentar?', $simNaoNs);
                         ep_input($dados, 'alergia_qual', 'Se sim, quais alimentos?', 'col-12');

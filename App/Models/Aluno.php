@@ -82,6 +82,7 @@ class Aluno
                     alun_dt_nascimento,
                     alun_sexo,
                     alun_matricula,
+                    alun_foto,
                     alun_tipo_sanguineo,
                     alun_altura,
                     alun_peso,
@@ -93,6 +94,7 @@ class Aluno
                     :nascimento,
                     :sexo,
                     :matricula,
+                    :foto,
                     :tipo_sanguineo,
                     :altura,
                     :peso,
@@ -105,6 +107,7 @@ class Aluno
             $this->db->bind(':nascimento', $dados['data_nascimento']);
             $this->db->bind(':sexo', $dados['sexo']);
             $this->db->bind(':matricula', $dados['matricula']);
+            $this->db->bind(':foto', ($dados['foto'] ?? '') !== '' ? $dados['foto'] : null);
             $this->db->bind(':tipo_sanguineo', ($dados['tipo_sanguineo'] ?? '') !== '' ? $dados['tipo_sanguineo'] : null);
             $this->db->bind(':altura', $this->decimalOuNulo($dados['altura'] ?? ''));
             $this->db->bind(':peso', $this->decimalOuNulo($dados['peso'] ?? ''));
@@ -145,7 +148,6 @@ class Aluno
             $this->db->commit();
 
             return true;
-
         } catch (PDOException $e) {
 
             // Em caso de erro, desfaz tudo.
@@ -301,7 +303,10 @@ class Aluno
             'drogas_qual' => 'anam_drogas_qual',
             'atividade_fisica' => 'anam_atividade_fisica',
             'frequencia_atividade' => 'anam_frequencia_atividade',
-            'banhos_dia' => 'anam_banhos_dia'
+            'banhos_dia' => 'anam_banhos_dia',
+            // NOVO: condições especiais (autismo, paralisia, etc.)
+            'condicoes' => 'anam_condicoes',
+            'condicao_outra' => 'anam_condicao_outra',
         ];
 
         $colunas = implode(', ', array_values($campos));
@@ -345,6 +350,7 @@ class Aluno
                 a.alun_dt_nascimento AS data_nascimento,
                 a.alun_sexo AS sexo,
                 a.alun_matricula AS matricula,
+                a.alun_foto AS foto,
                 a.alun_data_cadastro AS data_cadastro,
 
                 t.turm_id AS turma_id,
@@ -471,7 +477,9 @@ class Aluno
                 anam_drogas_qual AS drogas_qual,
                 anam_atividade_fisica AS atividade_fisica,
                 anam_frequencia_atividade AS frequencia_atividade,
-                anam_banhos_dia AS banhos_dia
+                anam_banhos_dia AS banhos_dia,
+                anam_condicoes AS condicoes,
+                anam_condicao_outra AS condicao_outra
             FROM anamnese
             WHERE alun_id = :id
             LIMIT 1
@@ -681,7 +689,6 @@ class Aluno
             $this->db->commit();
 
             return true;
-
         } catch (PDOException $e) {
 
             // Em caso de erro, desfaz tudo.
@@ -728,7 +735,6 @@ class Aluno
             $this->db->bind(':n', $numero);
             $this->db->bind(':id', (int) $existente->tele_id);
             $this->db->executa();
-
         } else {
 
             // Não existe: cadastra um novo.
@@ -780,7 +786,10 @@ class Aluno
             'drogas_qual' => 'anam_drogas_qual',
             'atividade_fisica' => 'anam_atividade_fisica',
             'frequencia_atividade' => 'anam_frequencia_atividade',
-            'banhos_dia' => 'anam_banhos_dia'
+            'banhos_dia' => 'anam_banhos_dia',
+            // NOVO: condições especiais (autismo, paralisia, etc.)
+            'condicoes' => 'anam_condicoes',
+            'condicao_outra' => 'anam_condicao_outra',
         ];
 
         $sets = [];

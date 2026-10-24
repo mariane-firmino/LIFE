@@ -6,7 +6,7 @@ include "./../App/autoload.php";
 $db = new Database;
 ?>
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,11 +16,13 @@ $db = new Database;
     <!-- linkando com o css -->
     <link rel="stylesheet" href="<?= URL ?>/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= URL ?>/css/geral.css">
+    <link rel="stylesheet" href="<?= URL ?>/css/acessibilidade.css">
 </head>
 <body>
     <?php
     $rotas = new Rota();
     ?>
+    <?php include __DIR__ . '/../App/Views/vlibras.php'; ?>
 </body>
 <!-- linkando js -->
 <script src="<?= URL ?>/js/bootstrap.bundle.min.js"></script>
@@ -29,4 +31,5 @@ $db = new Database;
 <script src="<?= URL ?>/js/api.js"></script>
 <script src="<?= URL ?>/js/calendario.js"></script>
 <script src="<?= URL ?>/js/menu.js"></script>
+<script src="<?= URL ?>/js/acessibilidade.js"></script>
 </html>

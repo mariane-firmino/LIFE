@@ -1,0 +1,269 @@
+/* =====================================================================
+   perfil-aluno.css  ->  salvar em: Public/css/perfil-aluno.css
+   Complementa o Bootstrap 5.3 (usa as variáveis --bs-*, então já
+   funciona também no modo escuro). Prefixo "pa-" = Perfil do Aluno.
+   ===================================================================== */
+
+
+/* ---------------------------------------------------------------------
+   INDICADOR DE ATENÇÃO (selo acima da foto)
+   Níveis: alta (vermelho), media (amarelo), baixa (verde),
+   sem-dados (cinza). Além da cor, o selo tem ícone e texto.
+   --------------------------------------------------------------------- */
+.pa-atencao {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .35rem .8rem;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    font-size: .85rem;
+    font-weight: 700;
+    cursor: help;               /* indica que há tooltip com os motivos */
+}
+
+.pa-atencao--alta {
+    background: var(--bs-danger-bg-subtle);
+    color: var(--bs-danger-text-emphasis);
+    border-color: var(--bs-danger);
+}
+
+.pa-atencao--media {
+    background: var(--bs-warning-bg-subtle);
+    color: var(--bs-warning-text-emphasis);
+    border-color: var(--bs-warning);
+}
+
+.pa-atencao--baixa {
+    background: var(--bs-success-bg-subtle);
+    color: var(--bs-success-text-emphasis);
+    border-color: var(--bs-success);
+}
+
+.pa-atencao--sem-dados {
+    background: var(--bs-secondary-bg);
+    color: var(--bs-secondary-color);
+    border-color: var(--bs-border-color);
+}
+
+
+/* ---------------------------------------------------------------------
+   CONDIÇÕES ESPECIAIS (etiquetas no cabeçalho do aluno)
+   --------------------------------------------------------------------- */
+.pa-cond__item {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .3rem .65rem;
+    border: 1px solid var(--bs-danger-border-subtle);
+    border-radius: .4rem;
+    background: var(--bs-danger-bg-subtle);
+    color: var(--bs-danger-text-emphasis);
+    font-size: .9rem;
+    font-weight: 600;
+}
+
+
+/* ---------------------------------------------------------------------
+   IMC (quadro do cabeçalho)
+   A cor da borda muda conforme a classificação.
+   --------------------------------------------------------------------- */
+.pa-imc {
+    border-width: 2px !important;   /* sobrepõe o "border" do Bootstrap */
+}
+
+.pa-imc--ok     { border-color: var(--bs-success) !important; }
+.pa-imc--aviso  { border-color: var(--bs-warning) !important; }
+.pa-imc--alerta { border-color: var(--bs-danger)  !important; }
+
+
+/* ---------------------------------------------------------------------
+   INFORMAÇÕES RÁPIDAS (cartões em destaque)
+   Estados: alerta (vermelho), aviso (amarelo), info (azul),
+   ok (verde). A faixa à esquerda ajuda a bater o olho.
+   --------------------------------------------------------------------- */
+.pa-rapida {
+    border: 2px solid var(--bs-danger);   /* borda vermelha de destaque */
+    border-radius: .6rem;
+    background: var(--bs-body-bg);
+}
+
+/* Selo "IMPORTANTE" no canto superior direito do bloco */
+.pa-rapida__selo {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .25rem .7rem;
+    border-radius: 999px;
+    background: var(--bs-danger);
+    color: #fff;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+    white-space: nowrap;
+}
+
+.pa-rapida__item {
+    display: flex;
+    align-items: flex-start;
+    gap: .75rem;
+    height: 100%;
+    padding: .85rem 1rem;
+    border: 1px solid var(--bs-border-color);
+    border-left-width: 6px;
+    border-radius: .5rem;
+    background: var(--bs-body-bg);
+}
+
+.pa-rapida__item--alerta { border-left-color: var(--bs-danger);  background: var(--bs-danger-bg-subtle); }
+.pa-rapida__item--aviso  { border-left-color: var(--bs-warning); background: var(--bs-warning-bg-subtle); }
+.pa-rapida__item--info   { border-left-color: var(--bs-info);    background: var(--bs-info-bg-subtle); }
+.pa-rapida__item--ok     { border-left-color: var(--bs-success); }
+
+.pa-rapida__icone  { font-size: 1.5rem; line-height: 1; color: var(--bs-success); }
+.pa-rapida__rotulo { font-size: .8rem; color: var(--bs-secondary-color); }
+.pa-rapida__valor  { font-weight: 700; overflow-wrap: anywhere; }
+
+
+/* ---------------------------------------------------------------------
+   RESPONSÁVEL (bloco em destaque)
+   Se não houver telefone, o bloco fica vermelho para chamar atenção.
+   --------------------------------------------------------------------- */
+.pa-resp {
+    padding: 1rem 1.25rem;
+    border-left: 8px solid var(--bs-success);
+    border-radius: .6rem;
+    background: var(--bs-success-bg-subtle);
+}
+
+.pa-resp--sem-tel {
+    border-left-color: var(--bs-danger);
+    background: var(--bs-danger-bg-subtle);
+}
+
+.pa-resp__nome {
+    font-size: 1.35rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.pa-resp__tel {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: inherit;
+    text-decoration: none;
+}
+
+.pa-resp__tel:hover { text-decoration: underline; }
+
+/* Foco visível para quem navega pelo teclado */
+.pa-resp__tel:focus-visible,
+.pa-atencao:focus-visible {
+    outline: 3px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
+
+/* =====================================================================
+   ABAS DO PERFIL (saúde, vacina, SUS, laudos, anotações...)
+   ===================================================================== */
+
+/* Menu das abas: todas visíveis, quebrando em várias linhas */
+#abasPerfil {
+    margin-top: 70px;
+    gap: .5rem;
+    padding-bottom: .75rem;
+    border-bottom: 3px solid var(--bs-success);
+}
+
+#abasPerfil .nav-link {
+    margin-bottom: 0;
+    padding: .6rem 1.1rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: .6rem;
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    font-size: 1.05rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s;
+}
+
+#abasPerfil .nav-link .bi {
+    color: var(--bs-success);
+    font-size: 1.1em;
+}
+
+#abasPerfil .nav-link:hover {
+    background: var(--bs-success-bg-subtle);
+    border-color: var(--bs-success-border-subtle);
+    color: var(--bs-success-text-emphasis);
+}
+
+#abasPerfil .nav-link.active {
+    background: var(--bs-success);
+    border-color: var(--bs-success);
+    color: #fff;
+    box-shadow: 0 .25rem .6rem rgba(25, 135, 84, .3);
+}
+
+#abasPerfil .nav-link.active .bi {
+    color: #fff;
+}
+
+#abasPerfil .nav-link:focus-visible {
+    outline: 3px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
+.pa-abas-conteudo {
+    margin-top: 1rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: .75rem;
+    background: var(--bs-body-bg);
+    box-shadow: 0 .125rem .5rem rgba(0, 0, 0, .06);
+}
+
+@media (max-width: 575.98px) {
+    #abasPerfil .nav-link {
+        padding: .5rem .8rem;
+        font-size: .95rem;
+    }
+}
+
+
+/* Miniaturas (fotos do cartão de vacina e do SUS) */
+.pa-miniatura {
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid var(--bs-border-color);
+    border-radius: .5rem;
+    background: var(--bs-body-bg);
+}
+
+.pa-miniatura img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    background: var(--bs-secondary-bg);
+}
+
+.pa-miniatura__legenda {
+    padding: .6rem .75rem;
+}
+
+
+/* Anotações (rápidas e psicológicas) */
+.pa-nota {
+    padding: .75rem 1rem;
+    border: 1px solid var(--bs-border-color);
+    border-left: 5px solid var(--bs-success);
+    border-radius: .5rem;
+    background: var(--bs-body-bg);
+}
+
+/* Informações psicológicas: faixa azul para diferenciar */
+.pa-nota--psico {
+    border-left-color: var(--bs-info);
+}

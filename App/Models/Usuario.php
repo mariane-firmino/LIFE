@@ -186,12 +186,12 @@ class Usuario
 
     // ---------------------------------------------------------
     // CHECAR LOGIN
-    // Busca o usuário pelo e-mail e confere a senha.
+    // Busca o usuário pelo e-mail ou SIAPE e confere a senha.
     // Retorna os dados do usuário (com telefone e nome da
     // função) se estiver correto, ou false se não estiver.
     // ---------------------------------------------------------
 
-    public function checarLogin($email, $senha)
+    public function checarLogin($identificador, $senha)
     {
         $this->db->query("
             SELECT
@@ -204,10 +204,12 @@ class Usuario
             LEFT JOIN funcao
                 ON servidor.func_id = funcao.func_id
             WHERE servidor.serv_email = :email
+               OR servidor.serv_siape = :siape
             LIMIT 1
         ");
 
-        $this->db->bind(':email', $email);
+        $this->db->bind(':email', $identificador);
+        $this->db->bind(':siape', $identificador);
 
         $usuario = $this->db->resultado();
 

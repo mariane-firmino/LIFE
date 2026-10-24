@@ -325,42 +325,42 @@ body.tema-escuro textarea:focus {
 
 /* 80% */
 
-body.fonte-muito-pequena {
+html.fonte-muito-pequena {
     font-size: 80%;
 }
 
 
 /* 90% */
 
-body.fonte-pequena {
+html.fonte-pequena {
     font-size: 90%;
 }
 
 
 /* 100% */
 
-body.fonte-normal {
+html.fonte-normal {
     font-size: 100%;
 }
 
 
 /* 115% */
 
-body.fonte-grande {
+html.fonte-grande {
     font-size: 115%;
 }
 
 
 /* 130% */
 
-body.fonte-muito-grande {
+html.fonte-muito-grande {
     font-size: 130%;
 }
 
 
 /* 150% */
 
-body.fonte-extra-grande {
+html.fonte-extra-grande {
     font-size: 150%;
 }
 
@@ -1220,7 +1220,7 @@ function alterarFonte(valor) {
     }
 
 
-    document.body.classList.remove(
+    document.documentElement.classList.remove(
         'fonte-muito-pequena',
         'fonte-pequena',
         'fonte-normal',
@@ -1237,7 +1237,7 @@ function alterarFonte(valor) {
 
     if (nivel) {
 
-        document.body.classList.add(
+        document.documentElement.classList.add(
             nivel.classe
         );
 
@@ -1274,6 +1274,11 @@ function alternarTema() {
     document.body.classList.toggle(
         'tema-escuro',
         ativado
+    );
+
+    document.documentElement.setAttribute(
+        'data-bs-theme',
+        ativado ? 'dark' : 'light'
     );
 
     localStorage.setItem(
@@ -1542,8 +1547,19 @@ function restaurarConfiguracoes() {
         'acessibilidade-espacamento'
     );
 
+    document.documentElement.setAttribute('data-bs-theme', 'light');
 
-    document.body.classList.add(
+
+    document.documentElement.classList.remove(
+        'fonte-muito-pequena',
+        'fonte-pequena',
+        'fonte-normal',
+        'fonte-grande',
+        'fonte-muito-grande',
+        'fonte-extra-grande'
+    );
+
+    document.documentElement.classList.add(
         'fonte-normal'
     );
 

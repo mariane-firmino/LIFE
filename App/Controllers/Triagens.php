@@ -154,22 +154,20 @@ class Triagens extends Controller
     private function exibirFormulario($tipo, $alunoId)
     {
         $aluno = $this->alunoOuRedireciona($alunoId);
+        $tipo = $this->tipoPorSexo($aluno->sexo);
 
         // Dados que serão enviados para a View.
         $dados = [
             'titulo' => 'Página de triagens',
             'descricao' => 'pagina triagens',
             'aluno_id' => (int) $aluno->id,
-            'aluno_nome' => $aluno->nome
+            'aluno_nome' => $aluno->nome,
+            'aluno_sexo' => $aluno->sexo,
+            'tipo' => $tipo,
+            'perguntas' => TriagemPerguntas::por($tipo),
         ];
 
-        // Escolhe a View de acordo com o tipo de triagem.
-        $this->view(
-            $tipo === 'masculina'
-                ? 'triagens/adicionar_triagem_m'
-                : 'triagens/adicionar_triagem_f',
-            $dados
-        );
+        $this->view('triagens/adicionar_triagem', $dados);
     }
 
 
@@ -182,6 +180,7 @@ class Triagens extends Controller
     private function salvar($tipo, $alunoId)
     {
         $aluno = $this->alunoOuRedireciona($alunoId);
+        $tipo = $this->tipoPorSexo($aluno->sexo);
         $id = (int) $aluno->id;
 
         // Página para onde o usuário volta em caso de erro.
@@ -273,5 +272,10 @@ class Triagens extends Controller
         }
 
         exit;
+    }
+
+    private function tipoPorSexo($sexo)
+    {
+        return $sexo === 'Masculino' ? 'masculina' : 'feminina';
     }
 }

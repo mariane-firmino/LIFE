@@ -1,0 +1,223 @@
+html.fonte-muito-pequena {
+    font-size: 80%;
+}
+
+html.fonte-pequena {
+    font-size: 90%;
+}
+
+html.fonte-normal {
+    font-size: 100%;
+}
+
+html.fonte-grande {
+    font-size: 115%;
+}
+
+html.fonte-muito-grande {
+    font-size: 130%;
+}
+
+html.fonte-extra-grande {
+    font-size: 150%;
+}
+
+body.acessibilidade-links a {
+    text-decoration: underline !important;
+    font-weight: bold !important;
+}
+
+body.acessibilidade-espacamento {
+    line-height: 2 !important;
+    letter-spacing: .5px;
+}
+
+body.acessibilidade-espacamento .row {
+    margin-bottom: 5px;
+}
+
+body.tema-escuro {
+    background-color: #121212 !important;
+    color: #e8e8e8 !important;
+}
+
+body.tema-escuro .layout {
+    background-color: #121212 !important;
+    color: #e8e8e8 !important;
+}
+
+body.tema-escuro .card,
+body.tema-escuro .shadow {
+    background-color: #1e1e1e;
+    color: #e8e8e8;
+    border-color: #303030;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .35);
+}
+
+body.tema-escuro h1,
+body.tema-escuro h2,
+body.tema-escuro h3,
+body.tema-escuro h4,
+body.tema-escuro h5,
+body.tema-escuro h6 {
+    color: #f5f5f5;
+}
+
+body.tema-escuro p,
+body.tema-escuro label,
+body.tema-escuro legend,
+body.tema-escuro li,
+body.tema-escuro td,
+body.tema-escuro th {
+    color: #e8e8e8;
+}
+
+body.tema-escuro b,
+body.tema-escuro strong {
+    color: #f1f1f1;
+}
+
+body.tema-escuro .text-black,
+body.tema-escuro .text-dark {
+    color: #f1f1f1 !important;
+}
+
+body.tema-escuro .text-muted {
+    color: #b0b0b0 !important;
+}
+
+body.tema-escuro .text-success {
+    color: #66d19e !important;
+}
+
+body.tema-escuro .linha-verde {
+    border-color: #66d19e !important;
+}
+
+body.tema-escuro a {
+    color: #66d19e;
+}
+
+body.tema-escuro a:hover {
+    color: #8ae5b8;
+}
+
+body.tema-escuro .border,
+body.tema-escuro .border-top,
+body.tema-escuro .border-bottom,
+body.tema-escuro hr {
+    border-color: #353535 !important;
+}
+
+body.tema-escuro .bg-white,
+body.tema-escuro .bg-light,
+body.tema-escuro .bg-body,
+body.tema-escuro .bg-body-tertiary {
+    background-color: #1e1e1e !important;
+    color: #e8e8e8 !important;
+}
+
+body.tema-escuro .form-control,
+body.tema-escuro .form-select,
+body.tema-escuro textarea,
+body.tema-escuro input {
+    background-color: #1b1b1b;
+    color: #eeeeee;
+    border-color: #444;
+}
+
+body.tema-escuro input::placeholder,
+body.tema-escuro textarea::placeholder,
+body.tema-escuro .form-control::placeholder {
+    color: #aaa;
+}
+
+body.tema-escuro .form-control:focus,
+body.tema-escuro .form-select:focus,
+body.tema-escuro textarea:focus,
+body.tema-escuro input:focus {
+    background-color: #202020;
+    color: #fff;
+    border-color: #66d19e;
+    box-shadow: 0 0 0 .2rem rgba(102, 209, 158, .15);
+}
+
+body.tema-escuro .form-check-input {
+    background-color: #333;
+    border-color: #666;
+}
+
+body.tema-escuro .form-check-input:checked {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+body.tema-escuro .table,
+body.tema-escuro table {
+    color: #e8e8e8;
+    --bs-table-color: #e8e8e8;
+    --bs-table-bg: #1e1e1e;
+    --bs-table-border-color: #353535;
+    --bs-table-striped-bg: #252525;
+    --bs-table-hover-bg: #2b2b2b;
+}
+
+body.tema-escuro th {
+    background-color: #252525;
+}
+
+body.tema-escuro td {
+    background-color: #1e1e1e;
+}
+
+body.tema-escuro .dropdown-menu,
+body.tema-escuro .modal-content,
+body.tema-escuro .list-group-item {
+    background-color: #1e1e1e;
+    color: #e8e8e8;
+    border-color: #353535;
+}
+
+body.tema-escuro .dropdown-item {
+    color: #e8e8e8;
+}
+
+body.tema-escuro .dropdown-item:hover {
+    background-color: #303030;
+    color: #fff;
+}
+
+body.tema-escuro .modal-header,
+body.tema-escuro .modal-footer {
+    border-color: #353535;
+}
+
+body.tema-escuro .btn-close {
+    filter: invert(1);
+}
+
+body.tema-escuro .alert {
+    background-color: #252525;
+    color: #e8e8e8;
+    border-color: #444;
+}
+
+body.tema-escuro .btn-outline-success {
+    color: #66d19e;
+    border-color: #66d19e;
+}
+
+body.tema-escuro .btn-outline-success:hover {
+    background-color: #66d19e;
+    color: #121212;
+}
+
+body.tema-escuro .btn-outline-secondary {
+    color: #cfcfcf;
+    border-color: #666;
+}
+
+body.tema-escuro .btn-outline-secondary:hover {
+    background-color: #333;
+    color: #fff;
+}

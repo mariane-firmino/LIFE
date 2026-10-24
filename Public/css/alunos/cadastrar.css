@@ -1,0 +1,28 @@
+/* =====================================================================
+   cadastro-aluno.css  ->  salvar em: Public/css/cadastro-aluno.css
+   Estilo das abas do cadastro de aluno (complementa o Bootstrap 5.3).
+   ===================================================================== */
+
+/* Abas: texto discreto; não quebra linha (no celular a barra rola de lado) */
+#abasCadastro .nav-link {
+    color: var(--bs-secondary-color);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Aba aberta: texto verde e faixa verde no topo */
+#abasCadastro .nav-link.active {
+    color: var(--bs-success-text-emphasis);
+    border-top: 3px solid var(--bs-success);
+}
+
+/* Aba com campo rejeitado pelo servidor: texto vermelho */
+#abasCadastro .nav-link.aba-erro {
+    color: var(--bs-danger);
+}
+
+/* Foco visível para quem usa o teclado */
+#abasCadastro .nav-link:focus-visible {
+    outline: 3px solid var(--bs-primary);
+    outline-offset: -3px;
+}

@@ -20,28 +20,29 @@
 
             <form action="<?= URL ?>/usuarios/login" method="post">
 
-                <!-- E-MAIL -->
+                <!-- E-MAIL OU SIAPE -->
                 <div class="campo-login">
                     <label
                         class="login-label"
-                        for="email"
+                        for="identificador"
                     >
-                        E-mail:
+                        E-mail ou SIAPE:
                     </label>
 
                     <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        class="login-form-control <?= !empty($dados['email_erro']) ? 'is-invalid' : '' ?>"
-                        placeholder="Digite seu e-mail"
-                        value="<?= htmlspecialchars($dados['email'] ?? '') ?>"
+                        type="text"
+                        id="identificador"
+                        name="identificador"
+                        class="login-form-control <?= !empty($dados['identificador_erro']) ? 'is-invalid' : '' ?>"
+                        placeholder="Digite seu e-mail ou SIAPE"
+                        value="<?= htmlspecialchars($dados['identificador'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                        autocomplete="username"
                         required
                     >
 
-                    <?php if (!empty($dados['email_erro'])): ?>
+                    <?php if (!empty($dados['identificador_erro'])): ?>
                         <div class="invalid-feedback">
-                            <?= htmlspecialchars($dados['email_erro']) ?>
+                            <?= htmlspecialchars($dados['identificador_erro']) ?>
                         </div>
                     <?php endif; ?>
                 </div>

@@ -26,8 +26,17 @@
 /* Alunos cadastrados */
 @import url(./alunos/aluno.css);
 
+/* Cadastro de Aluno */
+@import url(./alunos/cadastrar.css);
+
 /* Consultar Alunos */
 @import url(./alunos/consulta.css);
+
+/* Visualizar Perfil do Aluno */
+@import url(./alunos/visualizarPerfil.css);
+
+/* Perfil do Aluno */
+@import url(./alunos/perfilAluno.css);
 
 /* Calendario */
 @import url(./calendarios/calendario.css);

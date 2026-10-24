@@ -150,6 +150,10 @@ function consultaAlunoClasseTurno($turno)
                             $turma  = (string) ($aluno->ano_turma ?? '');
                             $turno  = (string) ($aluno->turno ?? '');
                             $inicial = $nome !== '' ? mb_strtoupper(mb_substr($nome, 0, 1)) : '?';
+                            $fotoAluno = !empty($aluno->foto)
+                                && is_file(dirname(__DIR__, 3) . '/Public/uploads/alunos/' . basename((string) $aluno->foto))
+                                ? URL . '/uploads/alunos/' . basename((string) $aluno->foto)
+                                : null;
                             ?>
 
                             <tr
@@ -160,9 +164,15 @@ function consultaAlunoClasseTurno($turno)
 
                                 <!-- NOME -->
                                 <td class="consultaAlunoCelula consultaAlunoCelulaNome" data-label="Aluno">
-                                    <span class="consultaAlunoAvatar" aria-hidden="true">
-                                        <?= htmlspecialchars($inicial) ?>
-                                    </span>
+                                    <?php if ($fotoAluno !== null): ?>
+                                        <img class="consultaAlunoAvatar"
+                                            src="<?= htmlspecialchars($fotoAluno, ENT_QUOTES, 'UTF-8') ?>"
+                                            alt="Foto de <?= htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') ?>">
+                                    <?php else: ?>
+                                        <span class="consultaAlunoAvatar" aria-hidden="true">
+                                            <?= htmlspecialchars($inicial) ?>
+                                        </span>
+                                    <?php endif; ?>
                                     <span class="consultaAlunoNomeTexto">
                                         <?= htmlspecialchars($nome) ?>
                                     </span>
