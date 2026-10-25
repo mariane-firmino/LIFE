@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const $ = (id) => document.getElementById(id);
 
     let eventoAtual = null; // evento aberto nos detalhes
+    let salvandoConsulta = false;
     const celular = () => window.innerWidth < 768;
 
     /* ---------------------------------------------------
@@ -260,6 +261,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Envia sem recarregar a página; só atualiza o calendário.
     form.addEventListener("submit", async function (e) {
         e.preventDefault();
+        if (salvandoConsulta) return;
+
+        salvandoConsulta = true;
         erroBox.hidden = true;
         btnSalvar.disabled = true;
 
@@ -274,6 +278,7 @@ document.addEventListener("DOMContentLoaded", function () {
             erroBox.textContent = err.message;
             erroBox.hidden = false;
         } finally {
+            salvandoConsulta = false;
             btnSalvar.disabled = false;
         }
     });
