@@ -32,4 +32,5 @@ $db = new Database;
 <script src="<?= URL ?>/js/calendario.js"></script>
 <script src="<?= URL ?>/js/menu.js"></script>
 <script src="<?= URL ?>/js/acessibilidade.js"></script>
+<script src="<?= URL ?>/js/sobre.js"></script>
 </html>
