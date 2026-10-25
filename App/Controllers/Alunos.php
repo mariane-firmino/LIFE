@@ -10,6 +10,7 @@ class Alunos extends Controller
 
     private $alunoModel;
     private $anexoModel;
+    private $opcaoModel;
 
 
     // =========================================================
@@ -124,6 +125,7 @@ class Alunos extends Controller
     {
         $this->alunoModel = $this->model('Aluno');
         $this->anexoModel = $this->model('AlunoAnexo');
+        $this->opcaoModel = $this->model('Opcao');
     }
 
 
@@ -241,6 +243,10 @@ class Alunos extends Controller
                 elseif ($this->validarCondicoes($dados)) :
                 // Mensagem de erro já definida em $dados.
 
+                // Opções mantidas pelo administrador.
+                elseif ($this->validarOpcoes($dados)) :
+                // Mensagens de erro já definidas em $dados.
+
                 // Verifica o nome do aluno.
                 elseif (Checa::checarNome($dados['nome'])) :
                     $dados['nome_erro'] = 'O nome informado é inválido';
@@ -297,6 +303,8 @@ class Alunos extends Controller
             }
             $dados['foto_erro'] = '';
         endif;
+
+        $dados['listas'] = $this->listasOpcoes();
 
         // Abre a view de cadastro.
         $this->view('alunos/cadastrar', $dados);
@@ -483,12 +491,6 @@ class Alunos extends Controller
                     $temErro = true;
                 endif;
 
-                // Turno: deve ser uma das opções permitidas.
-                if (!in_array($dados['turno'], ['Matutino', 'Vespertino', 'Noturno'], true)) :
-                    $dados['turno_erro'] = 'Selecione uma opção válida';
-                    $temErro = true;
-                endif;
-
                 // Ano da turma: exatamente 2 dígitos.
                 if (!preg_match('/^\d{2}$/', $dados['ano_turma'])) :
                     $dados['ano_turma_erro'] = 'Informe 2 dígitos (ex: 26)';
@@ -523,6 +525,20 @@ class Alunos extends Controller
 
                 // Condições especiais.
                 if ($this->validarCondicoes($dados)) :
+                    $temErro = true;
+                endif;
+
+                // Os valores atuais seguem válidos se o administrador desativá-los.
+                $saudeAtual = $this->alunoModel->buscarSaude($aluno->id);
+                $atuais = [
+                    'curso' => $aluno->curso,
+                    'turno' => $aluno->turno,
+                    'ano_turma' => $aluno->ano_turma,
+                ];
+                foreach (['tipo_escola', 'motivo_ifro', 'acesso_saude'] as $campo) {
+                    $atuais[$campo] = $saudeAtual->$campo ?? '';
+                }
+                if ($this->validarOpcoes($dados, $atuais)) :
                     $temErro = true;
                 endif;
 
@@ -590,6 +606,7 @@ class Alunos extends Controller
         $dados['titulo'] = 'Página de edição de perfil';
         $dados['descricao'] = 'pagina edição de perfil';
         $dados['aluno_id'] = (int) $aluno->id;
+        $dados['listas'] = $this->listasOpcoes();
 
         $this->view('alunos/editarPerfil', $dados);
     }
@@ -719,6 +736,34 @@ class Alunos extends Controller
         }
 
         return true;
+    }
+
+    private function listasOpcoes()
+    {
+        return $this->opcaoModel->todasAtivas();
+    }
+
+    private function validarOpcoes(array &$dados, array $atuais = [])
+    {
+        $erro = false;
+
+        foreach ($this->listasOpcoes() as $grupo => $permitidos) {
+            $valor = $dados[$grupo] ?? '';
+            if ($valor === '') {
+                continue;
+            }
+
+            if (!empty($atuais[$grupo])) {
+                $permitidos[] = $atuais[$grupo];
+            }
+
+            if (!in_array($valor, $permitidos, true)) {
+                $dados[$grupo . '_erro'] = 'Selecione uma opção válida';
+                $erro = true;
+            }
+        }
+
+        return $erro;
     }
 
     // =========================================================

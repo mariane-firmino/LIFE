@@ -122,16 +122,9 @@ $id = (int) $dados['aluno_id'];
                                 ep_select($dados, 'sexo', 'Sexo biológico', ['Masculino', 'Feminino', 'Outro']);
                                 ep_input($dados, 'matricula', 'Matrícula', 'col-md-6', 'maxlength="13"');
                                 ep_input($dados, 'rg', 'RG', 'col-md-6', 'maxlength="6"');
-                                ep_select($dados, 'curso', 'Curso', [
-                                    'Técnico em informática',
-                                    'Manutenção e Suporte em Informática',
-                                    'Biotecnologia',
-                                    'Enfermagem',
-                                    'Licenciatura em Ciências',
-                                    'Licenciatura em Biologia',
-                                ]);
-                                ep_select($dados, 'turno', 'Turno', ['Matutino', 'Vespertino', 'Noturno'], 'col-md-6');
-                                ep_input($dados, 'ano_turma', 'Ano da turma', 'col-md-6', 'maxlength="2" placeholder="Ex: 26"');
+                                ep_select($dados, 'curso', 'Curso', $dados['listas']['curso'] ?? []);
+                                ep_select($dados, 'turno', 'Turno', $dados['listas']['turno'] ?? [], 'col-md-6');
+                                ep_select($dados, 'ano_turma', 'Ano da turma', $dados['listas']['ano_turma'] ?? [], 'col-md-6');
                                 ep_select($dados, 'tipo_sanguineo', 'Tipo sanguíneo', ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], 'col-md-4');
                                 ep_input($dados, 'altura', 'Altura (m)', 'col-md-4', 'maxlength="4" inputmode="numeric" placeholder="Ex: 1,70"');
                                 ep_input($dados, 'peso', 'Peso (kg)', 'col-md-4', 'maxlength="6" inputmode="decimal" placeholder="Ex: 65,5"');
@@ -168,13 +161,8 @@ $id = (int) $dados['aluno_id'];
                     </h5>
                     <div class="row g-3">
                         <?php
-                        ep_select($dados, 'tipo_escola', 'Tipo de escola que estudou antes do IFRO', ['Escola pública', 'Escola privada', 'Escola estadual']);
-                        ep_select($dados, 'motivo_ifro', 'Por que escolheu o IFRO para estudar?', [
-                            'Qualidade do ensino',
-                            'Proximidade da escola',
-                            'Programa de bolsas',
-                            'Recomendação de outros',
-                        ]);
+                        ep_select($dados, 'tipo_escola', 'Tipo de escola que estudou antes do IFRO', $dados['listas']['tipo_escola'] ?? []);
+                        ep_select($dados, 'motivo_ifro', 'Por que escolheu o IFRO para estudar?', $dados['listas']['motivo_ifro'] ?? []);
                         ep_select($dados, 'ja_reprovou', 'Já reprovou antes?', $simNao);
                         ep_input($dados, 'quantas_vezes', 'Quantas vezes reprovou?');
                         ep_select($dados, 'estuda_fora', 'Estuda fora do horário de aula? (em casa)', $simNao);
@@ -238,7 +226,7 @@ $id = (int) $dados['aluno_id'];
                             </div>
                         </fieldset>
                         <?php
-                        ep_select($dados, 'acesso_saude', 'Como é realizado o acesso ao serviço de saúde?', ['SUS', 'Privado', 'Convênio']);
+                        ep_select($dados, 'acesso_saude', 'Como é realizado o acesso ao serviço de saúde?', $dados['listas']['acesso_saude'] ?? []);
                         ep_select($dados, 'alergia_alimentar', 'Possui alergia ou restrição alimentar?', $simNaoNs);
                         ep_input($dados, 'alergia_qual', 'Se sim, quais alimentos?', 'col-12');
                         ep_select($dados, 'doenca_cronica', 'Possui doença crônica ou pré-existente?', $simNaoNs);

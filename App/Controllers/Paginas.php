@@ -52,10 +52,28 @@ class Paginas extends Controller
 
     public function home()
     {
+        if (!isset($_SESSION['usuario_id'])) {
+            URL::redirecionar('usuarios/login');
+            exit;
+        }
+
+        $home = $this->model('Home');
+        $fusoHorario = new DateTimeZone('America/Porto_Velho');
+        $agora = new DateTimeImmutable('now', $fusoHorario);
+        $inicioMes = $agora->modify('first day of this month')->setTime(0, 0);
+        $inicioProximoMes = $inicioMes->modify('first day of next month');
+
         // Dados que serão enviados para a View.
         $dados = [
             'titulo' => 'Página de home',
-            'descricao' => 'pagina home'
+            'descricao' => 'pagina home',
+            'notificacoes' => $home->contarNotificacoesNaoLidas((int) $_SESSION['usuario_id']),
+            'alunos' => $home->contarAlunos(),
+            'atendimentos_hoje' => $home->contarAtendimentosHoje($agora->format('Y-m-d')),
+            'atendimentos_periodicos' => $home->contarAtendimentosPeriodicos(
+                $inicioMes->format('Y-m-d'),
+                $inicioProximoMes->format('Y-m-d')
+            ),
         ];
 
         // Abre: App/Views/paginas/home.php
@@ -112,14 +130,61 @@ class Paginas extends Controller
 
     public function configuracao()
     {
+        if (!isset($_SESSION['usuario_id'])) {
+            URL::redirecionar('usuarios/login');
+            exit;
+        }
+
+        if (empty($_SESSION['csrf_token_notificacoes'])) {
+            $_SESSION['csrf_token_notificacoes'] = bin2hex(random_bytes(32));
+        }
+
+        $notificacoes = $this->model('Notificacao');
         // Dados enviados para a View.
         $dados = [
             'titulo' => 'Página de configuração',
-            'descricao' => 'pagina configuração'
+            'descricao' => 'pagina configuração',
+            'preferencias_email' => $notificacoes->buscarPreferenciasEmail((int) $_SESSION['usuario_id']),
+            'csrf_token' => $_SESSION['csrf_token_notificacoes'],
+            'is_admin' => ($_SESSION['usuario_perfil'] ?? '') === 'admin',
         ];
 
         // Abre: App/Views/paginas/configuracao.php
         $this->view('paginas/configuracao', $dados);
+    }
+
+    public function salvarPreferenciasNotificacao()
+    {
+        if (!isset($_SESSION['usuario_id'])) {
+            URL::redirecionar('usuarios/login');
+            exit;
+        }
+
+        $token = (string) ($_POST['csrf_token'] ?? '');
+        if (
+            $_SERVER['REQUEST_METHOD'] !== 'POST'
+            || $token === ''
+            || empty($_SESSION['csrf_token_notificacoes'])
+            || !hash_equals($_SESSION['csrf_token_notificacoes'], $token)
+        ) {
+            http_response_code(403);
+            exit('Requisição inválida.');
+        }
+
+        $salvou = $this->model('Notificacao')->salvarPreferenciasEmail(
+            (int) $_SESSION['usuario_id'],
+            isset($_POST['email_consultas']),
+            isset($_POST['email_triagens']),
+            isset($_POST['email_cadastros'])
+        );
+
+        $_SESSION['configuracao_mensagem'] = $salvou
+            ? 'Preferências de e-mail salvas.'
+            : 'Não foi possível salvar as preferências.';
+        $_SESSION['configuracao_tipo_mensagem'] = $salvou ? 'success' : 'danger';
+
+        URL::redirecionar('paginas/configuracao');
+        exit;
     }
 
 

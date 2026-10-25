@@ -62,9 +62,10 @@ include '../App/Views/menu.php';
             </p>
 
         </div>
-            <button type="submit" class="btn btn-success">
-                Marcar como lida
-            </button>
+            <form method="post" action="<?= URL ?>/notificacoes/marcarComoLida/<?= (int) $dados['notificacao']->noti_id ?>">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($dados['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
+                <button type="submit" class="btn btn-success">Marcar como lida</button>
+            </form>
         </div>
 
     </div>

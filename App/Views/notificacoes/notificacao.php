@@ -161,15 +161,15 @@ include '../App/Views/menu.php';
                                 </li>
 
                                 <li>
-                                    <a class="dropdown-item"
-                                        href="<?= URL ?>/notificacoes/marcarComoLida/<?= $notificacao->noti_id ?>">
-                                        Marcar como lida
-                                    </a>
+                                    <form method="post" action="<?= URL ?>/notificacoes/marcarComoLida/<?= $notificacao->noti_id ?>">
+                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($dados['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
+                                        <button type="submit" class="dropdown-item">Marcar como lida</button>
+                                    </form>
                                 </li>
 
                                 <li>
                                     <a class="dropdown-item"
-                                        href="<?= URL ?>/notificacoes/excluir/<?= $notificacao->noti_id; ?>"
+                                        href="#"
                                         data-bs-toggle="modal" data-bs-target="#modalExcluir<?= $notificacao->noti_id; ?>">
                                         Excluir
                                     </a>
@@ -214,9 +214,10 @@ include '../App/Views/menu.php';
                                 Cancelar
                             </button>
 
-                            <a class="btn btn-danger" href="<?= URL ?>/notificacoes/excluir/<?= $notificacao->noti_id; ?>">
-                                Confirmar
-                            </a>
+                            <form method="post" action="<?= URL ?>/notificacoes/excluir/<?= $notificacao->noti_id; ?>">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($dados['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
+                                <button type="submit" class="btn btn-danger">Confirmar</button>
+                            </form>
 
                         </div>
 

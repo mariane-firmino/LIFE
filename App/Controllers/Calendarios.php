@@ -1,8 +1,11 @@
 <?php
 
+require_once dirname(__DIR__) . '/Libraries/NotificationService.php';
+
 class Calendarios extends Controller
 {
     private $consulta;
+    private $notificationService;
 
     public function __construct()
     {
@@ -16,6 +19,7 @@ class Calendarios extends Controller
         }
 
         $this->consulta = $this->model('Consulta');
+        $this->notificationService = new NotificationService($this->model('Notificacao'));
     }
 
     // ---------------------------------------------------------
@@ -69,6 +73,15 @@ class Calendarios extends Controller
         }
 
         $ok = $this->consulta->cadastrar($dados);
+        if ($ok) {
+            $this->notificationService->avisarUsuariosAtivos(
+                'consulta',
+                'Nova consulta na agenda',
+                'Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',
+                'calendarios/calendario',
+                (int) $_SESSION['usuario_id']
+            );
+        }
         $this->responder($ok, $ok ? 'Consulta cadastrada com sucesso!' : 'Erro ao cadastrar a consulta.');
     }
 
@@ -82,12 +95,22 @@ class Calendarios extends Controller
         $id    = (int) ($_POST['cons_id'] ?? 0);
         $dados = $this->lerFormulario();
 
-        if ($id <= 0 || !$dados || !$this->consulta->buscarPorId($id)) {
+        $consultaAnterior = $id > 0 ? $this->consulta->buscarPorId($id) : false;
+        if ($id <= 0 || !$dados || !$consultaAnterior) {
             $this->responder(false, 'Consulta inválida.');
         }
 
         $dados['cons_id'] = $id;
         $ok = $this->consulta->atualizar($dados);
+        if ($ok) {
+            $this->notificationService->avisarUsuariosAtivos(
+                'consulta',
+                'Consulta atualizada na agenda',
+                'Uma consulta da agenda foi atualizada. Acesse o calendário para ver os detalhes.',
+                'calendarios/calendario',
+                (int) $_SESSION['usuario_id']
+            );
+        }
         $this->responder($ok, $ok ? 'Consulta atualizada!' : 'Erro ao atualizar a consulta.');
     }
 
@@ -106,7 +129,21 @@ class Calendarios extends Controller
             $this->json(['ok' => false, 'erro' => 'Dados inválidos.'], 422);
         }
 
+        $consultaAnterior = $this->consulta->buscarPorId($id);
+        if (!$consultaAnterior) {
+            $this->json(['ok' => false, 'erro' => 'Consulta inválida.'], 404);
+        }
+
         $ok = $this->consulta->reagendar($id, $data, $horario);
+        if ($ok) {
+            $this->notificationService->avisarUsuariosAtivos(
+                'consulta',
+                'Consulta reagendada',
+                'Uma consulta da agenda foi reagendada. Acesse o calendário para ver os detalhes.',
+                'calendarios/calendario',
+                (int) $_SESSION['usuario_id']
+            );
+        }
         $this->json(['ok' => $ok], $ok ? 200 : 500);
     }
 
@@ -122,7 +159,21 @@ class Calendarios extends Controller
             $this->json(['ok' => false, 'erro' => 'Consulta inválida.'], 422);
         }
 
+        $consultaAnterior = $this->consulta->buscarPorId($id);
+        if (!$consultaAnterior) {
+            $this->json(['ok' => false, 'erro' => 'Consulta inválida.'], 404);
+        }
+
         $ok = $this->consulta->excluir($id);
+        if ($ok) {
+            $this->notificationService->avisarUsuariosAtivos(
+                'consulta',
+                'Consulta removida da agenda',
+                'Uma consulta foi removida da agenda.',
+                'calendarios/calendario',
+                (int) $_SESSION['usuario_id']
+            );
+        }
         $this->json(['ok' => $ok], $ok ? 200 : 500);
     }
 

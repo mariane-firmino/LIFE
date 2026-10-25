@@ -1,13 +1,6 @@
 <?php
 
-// =========================================================
-// BIBLIOTECA DE E-MAIL
-// PHPMailer é usado para enviar o e-mail de recuperação
-// de senha.
-// =========================================================
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+require_once dirname(__DIR__) . '/Libraries/NotificationService.php';
 
 class Usuarios extends Controller
 {
@@ -18,6 +11,7 @@ class Usuarios extends Controller
     // =========================================================
 
     private $usuarioModel;
+    private $notificationService;
 
 
     // =========================================================
@@ -29,6 +23,7 @@ class Usuarios extends Controller
     public function __construct()
     {
         $this->usuarioModel = $this->model('Usuario');
+        $this->notificationService = new NotificationService($this->model('Notificacao'));
     }
 
     // =========================================================
@@ -181,6 +176,12 @@ class Usuarios extends Controller
                     // Armazena os dados do usuário no banco de dados.
                     if ($this->usuarioModel->armazenar($dados)):
 
+                        $this->notificationService->avisarAdministradores(
+                            'Novo cadastro aguardando aprovação',
+                            'Há um cadastro de servidor aguardando análise.',
+                            'admin/perfis'
+                        );
+
                         // Mostra mensagem de sucesso.
                         Sessao::mensagem(
                             'usuarios',
@@ -283,8 +284,16 @@ class Usuarios extends Controller
 
                 if ($usuario):
 
-                    // Login correto: cria a sessão e redireciona.
-                    $this->criarSessaoUsuario($usuario);
+                    if (($usuario->serv_status ?? '') !== 'ativo') {
+                        Sessao::mensagem(
+                            'usuario',
+                            'Seu cadastro ainda não foi ativado pelo administrador.',
+                            'alert alert-danger'
+                        );
+                    } else {
+                        // Login correto: cria a sessão e redireciona.
+                        $this->criarSessaoUsuario($usuario);
+                    }
 
                 else:
 
@@ -333,8 +342,9 @@ class Usuarios extends Controller
         $_SESSION['usuario_telefone'] = $usuario->tele_numero;
         $_SESSION['usuario_funcao'] = $usuario->func_nome;
         $_SESSION['usuario_foto'] = $usuario->serv_foto;
+        $_SESSION['usuario_perfil'] = $usuario->serv_perfil ?? 'servidor';
 
-        URL::redirecionar('paginas/home');
+        URL::redirecionar($_SESSION['usuario_perfil'] === 'admin' ? 'admin/home' : 'paginas/home');
     }
 
 
@@ -355,6 +365,7 @@ class Usuarios extends Controller
         unset($_SESSION['usuario_telefone']);
         unset($_SESSION['usuario_funcao']);
         unset($_SESSION['usuario_foto']);
+        unset($_SESSION['usuario_perfil']);
 
         session_destroy();
 
@@ -440,110 +451,14 @@ class Usuarios extends Controller
 
     // =========================================================
     // ENVIAR E-MAIL DE RECUPERAÇÃO
-    // Usa o PHPMailer (via SMTP do Gmail) para enviar o link
-    // de redefinição de senha. Retorna true se enviou.
+    // Usa o mesmo serviço SMTP das notificações. Retorna true se enviou.
     // =========================================================
 
     private function enviarEmailRecuperacao($email, $nome, $token)
     {
-        require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
+        require_once dirname(__DIR__) . '/Libraries/EmailSender.php';
 
-        $mail = new PHPMailer(true);
-
-        try {
-
-            // Configuração do SMTP.
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true;
-
-            // TROQUE PELO SEU GMAIL
-            $mail->Username = 'enfermariaifro@gmail.com';
-
-            // TROQUE PELA SUA SENHA DE APP
-            $mail->Password = 'cipdejmqyqmtlxps';
-
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
-
-            // Remetente.
-            $mail->setFrom(
-                'rafaelcaldeirasan@gmail.com',
-                'Enfermaria IFRO'
-            );
-
-            // Destinatário.
-            $mail->addAddress($email, $nome);
-
-            // Conteúdo em HTML.
-            $mail->isHTML(true);
-            $mail->CharSet = 'UTF-8';
-            $mail->Subject = 'Recuperação de senha - Enfermaria IFRO';
-
-            // Link de redefinição com o token.
-            $link = URL . '/usuarios/redefinirSenha/' . urlencode($token);
-
-            $mail->Body = "
-                <div style='font-family: Arial, sans-serif;'>
-
-                    <h2>Enfermaria IFRO</h2>
-
-                    <p>
-                        Olá, <strong>{$nome}</strong>.
-                    </p>
-
-                    <p>
-                        Recebemos uma solicitação para
-                        redefinir sua senha.
-                    </p>
-
-                    <p>
-                        Clique no botão abaixo:
-                    </p>
-
-                    <p>
-                        <a
-                            href='{$link}'
-                            style='
-                                background-color: #198754;
-                                color: white;
-                                padding: 12px 20px;
-                                text-decoration: none;
-                                border-radius: 5px;
-                                display: inline-block;
-                            '
-                        >
-                            Redefinir minha senha
-                        </a>
-                    </p>
-
-                    <p>
-                        Este link será válido por
-                        <strong>30 minutos</strong>.
-                    </p>
-
-                    <p>
-                        Se você não solicitou a recuperação,
-                        ignore este e-mail.
-                    </p>
-
-                </div>
-            ";
-
-            // Versão em texto simples (para quem não vê HTML).
-            $mail->AltBody =
-                "Acesse o seguinte link para redefinir sua senha: " . $link;
-
-            $mail->send();
-
-            return true;
-        } catch (Exception $e) {
-
-            // Registra o erro no log do servidor.
-            error_log('Erro PHPMailer: ' . $mail->ErrorInfo);
-
-            return false;
-        }
+        return (new EmailSender())->enviarRecuperacao($email, $nome, $token);
     }
 
 

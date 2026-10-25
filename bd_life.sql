@@ -239,7 +239,7 @@ CREATE TABLE `consulta` (
   PRIMARY KEY (`cons_id`),
   KEY `ix_consulta_data` (`cons_data`),
   KEY `ix_consulta_hora` (`cons_horario`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -248,7 +248,7 @@ CREATE TABLE `consulta` (
 
 LOCK TABLES `consulta` WRITE;
 /*!40000 ALTER TABLE `consulta` DISABLE KEYS */;
-INSERT INTO `consulta` VALUES (1,'2026-09-22','14:00:00','Consulta - Periódica',NULL,'çkjdjfnkladnfga','wefWGFerg'),(2,'2026-10-30','14:52:00','Consulta - Periódica','Enfermeira','testee','Teste'),(3,'2026-10-30','14:52:00','Consulta - Periódica','Enfermeira','testee','Teste');
+INSERT INTO `consulta` VALUES (1,'2026-09-22','14:00:00','Consulta - Periódica',NULL,'çkjdjfnkladnfga','wefWGFerg'),(2,'2026-10-30','14:52:00','Consulta - Periódica','Enfermeira','testee','Teste'),(3,'2026-10-30','14:52:00','Consulta - Periódica','Enfermeira','testee','Teste'),(4,'2026-10-18','15:23:00','Consulta - Periódica','Enfermeira','teste notificacao','oiiii'),(5,'2026-10-18','15:23:00','Consulta - Periódica','Enfermeira','teste notificacao','oiiii');
 /*!40000 ALTER TABLE `consulta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -294,7 +294,7 @@ CREATE TABLE `notificacao` (
   PRIMARY KEY (`noti_id`),
   KEY `fk_notificacao` (`serv_id`),
   CONSTRAINT `fk_notificacao` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -303,7 +303,36 @@ CREATE TABLE `notificacao` (
 
 LOCK TABLES `notificacao` WRITE;
 /*!40000 ALTER TABLE `notificacao` DISABLE KEYS */;
+INSERT INTO `notificacao` VALUES (9,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',2,'Pendente','consulta'),(10,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',6,'Pendente','consulta'),(11,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',7,'Pendente','consulta'),(12,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',10,'Pendente','consulta'),(13,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',11,'Pendente','consulta'),(14,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',12,'Pendente','consulta'),(15,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',13,'Pendente','consulta'),(16,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',14,'Pendente','consulta'),(17,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',2,'Pendente','consulta'),(18,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',6,'Pendente','consulta'),(19,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',7,'Pendente','consulta'),(20,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',10,'Pendente','consulta'),(21,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',11,'Pendente','consulta'),(22,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',12,'Pendente','consulta'),(23,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',13,'Pendente','consulta'),(24,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',14,'Pendente','consulta'),(25,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',2,'Pendente','triagem'),(26,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',6,'Pendente','triagem'),(27,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',7,'Pendente','triagem'),(28,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',10,'Pendente','triagem'),(29,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',11,'Pendente','triagem'),(30,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',12,'Pendente','triagem'),(31,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',13,'Pendente','triagem'),(32,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',14,'Pendente','triagem');
 /*!40000 ALTER TABLE `notificacao` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `opcao_sistema`
+--
+
+DROP TABLE IF EXISTS `opcao_sistema`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `opcao_sistema` (
+  `opca_id` int NOT NULL AUTO_INCREMENT,
+  `opca_grupo` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
+  `opca_valor` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `opca_ordem` int NOT NULL DEFAULT '0',
+  `opca_ativo` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`opca_id`),
+  UNIQUE KEY `uk_opcao_grupo_valor` (`opca_grupo`,`opca_valor`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `opcao_sistema`
+--
+
+LOCK TABLES `opcao_sistema` WRITE;
+/*!40000 ALTER TABLE `opcao_sistema` DISABLE KEYS */;
+INSERT INTO `opcao_sistema` VALUES (1,'ano_turma','24',1,1),(2,'ano_turma','25',2,1),(3,'ano_turma','26',3,1),(4,'curso','Técnico em informática',1,1),(5,'curso','Manutenção e Suporte em Informática',2,1),(6,'curso','Biotecnologia',3,1),(7,'curso','Enfermagem',4,1),(8,'curso','Licenciatura em Ciências',5,1),(9,'curso','Licenciatura em Biologia',6,1),(10,'turno','Matutino',1,1),(11,'turno','Vespertino',2,1),(12,'turno','Noturno',3,1),(13,'tipo_escola','Escola pública',1,1),(14,'tipo_escola','Escola privada',2,1),(15,'tipo_escola','Escola estadual',3,1),(16,'motivo_ifro','Qualidade do ensino',1,1),(17,'motivo_ifro','Proximidade da escola',2,1),(18,'motivo_ifro','Programa de bolsas',3,1),(19,'motivo_ifro','Recomendação de outros',4,1),(20,'acesso_saude','SUS',1,1),(21,'acesso_saude','Privado',2,1),(22,'acesso_saude','Convênio',3,1);
+/*!40000 ALTER TABLE `opcao_sistema` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -329,6 +358,34 @@ LOCK TABLES `pergunta` WRITE;
 /*!40000 ALTER TABLE `pergunta` DISABLE KEYS */;
 INSERT INTO `pergunta` VALUES (1,'Como você se sente em relação ao seu corpo?'),(2,'Como você tem se sentido no dia a dia?'),(3,'O que você mais gosta em você?'),(4,'O que você gosta de fazer no seu tempo livre?'),(5,'Qual é o seu maior objetivo para a vida?'),(6,'Você tem tido pensamentos que estão incomodando você?'),(7,'Você já iniciou sua vida sexual?'),(8,'Você utiliza preservativo nas relações sexuais?'),(9,'Por que você não utiliza preservativo?'),(10,'Você conhece as principais ISTs (Infecções Sexualmente Transmissíveis)?'),(11,'Com quantos anos você teve sua primeira menstruação?'),(12,'Você sente cólicas menstruais?'),(13,'Qual é a intensidade das suas cólicas de 0 a 10?'),(14,'Você utiliza algum medicamento para aliviar as cólicas?'),(15,'Qual medicamento você utiliza para aliviar as cólicas?'),(16,'Você já iniciou sua vida sexual?'),(17,'Você utiliza algum método contraceptivo?'),(18,'Por que você não utiliza método contraceptivo?'),(19,'Você já realizou uma consulta ginecológica?');
 /*!40000 ALTER TABLE `pergunta` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `preferencia_notificacao`
+--
+
+DROP TABLE IF EXISTS `preferencia_notificacao`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `preferencia_notificacao` (
+  `serv_id` int NOT NULL,
+  `email_consultas` tinyint(1) NOT NULL DEFAULT '0',
+  `email_triagens` tinyint(1) NOT NULL DEFAULT '0',
+  `email_cadastros` tinyint(1) NOT NULL DEFAULT '0',
+  `atualizado_em` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`serv_id`),
+  CONSTRAINT `fk_preferencia_notificacao_servidor` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `preferencia_notificacao`
+--
+
+LOCK TABLES `preferencia_notificacao` WRITE;
+/*!40000 ALTER TABLE `preferencia_notificacao` DISABLE KEYS */;
+INSERT INTO `preferencia_notificacao` VALUES (9,1,1,0,'2026-10-25 00:39:35');
+/*!40000 ALTER TABLE `preferencia_notificacao` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -403,6 +460,9 @@ CREATE TABLE `servidor` (
   `func_id` int NOT NULL,
   `serv_foto` blob,
   `serv_senha` varchar(300) NOT NULL,
+  `serv_status` enum('ativo','inativo') NOT NULL DEFAULT 'inativo',
+  `serv_perfil` enum('servidor','admin') NOT NULL DEFAULT 'servidor',
+  `serv_criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`serv_id`),
   UNIQUE KEY `serv_email_UNIQUE` (`serv_email`),
   UNIQUE KEY `uk_servidor_siape` (`serv_siape`),
@@ -411,7 +471,7 @@ CREATE TABLE `servidor` (
   KEY `ix_servidor_email` (`serv_email`),
   KEY `fk_servidor_funcao` (`func_id`),
   CONSTRAINT `fk_servidor_funcao` FOREIGN KEY (`func_id`) REFERENCES `funcao` (`func_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -420,7 +480,7 @@ CREATE TABLE `servidor` (
 
 LOCK TABLES `servidor` WRITE;
 /*!40000 ALTER TABLE `servidor` DISABLE KEYS */;
-INSERT INTO `servidor` VALUES (2,'Mariane Cardoso',123456,'mariane@gmail.com','045.652.632-38','2008-12-12',1,NULL,'$2y$10$gTmzNise7cHCyVyQGx6aZOlOe53uHQhHUBPLP61s.g.H8pT0Thsi.'),(6,'gustavo',1234567,'gustavo@gmail.com','070.090.612-62','2025-06-26',1,NULL,'$2y$10$prYKDQaKEeJeu.q.nZUeT.iQ1eIDPKdgq0sqZ/.fjxvrCIYwH.8sy'),(7,'flavia rodrigues de araujo durães',3433608,'flavia.duraes@ifro.edu.br','631.532.202-63','1978-10-28',1,NULL,'$2y$10$h/pr.bWJnh2x7r0ekwMRrOvpQsYuP5TsUY8ZUBLGNC1vMN08GJHue'),(9,'Mariane Cardoso',852963,'mari@gmail.com','111.222.333-44','2008-12-12',2,_binary 'perfil_9_1792856679.jpg','$2y$10$NPu.8HrPojEcxbzV3vECWeW6F5idWv84WZUaPl0FgvM2ivaeDT6ky'),(10,'testee',369852,'teste@gmail.com','111.222.333-44','2000-02-05',2,NULL,'$2y$10$o48AbXjXFvplp3TkHl98LOQuXQX0wXdI7k.PmI3UFREmC7QNRWXd6'),(11,'Laís',2218736,'laislinda@gmail.com','000.000.000-00','2008-02-01',1,NULL,'$2y$10$dd7ynb0e5Hm/ZDuLabGRPOA4zUs5KjV3Ezo9MXvPe/yvmlmMOAWHq'),(12,'MARI',2352353,'cardosomariane451@gmail.com','342.323.252-52','2008-06-16',2,NULL,'$2y$10$y.QdXBowMf8bFyNCRd.GSOAlT.71reN05dQxmaylv6TO0XScZqaSa'),(13,'wdasddvcsdv',4353443,'rafaelcaldeirasan@gmail.com','214.321.534-54','2007-01-01',1,NULL,'$2y$10$lX461G0Du5fkP6UjbDzXhOtWn1xS2jGSQ9Txnsex9afo.lN2F.AIu');
+INSERT INTO `servidor` VALUES (2,'Mariane Cardoso',123456,'mariane@gmail.com','045.652.632-38','2008-12-12',1,NULL,'$2y$10$gTmzNise7cHCyVyQGx6aZOlOe53uHQhHUBPLP61s.g.H8pT0Thsi.','ativo','servidor','2026-10-24 23:46:12'),(6,'gustavo',1234567,'gustavo@gmail.com','070.090.612-62','2025-06-26',1,NULL,'$2y$10$prYKDQaKEeJeu.q.nZUeT.iQ1eIDPKdgq0sqZ/.fjxvrCIYwH.8sy','ativo','servidor','2026-10-24 23:46:12'),(7,'flavia rodrigues de araujo durães',3433608,'flavia.duraes@ifro.edu.br','631.532.202-63','1978-10-28',1,NULL,'$2y$10$h/pr.bWJnh2x7r0ekwMRrOvpQsYuP5TsUY8ZUBLGNC1vMN08GJHue','ativo','servidor','2026-10-24 23:46:12'),(9,'Mariane Cardoso',852963,'mari@gmail.com','111.222.333-44','2008-12-12',2,_binary 'perfil_9_1792856679.jpg','$2y$10$NPu.8HrPojEcxbzV3vECWeW6F5idWv84WZUaPl0FgvM2ivaeDT6ky','ativo','servidor','2026-10-24 23:46:12'),(10,'testee',369852,'teste@gmail.com','111.222.333-44','2000-02-05',2,NULL,'$2y$10$o48AbXjXFvplp3TkHl98LOQuXQX0wXdI7k.PmI3UFREmC7QNRWXd6','ativo','servidor','2026-10-24 23:46:12'),(11,'Laís',2218736,'laislinda@gmail.com','000.000.000-00','2008-02-01',1,NULL,'$2y$10$dd7ynb0e5Hm/ZDuLabGRPOA4zUs5KjV3Ezo9MXvPe/yvmlmMOAWHq','ativo','servidor','2026-10-24 23:46:12'),(12,'MARI',2352353,'cardosomariane451@gmail.com','342.323.252-52','2008-06-16',2,NULL,'$2y$10$y.QdXBowMf8bFyNCRd.GSOAlT.71reN05dQxmaylv6TO0XScZqaSa','ativo','servidor','2026-10-24 23:46:12'),(13,'wdasddvcsdv',4353443,'rafaelcaldeirasan@gmail.com','214.321.534-54','2007-01-01',1,NULL,'$2y$10$lX461G0Du5fkP6UjbDzXhOtWn1xS2jGSQ9Txnsex9afo.lN2F.AIu','ativo','servidor','2026-10-24 23:46:12'),(14,'Admin',1,'admin@ifro.edu.br','000.000.000-01','2000-01-01',1,NULL,'$2y$10$M03KLdjd/4bjmxg9js/J6u9rOrBkoTGtXOCOrG89ctI5u9WhZ/cdq','ativo','admin','2026-10-24 20:01:41');
 /*!40000 ALTER TABLE `servidor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -445,7 +505,7 @@ CREATE TABLE `telefone` (
   CONSTRAINT `fk_telefone_aluno1` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`),
   CONSTRAINT `fk_telefone_responsavel1` FOREIGN KEY (`resp_id`) REFERENCES `responsavel` (`resp_id`),
   CONSTRAINT `fk_telefone_servidor` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -454,7 +514,7 @@ CREATE TABLE `telefone` (
 
 LOCK TABLES `telefone` WRITE;
 /*!40000 ALTER TABLE `telefone` DISABLE KEYS */;
-INSERT INTO `telefone` VALUES (1,'(96) 99926-2045',2,NULL,NULL),(3,'(69) 98423-4216',6,NULL,NULL),(4,'(69) 99600-4977',7,NULL,NULL),(5,'(69) 99375-9393',9,NULL,NULL),(6,'96 99965-25363',NULL,1,NULL),(7,'65 32365-5896',NULL,NULL,1),(8,'(96) 32145-6987',10,NULL,NULL),(9,'(99) 99999-9999',11,NULL,NULL),(10,'(23) 43423-5254',12,NULL,NULL),(11,'(55) 34345-4335',13,NULL,NULL),(12,'(65) 15656-1515',NULL,2,NULL),(13,'(55) 6555-4548',NULL,NULL,2);
+INSERT INTO `telefone` VALUES (1,'(96) 99926-2045',2,NULL,NULL),(3,'(69) 98423-4216',6,NULL,NULL),(4,'(69) 99600-4977',7,NULL,NULL),(5,'(69) 99375-9393',9,NULL,NULL),(6,'96 99965-25363',NULL,1,NULL),(7,'65 32365-5896',NULL,NULL,1),(8,'(96) 32145-6987',10,NULL,NULL),(9,'(99) 99999-9999',11,NULL,NULL),(10,'(23) 43423-5254',12,NULL,NULL),(11,'(55) 34345-4335',13,NULL,NULL),(12,'(65) 15656-1515',NULL,2,NULL),(13,'(55) 6555-4548',NULL,NULL,2),(14,'(25) 64561-2031',14,NULL,NULL);
 /*!40000 ALTER TABLE `telefone` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -490,7 +550,7 @@ CREATE TABLE `triagem` (
   CONSTRAINT `fk_triagem_aluno1` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`),
   CONSTRAINT `fk_triagem_consulta1` FOREIGN KEY (`cons_id`) REFERENCES `consulta` (`cons_id`),
   CONSTRAINT `fk_triagem_servidor1` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -499,6 +559,7 @@ CREATE TABLE `triagem` (
 
 LOCK TABLES `triagem` WRITE;
 /*!40000 ALTER TABLE `triagem` DISABLE KEYS */;
+INSERT INTO `triagem` VALUES (2,NULL,9,2,NULL,'Satisfeito','Quando você olha no espelho, você fica:',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(3,NULL,9,2,NULL,'Motivado','Diariamente você se sente:',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(4,NULL,9,2,NULL,'tudo','O que você mais gosta em si mesmo?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(5,NULL,9,2,NULL,'ler','Qual é o seu hobby? (O que você mais gosta de fazer?)',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(6,NULL,9,2,NULL,'Sim','Você possui algum objetivo de vida?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(7,NULL,9,2,NULL,'Bons / Motivadores / Esperançosos','Geralmente, como são seus pensamentos?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(8,NULL,9,2,NULL,'Sim','Você já teve a sua primeira menstruação?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(9,NULL,9,2,NULL,'Não','Durante seu período menstrual, você sente cólicas?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(10,NULL,9,2,NULL,'2 -','Qual a intensidade das cólicas?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(11,NULL,9,2,NULL,'Não','Costuma tomar alguma medicação para cólicas?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(12,NULL,9,2,NULL,'Não','Você já foi em alguma consulta Ginecológica?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37');
 /*!40000 ALTER TABLE `triagem` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -537,4 +598,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-24 12:42:37
+-- Dump completed on 2026-10-24 20:46:54

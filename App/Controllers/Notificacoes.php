@@ -20,7 +20,15 @@ class Notificacoes extends Controller
 
     public function __construct()
     {
+        if (!isset($_SESSION['usuario_id'])) {
+            URL::redirecionar('usuarios/login');
+            exit;
+        }
+
         $this->notificacaoModel = $this->model('Notificacao');
+        if (empty($_SESSION['csrf_token_notificacoes'])) {
+            $_SESSION['csrf_token_notificacoes'] = bin2hex(random_bytes(32));
+        }
     }
 
 
@@ -40,17 +48,11 @@ class Notificacoes extends Controller
         // VERIFICA SE EXISTE UM USUÁRIO LOGADO
         // =====================================================
 
-        if (!isset($_SESSION['usuario_id'])) {
-            header('Location: ' . URL . '/login');
-            exit;
-        }
-
-
         // =====================================================
         // PEGA O ID DO USUÁRIO LOGADO
         // =====================================================
 
-        $usuario_id = $_SESSION['usuario_id'];
+        $usuario_id = (int) $_SESSION['usuario_id'];
 
 
         // =====================================================
@@ -102,6 +104,7 @@ class Notificacoes extends Controller
         $dados['pesquisa'] = $pesquisa;
         $dados['data'] = $data;
         $dados['status'] = $status;
+        $dados['csrf_token'] = $_SESSION['csrf_token_notificacoes'];
 
 
         // =====================================================
@@ -123,9 +126,10 @@ class Notificacoes extends Controller
 
     public function detalhe($id)
     {
-        // Busca a notificação pelo ID.
-        $notificacao =
-            $this->model('Notificacao')->buscarPorId($id);
+        $notificacao = $this->notificacaoModel->buscarPorId(
+            (int) $id,
+            (int) $_SESSION['usuario_id']
+        );
 
 
         // =====================================================
@@ -151,7 +155,8 @@ class Notificacoes extends Controller
         // =====================================================
 
         $dados = [
-            'notificacao' => $notificacao
+            'notificacao' => $notificacao,
+            'csrf_token' => $_SESSION['csrf_token_notificacoes'],
         ];
 
 
@@ -171,14 +176,18 @@ class Notificacoes extends Controller
 
     public function excluir($id)
     {
+        $this->validarPostComToken();
+
         // Carrega o Model de notificações.
         $notificacaoModel =
             $this->model('Notificacao');
 
 
         // Busca a notificação antes de tentar excluir.
-        $notificacao =
-            $notificacaoModel->buscarPorId($id);
+        $notificacao = $notificacaoModel->buscarPorId(
+            (int) $id,
+            (int) $_SESSION['usuario_id']
+        );
 
 
         // =====================================================
@@ -203,7 +212,10 @@ class Notificacoes extends Controller
         // =====================================================
 
         if (
-            $notificacaoModel->excluirNotificacao($id)
+            $notificacaoModel->excluirNotificacao(
+                (int) $id,
+                (int) $_SESSION['usuario_id']
+            )
         ) {
 
             // Se deu certo, volta para a página.
@@ -232,27 +244,12 @@ class Notificacoes extends Controller
 
     public function marcarComoLida($id)
     {
-        // =====================================================
-        // VERIFICA SE O USUÁRIO ESTÁ LOGADO
-        // =====================================================
+        $this->validarPostComToken();
 
-        if (!isset($_SESSION['usuario_id'])) {
-
-            header(
-                'Location: ' .
-                URL .
-                '/usuarios/login'
-            );
-
-            exit;
-        }
-
-
-        // =====================================================
-        // MARCA A NOTIFICAÇÃO COMO LIDA
-        // =====================================================
-
-        $this->notificacaoModel->marcarComoLida($id);
+        $this->notificacaoModel->marcarComoLida(
+            (int) $id,
+            (int) $_SESSION['usuario_id']
+        );
 
 
         // =====================================================
@@ -266,5 +263,18 @@ class Notificacoes extends Controller
         );
 
         exit;
+    }
+
+    private function validarPostComToken(): void
+    {
+        $token = (string) ($_POST['csrf_token'] ?? '');
+        if (
+            $_SERVER['REQUEST_METHOD'] !== 'POST'
+            || $token === ''
+            || !hash_equals($_SESSION['csrf_token_notificacoes'], $token)
+        ) {
+            http_response_code(403);
+            exit('Requisição inválida.');
+        }
     }
 }

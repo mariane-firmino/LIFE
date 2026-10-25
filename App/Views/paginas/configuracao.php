@@ -835,96 +835,68 @@ html.fonte-extra-grande {
                         </div>
 
 
-                        <div class="row row-cols-2 border-top p-2">
-
-                            <div class="col">
-                                <b>Avisos de Consulta</b>
+                        <?php if (!empty($_SESSION['configuracao_mensagem'])): ?>
+                            <div class="alert alert-<?= htmlspecialchars($_SESSION['configuracao_tipo_mensagem'] ?? 'info') ?>">
+                                <?= htmlspecialchars($_SESSION['configuracao_mensagem']) ?>
                             </div>
+                            <?php unset($_SESSION['configuracao_mensagem'], $_SESSION['configuracao_tipo_mensagem']); ?>
+                        <?php endif; ?>
 
-                            <div class="col">
+                        <form method="post" action="<?= URL ?>/paginas/salvarPreferenciasNotificacao">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($dados['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
+                            <p class="text-muted small">
+                                Alertas internos permanecem ativos. E-mails opcionais começam desativados e não incluem dados clínicos; avisos essenciais da conta podem ser enviados independentemente destas opções.
+                            </p>
 
-                                <div class="form-check form-switch float-end">
-
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id="notificacaoConsulta"
-                                    >
-
+                            <div class="row row-cols-2 border-top p-2">
+                                <div class="col"><b>Avisos de consulta por e-mail</b></div>
+                                <div class="col">
+                                    <div class="form-check form-switch float-end">
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            id="notificacaoConsulta"
+                                            name="email_consultas"
+                                            value="1"
+                                            <?= !empty($dados['preferencias_email']->email_consultas) ? 'checked' : '' ?>>
+                                    </div>
                                 </div>
-
                             </div>
 
-                        </div>
-
-
-                        <div class="row row-cols-2 border-top p-2">
-
-                            <div class="col">
-                                <b>Novas Triagens</b>
-                            </div>
-
-                            <div class="col">
-
-                                <div class="form-check form-switch float-end">
-
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id="notificacaoTriagem"
-                                    >
-
+                            <div class="row row-cols-2 border-top p-2">
+                                <div class="col"><b>Novas triagens por e-mail</b></div>
+                                <div class="col">
+                                    <div class="form-check form-switch float-end">
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            id="notificacaoTriagem"
+                                            name="email_triagens"
+                                            value="1"
+                                            <?= !empty($dados['preferencias_email']->email_triagens) ? 'checked' : '' ?>>
+                                    </div>
                                 </div>
-
                             </div>
 
-                        </div>
-
-
-                        <div class="row row-cols-2 border-top p-2">
-
-                            <div class="col">
-                                <b>Relatórios Prontos</b>
-                            </div>
-
-                            <div class="col">
-
-                                <div class="form-check form-switch float-end">
-
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id="notificacaoRelatorio"
-                                    >
-
+                            <?php if (!empty($dados['is_admin'])): ?>
+                                <div class="row row-cols-2 border-top p-2">
+                                    <div class="col"><b>Novos cadastros para administradores</b></div>
+                                    <div class="col">
+                                        <div class="form-check form-switch float-end">
+                                            <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                id="notificacaoCadastros"
+                                                name="email_cadastros"
+                                                value="1"
+                                                <?= !empty($dados['preferencias_email']->email_cadastros) ? 'checked' : '' ?>>
+                                        </div>
+                                    </div>
                                 </div>
+                            <?php endif; ?>
 
-                            </div>
-
-                        </div>
-
-
-                        <div class="row row-cols-2 border-top p-2">
-
-                            <div class="col">
-                                <b>Comunicados Gerais</b>
-                            </div>
-
-                            <div class="col">
-
-                                <div class="form-check form-switch float-end">
-
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id="notificacaoComunicados"
-                                    >
-
-                                </div>
-
-                            </div>
-
-                        </div>
+                            <button type="submit" class="btn btn-success mt-3">Salvar preferências</button>
+                        </form>
 
                     </div>
 

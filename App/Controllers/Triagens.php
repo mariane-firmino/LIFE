@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__DIR__) . '/Libraries/NotificationService.php';
+
 class Triagens extends Controller
 {
     // =========================================================
@@ -10,6 +12,7 @@ class Triagens extends Controller
 
     private $alunoModel;
     private $triagemModel;
+    private $notificationService;
 
 
     // =========================================================
@@ -22,6 +25,7 @@ class Triagens extends Controller
     {
         $this->alunoModel = $this->model('Aluno');
         $this->triagemModel = $this->model('Triagem');
+        $this->notificationService = new NotificationService($this->model('Notificacao'));
     }
 
 
@@ -255,6 +259,14 @@ class Triagens extends Controller
         // -----------------------------------------------------
 
         if ($this->triagemModel->salvar($id, (int) $_SESSION['usuario_id'], $respostas)) {
+
+            $this->notificationService->avisarUsuariosAtivos(
+                'triagem',
+                'Nova triagem registrada',
+                'Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',
+                'alunos/consulta',
+                (int) $_SESSION['usuario_id']
+            );
 
             // Sucesso: vai para o perfil do aluno.
             Sessao::mensagem('alunos', 'Triagem salva com sucesso');

@@ -34,7 +34,7 @@ $cards = [
     [
         'classe' => 'home-card--periodicos',
         'icone'  => 'bi-calendar2-check-fill',
-        'titulo' => 'Atendimentos periódicos',
+        'titulo' => 'Atendimentos periódicos no mês',
         'valor'  => (int) ($dados['atendimentos_periodicos'] ?? 0),
     ],
 ];

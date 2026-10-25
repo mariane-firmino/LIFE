@@ -56,6 +56,15 @@ if (!function_exists('opcoes')) {
 
 
 // ---------------------------------------------------------------------
+// LISTAS DO ADMINISTRADOR
+// Opções dos <select> (curso, turno, ano da turma, tipo de escola...).
+// Vêm do Controller (Alunos::listasOpcoes) e são definidas na página
+// "Informações do sistema" do administrador. O servidor só escolhe.
+// ---------------------------------------------------------------------
+$listas = $dados['listas'] ?? [];
+
+
+// ---------------------------------------------------------------------
 // DEFINIÇÃO DAS ABAS
 // "campos" = campos da aba que podem receber mensagem de erro do
 // Controller. Serve para (1) abrir a aba com erro e (2) marcar a aba
@@ -67,7 +76,7 @@ $abas = [
         'titulo' => 'Dados do aluno',
         'icone' => 'bi-person-fill',
         'campos' => ['nome', 'data_nascimento', 'curso', 'turno', 'ano_turma', 'sexo', 'matricula',
-                     'telefone_aluno', 'tipo_sanguineo', 'altura', 'peso', 'foto'],
+                     'telefone_aluno', 'tipo_sanguineo', 'altura', 'peso'],
     ],
     [
         'id' => 'responsavel',
@@ -162,7 +171,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
 
             <!-- novalidate: a validação é feita pelo JavaScript no final desta página
                  (assim ele consegue abrir a aba certa quando falta algum campo) -->
-            <form id="formCadastroAluno" method="post" action="<?= URL ?>/alunos/cadastrar" enctype="multipart/form-data" novalidate>
+            <form id="formCadastroAluno" method="post" action="<?= URL ?>/alunos/cadastrar" novalidate>
 
                 <!-- ============================= MENU DAS ABAS ============================= -->
                 <ul class="nav nav-tabs flex-nowrap overflow-x-auto" id="abasCadastro" role="tablist">
@@ -193,37 +202,6 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                     <div class="tab-pane <?= $abaAtiva === 0 ? 'show active' : '' ?>" id="aba-aluno" role="tabpanel" aria-labelledby="aba-aluno-tab" tabindex="0">
                         <div class="row g-3">
 
-                            <!-- Foto do aluno (opcional) -->
-                            <div class="col-12">
-                                <div class="d-flex align-items-center gap-3 flex-wrap">
-                                    <img id="previewFoto"
-                                        src="<?= URL ?>/img/user.avif"
-                                        data-padrao="<?= URL ?>/img/user.avif"
-                                        alt="Pré-visualização da foto do aluno"
-                                        class="rounded-circle border border-3 border-success-subtle"
-                                        style="width: 130px; height: 130px; object-fit: cover;">
-
-                                    <div>
-                                        <label for="inputFoto" class="form-label d-block mb-1">Foto do aluno (opcional)</label>
-
-                                        <input type="file" name="foto" id="inputFoto" class="d-none"
-                                            accept="image/jpeg,image/png,image/webp">
-
-                                        <div class="d-flex flex-wrap gap-2">
-                                            <label for="inputFoto" class="btn btn-outline-success btn-sm fw-bold mb-0">
-                                                <i class="bi bi-camera-fill me-1" aria-hidden="true"></i> Escolher foto
-                                            </label>
-                                            <button type="button" id="btnRemoverFoto" class="btn btn-outline-danger btn-sm d-none">
-                                                <i class="bi bi-trash-fill me-1" aria-hidden="true"></i> Remover
-                                            </button>
-                                        </div>
-
-                                        <div class="form-text">JPG, PNG ou WEBP, até 5 MB.</div>
-                                        <?php erro($dados, 'foto'); ?>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="col-md-6">
                                 <label for="inputnomealuno" class="form-label">Nome aluno <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="inputnomealuno" name="nome" required value="<?= valor($dados, 'nome') ?>">
@@ -238,14 +216,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                                 <label for="inputcurso" class="form-label">Curso <span class="text-danger">*</span></label>
                                 <select id="inputcurso" class="form-select" name="curso" required>
                                     <option value="" disabled <?= empty($dados['curso']) ? 'selected' : '' ?>>Escolha seu curso</option>
-                                    <?php opcoes($dados['curso'] ?? '', [
-                                        'Técnico em informática',
-                                        'Manutenção e Suporte em Informática',
-                                        'Biotecnologia',
-                                        'Enfermagem',
-                                        'Licenciatura em Ciências',
-                                        'Licenciatura em Biologia',
-                                    ]); ?>
+                                    <?php opcoes($dados['curso'] ?? '', $listas['curso'] ?? []); ?>
                                 </select>
                                 <?php erro($dados, 'curso'); ?>
                             </div>
@@ -253,15 +224,16 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                                 <label for="inputturno" class="form-label">Turno <span class="text-danger">*</span></label>
                                 <select id="inputturno" class="form-select" name="turno" required>
                                     <option value="" disabled <?= empty($dados['turno']) ? 'selected' : '' ?>>Escolha seu turno</option>
-                                    <?php opcoes($dados['turno'] ?? '', ['Matutino', 'Vespertino', 'Noturno']); ?>
+                                    <?php opcoes($dados['turno'] ?? '', $listas['turno'] ?? []); ?>
                                 </select>
                                 <?php erro($dados, 'turno'); ?>
                             </div>
                             <div class="col-md-2">
                                 <label for="inputanoturma" class="form-label">Ano da turma <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="inputanoturma" name="ano_turma" maxlength="2"
-                                    pattern="\d{2}" title="Informe 2 dígitos (ex: 26)" required
-                                    placeholder="Ex: 26" value="<?= valor($dados, 'ano_turma') ?>">
+                                <select id="inputanoturma" class="form-select" name="ano_turma" required>
+                                    <option value="" disabled <?= empty($dados['ano_turma']) ? 'selected' : '' ?>>Ano</option>
+                                    <?php opcoes($dados['ano_turma'] ?? '', $listas['ano_turma'] ?? []); ?>
+                                </select>
                                 <?php erro($dados, 'ano_turma'); ?>
                             </div>
                             <div class="col-md-6">
@@ -329,19 +301,14 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                                 <label for="inputtipoescola" class="form-label">Tipo de escola que estudou antes do IFRO:</label>
                                 <select id="inputtipoescola" class="form-select" name="tipo_escola">
                                     <option value="" disabled <?= empty($dados['tipo_escola']) ? 'selected' : '' ?>>Escolha o tipo de escola</option>
-                                    <?php opcoes($dados['tipo_escola'] ?? '', ['Escola pública', 'Escola privada', 'Escola estadual']); ?>
+                                    <?php opcoes($dados['tipo_escola'] ?? '', $listas['tipo_escola'] ?? []); ?>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label for="inputporquenao" class="form-label">Porque escolheu o IFRO para estudar?</label>
                                 <select id="inputporquenao" class="form-select" name="motivo_ifro">
                                     <option value="" disabled <?= empty($dados['motivo_ifro']) ? 'selected' : '' ?>>Escolha o motivo</option>
-                                    <?php opcoes($dados['motivo_ifro'] ?? '', [
-                                        'Qualidade do ensino',
-                                        'Proximidade da escola',
-                                        'Programa de bolsas',
-                                        'Recomendação de outros',
-                                    ]); ?>
+                                    <?php opcoes($dados['motivo_ifro'] ?? '', $listas['motivo_ifro'] ?? []); ?>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -440,7 +407,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                                 <label for="inputacessosaude" class="form-label">Como é realizado seu acesso ao serviço de saúde?</label>
                                 <select id="inputacessosaude" class="form-select" name="acesso_saude">
                                     <option value="" disabled <?= empty($dados['acesso_saude']) ? 'selected' : '' ?>>Escolha</option>
-                                    <?php opcoes($dados['acesso_saude'] ?? '', ['SUS', 'Privado', 'Convênio']); ?>
+                                    <?php opcoes($dados['acesso_saude'] ?? '', $listas['acesso_saude'] ?? []); ?>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -711,57 +678,6 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
         // "Limpar formulário" volta para a primeira aba.
         form.addEventListener('reset', function () {
             setTimeout(function () { ir(0); }, 0);
-        });
-    });
-</script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var form = document.getElementById('formCadastroAluno');
-        var input = document.getElementById('inputFoto');
-        var preview = document.getElementById('previewFoto');
-        var btnTirar = document.getElementById('btnRemoverFoto');
-        var padrao = preview.getAttribute('data-padrao');
-        var urlAtual = null;
-
-        function voltarPadrao() {
-            if (urlAtual) {
-                URL.revokeObjectURL(urlAtual);
-                urlAtual = null;
-            }
-            preview.src = padrao;
-            btnTirar.classList.add('d-none');
-        }
-
-        input.addEventListener('change', function () {
-            var arquivo = input.files[0];
-            if (!arquivo) {
-                voltarPadrao();
-                return;
-            }
-
-            if (arquivo.size > 5 * 1024 * 1024) {
-                alert('A imagem deve ter no máximo 5 MB.');
-                input.value = '';
-                voltarPadrao();
-                return;
-            }
-
-            if (urlAtual) {
-                URL.revokeObjectURL(urlAtual);
-            }
-            urlAtual = URL.createObjectURL(arquivo);
-            preview.src = urlAtual;
-            btnTirar.classList.remove('d-none');
-        });
-
-        btnTirar.addEventListener('click', function () {
-            input.value = '';
-            voltarPadrao();
-        });
-
-        form.addEventListener('reset', function () {
-            setTimeout(voltarPadrao, 0);
         });
     });
 </script>
