@@ -73,10 +73,10 @@ class EmailSender
         require_once $autoload;
 
         $host = getenv('LIFE_SMTP_HOST') ?: 'smtp.gmail.com';
-        $usuario = getenv('LIFE_SMTP_USERNAME') ?: '';
-        $senha = getenv('LIFE_SMTP_PASSWORD') ?: '';
+        $usuario = getenv('LIFE_SMTP_USERNAME') ?: 'enfermariaifro@gmail.com';
+        $senha = getenv('LIFE_SMTP_PASSWORD') ?: 'kekf kxtf ykxp iqyw';
         $remetente = getenv('LIFE_SMTP_FROM') ?: $usuario;
-        $nomeRemetente = getenv('LIFE_SMTP_FROM_NAME') ?: 'Enfermaria IFRO';
+        $nomeRemetente = getenv('LIFE_SMTP_FROM_NAME') ?: 'LIFE IFRO';
         $porta = (int) (getenv('LIFE_SMTP_PORT') ?: 587);
         $seguranca = strtolower(getenv('LIFE_SMTP_SECURE') ?: 'tls');
 
@@ -112,7 +112,7 @@ class EmailSender
 
             return true;
         } catch (\PHPMailer\PHPMailer\Exception $e) {
-            error_log('Falha ao enviar e-mail: ' . $e->getMessage());
+            error_log('Falha ao enviar e-mail: ' . $mail->ErrorInfo);
             return false;
         }
     }

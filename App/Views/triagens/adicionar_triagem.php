@@ -13,16 +13,20 @@ $totalPerguntas = count($perguntas);
 $rotaSalvar = $tipo === 'masculina' ? 'salvarTriagemMasculina' : 'salvarTriagemFeminina';
 ?>
 <div class="layout">
-    <div class="container-fluid ps-4 pe-4 pt-5 pb-3">
-        <div class="row align-items-start">
-            <div class="col-8 linha-verde">
+    <!-- CABEÇALHO -->
+    <div class="container-fluid px-4 pt-5 pb-3">
+
+        <header class="home-topo">
+
+            <div class="home-titulo">
                 <h1>Triagem do Estudante</h1>
                 <p>Preencha a triagem de <?= htmlspecialchars($dados['aluno_nome'], ENT_QUOTES, 'UTF-8') ?>.</p>
             </div>
-            <div class="col-4 text-end">
-                <img src="<?= URL ?>/img/logo_enfermaria.jpeg" class="logo-home" alt="Logo">
-            </div>
-        </div>
+
+            <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
+
+        </header>
+
     </div>
 
     <form action="<?= URL ?>/triagens/<?= $rotaSalvar ?>/<?= (int) $dados['aluno_id'] ?>" method="POST">
