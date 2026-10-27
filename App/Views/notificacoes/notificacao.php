@@ -75,7 +75,7 @@ include '../App/Views/menu.php';
                     <input
                         class="form-control"
                         type="text"
-                        name="pesquisa"
+                        name="pesquisa" maxlength="100"
                         value="<?= htmlspecialchars($dados['pesquisa'] ?? '') ?>"
                         placeholder="Pesquise alguma coisa"
                         aria-label="Pesquise alguma coisa">

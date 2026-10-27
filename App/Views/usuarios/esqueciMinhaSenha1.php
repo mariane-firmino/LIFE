@@ -57,7 +57,7 @@
                 <input
                     type="email"
                     id="email"
-                    name="email"
+                    name="email" maxlength="225"
                     placeholder="Digite seu e-mail"
                     value="<?= htmlspecialchars($dados['email'] ?? '') ?>"
                     required

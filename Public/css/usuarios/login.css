@@ -20,7 +20,7 @@
 
 .invalid-feedback {
     color: #dc3545;
-    font-size: 14px;
+    font-size: 0.875rem;
     margin-top: 5px;
 }
 
@@ -84,7 +84,7 @@
     border-radius: 6px;
     background: #d90d0d;
     color: white;
-    font-size: 18px;
+    font-size: 1.125rem;
     cursor: pointer;
     transition: .3s;
 }
@@ -96,7 +96,7 @@
 .links {
     margin-top: 40px;
     color: white;
-    font-size: 14px;
+    font-size: 0.875rem;
 }
 
 .links p {
@@ -139,7 +139,7 @@
 
     .lado-form h2 {
         margin-bottom: 30px;
-        font-size: 28px;
+        font-size: 1.75rem;
     }
 
 }

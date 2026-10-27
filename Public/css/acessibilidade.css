@@ -22,14 +22,34 @@ html.fonte-extra-grande {
     font-size: 150%;
 }
 
+/* =========================================================
+   ACESSIBILIDADE   ->   Public/css/acessibilidade.css
+   As classes são colocadas por Public/js/acessibilidade.js:
+   - no <html>: tamanho do texto (fonte-*) e data-bs-theme;
+   - no <body>: tema-escuro e as opções a11y-* / acessibilidade-*.
+   ========================================================= */
+
+/* ---------- Destacar links ---------- */
 body.acessibilidade-links a {
     text-decoration: underline !important;
+    text-decoration-thickness: 2px !important;
+    text-underline-offset: 3px;
     font-weight: bold !important;
 }
 
-body.acessibilidade-espacamento {
-    line-height: 2 !important;
-    letter-spacing: .5px;
+/* ---------- Maior espaçamento (baseado na regra de espaçamento de texto da WCAG) ---------- */
+body.acessibilidade-espacamento,
+body.acessibilidade-espacamento p,
+body.acessibilidade-espacamento li,
+body.acessibilidade-espacamento td,
+body.acessibilidade-espacamento label {
+    line-height: 1.9 !important;
+    letter-spacing: .04em !important;
+    word-spacing: .14em !important;
+}
+
+body.acessibilidade-espacamento p {
+    margin-bottom: 1.2em;
 }
 
 body.acessibilidade-espacamento .row {
@@ -94,12 +114,78 @@ body.tema-escuro .linha-verde {
     border-color: #66d19e !important;
 }
 
-body.tema-escuro a {
+/* Áreas de conteúdo com fundo branco fixo (ex.: tela inicial). */
+body.tema-escuro .conteudo,
+body.tema-escuro main {
+    background-color: #121212 !important;
+    color: #e8e8e8;
+}
+
+/* Telas de entrada: login, cadastro e "esqueci a senha". */
+body.tema-escuro .container-login,
+body.tema-escuro .main_ems {
+    background: linear-gradient(90deg, #0b1f14, #0f3d22) !important;
+}
+
+body.tema-escuro .card-login,
+body.tema-escuro .lado-logo,
+body.tema-escuro .container_esqueci_minha_seha,
+body.tema-escuro .left_esqueci_minha_seha {
+    background-color: #1e1e1e !important;
+    color: #e8e8e8;
+}
+
+/* O logo foi desenhado para fundo branco: ganha uma "plaquinha" branca. */
+body.tema-escuro .lado-logo img,
+body.tema-escuro .left_esqueci_minha_seha img,
+body.tema-escuro .container-login .bg-white img {
+    background: #fff;
+    border-radius: 16px;
+    padding: 10px;
+}
+
+/* Links sobre os painéis verdes */
+body.tema-escuro .links a,
+body.tema-escuro .lado-form a,
+body.tema-escuro .bg-success a,
+body.tema-escuro .right_esqueci_minha_seha a {
+    color: #d6f1ff !important;
+}
+
+/* Links de texto (botões em forma de link mantêm a cor do botão). */
+body.tema-escuro a:not(.btn):not(.nav-link):not(.dropdown-item) {
     color: #66d19e;
 }
 
-body.tema-escuro a:hover {
+body.tema-escuro a:not(.btn):not(.nav-link):not(.dropdown-item):hover {
     color: #8ae5b8;
+}
+
+/* Selos claros (text-bg-light) */
+body.tema-escuro .text-bg-light {
+    background-color: #2b2b2b !important;
+    color: #e8e8e8 !important;
+}
+
+/* Botões claros (btn-light) ficam escuros no tema escuro. */
+body.tema-escuro .btn-light {
+    background-color: #2b2b2b !important;
+    border-color: #444 !important;
+    color: #e8e8e8 !important;
+}
+
+body.tema-escuro .btn-light:hover {
+    background-color: #353535 !important;
+    color: #fff !important;
+}
+
+/* Botões verdes: verde mais escuro para o texto branco ter contraste. */
+body.tema-escuro .btn-success {
+    --bs-btn-bg: #198754;
+    --bs-btn-border-color: #198754;
+    --bs-btn-hover-bg: #146c43;
+    --bs-btn-hover-border-color: #146c43;
+    color: #fff !important;
 }
 
 body.tema-escuro .border,
@@ -220,4 +306,659 @@ body.tema-escuro .btn-outline-secondary {
 body.tema-escuro .btn-outline-secondary:hover {
     background-color: #333;
     color: #fff;
+}
+
+
+/* =========================================================
+   FONTE MAIS LEGÍVEL (Atkinson Hyperlegible)
+   Os ícones usam ::before com a fonte deles, então não são afetados.
+   ========================================================= */
+
+body.a11y-fonte-legivel,
+body.a11y-fonte-legivel *:not(code):not(pre) {
+    font-family: "Atkinson Hyperlegible", Verdana, Tahoma, sans-serif !important;
+}
+
+
+/* =========================================================
+   CURSOR GRANDE
+   ========================================================= */
+
+body.a11y-cursor-grande,
+body.a11y-cursor-grande * {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 24 24'%3E%3Cpath d='M4 2l15.5 10.2-7 1.4 4 7.6-3 1.6-4-7.6L4 19.6z' fill='%23111' stroke='%23fff' stroke-width='1.4' stroke-linejoin='round'/%3E%3C/svg%3E") 6 3, auto !important;
+}
+
+body.a11y-cursor-grande a,
+body.a11y-cursor-grande a *,
+body.a11y-cursor-grande button,
+body.a11y-cursor-grande button *,
+body.a11y-cursor-grande label,
+body.a11y-cursor-grande select,
+body.a11y-cursor-grande .btn,
+body.a11y-cursor-grande [role="button"],
+body.a11y-cursor-grande .form-check-input {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 24 24'%3E%3Cpath d='M4 2l15.5 10.2-7 1.4 4 7.6-3 1.6-4-7.6L4 19.6z' fill='%23ffd400' stroke='%23111' stroke-width='1.4' stroke-linejoin='round'/%3E%3C/svg%3E") 6 3, pointer !important;
+}
+
+body.a11y-cursor-grande input:not([type="checkbox"]):not([type="radio"]),
+body.a11y-cursor-grande textarea {
+    cursor: text !important;
+}
+
+
+/* =========================================================
+   DESTACAR FOCO DO TECLADO
+   ========================================================= */
+
+body.a11y-foco :focus-visible,
+body.a11y-foco .form-check-input:focus,
+body.a11y-foco .btn-check:focus-visible + .btn {
+    outline: 4px solid #ffbf00 !important;
+    outline-offset: 3px !important;
+    box-shadow: 0 0 0 7px rgba(0, 0, 0, .85) !important;
+}
+
+
+/* =========================================================
+   REDUZIR ANIMAÇÕES
+   ========================================================= */
+
+body.a11y-sem-animacao *,
+body.a11y-sem-animacao *::before,
+body.a11y-sem-animacao *::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+}
+
+html:has(body.a11y-sem-animacao) {
+    scroll-behavior: auto !important;
+}
+
+
+/* =========================================================
+   GUIA DE LEITURA (faixa que segue o mouse)
+   ========================================================= */
+
+.a11y-guia {
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 40%;
+    height: 2.6em;
+    z-index: 1090;
+    pointer-events: none;
+    border-top: 3px solid #ffbf00;
+    border-bottom: 3px solid #ffbf00;
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .38);
+}
+
+body.a11y-guia-ativa .a11y-guia {
+    display: block;
+}
+
+@media (hover: none) {
+    body.a11y-guia-ativa .a11y-guia { display: none; }
+}
+
+
+/* =========================================================
+   BOTÃO "OUVIR" (ler texto selecionado)
+   ========================================================= */
+
+.a11y-ouvir {
+    position: fixed;
+    z-index: 1095;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   ALTO CONTRASTE
+   Regra geral: fundo preto, texto branco, links e botões em amarelo.
+   Imagens, vídeos e o VLibras ficam como estão.
+
+   A regra geral é forte de propósito (vence as cores "!important" das
+   páginas). As exceções usam a classe repetida
+   (.a11y-alto-contraste.a11y-alto-contraste) para ficarem ainda mais fortes.
+   ========================================================= */
+
+body.a11y-alto-contraste,
+body.a11y-alto-contraste *:not(img, svg, svg *, video, canvas, [vw], [vw] *, .a11y-guia) {
+    background-color: #000 !important;
+    background-image: none !important;
+    color: #fff !important;
+    border-color: #fff !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+/* Sem transição de cor: a troca para amarelo/preto é imediata. */
+body.a11y-alto-contraste * {
+    transition: none !important;
+}
+
+/* Links */
+body.a11y-alto-contraste.a11y-alto-contraste a,
+body.a11y-alto-contraste.a11y-alto-contraste a *,
+body.a11y-alto-contraste.a11y-alto-contraste .btn-link {
+    color: #ffeb3b !important;
+    text-decoration: underline !important;
+}
+
+/* Botões, abas, itens de menu e paginação: contorno e texto amarelos */
+body.a11y-alto-contraste.a11y-alto-contraste .btn,
+body.a11y-alto-contraste.a11y-alto-contraste .nav-link,
+body.a11y-alto-contraste.a11y-alto-contraste .dropdown-item,
+body.a11y-alto-contraste.a11y-alto-contraste .page-link,
+body.a11y-alto-contraste.a11y-alto-contraste .fc-button,
+body.a11y-alto-contraste.a11y-alto-contraste button:not(.btn-close):not(.form-check-input):not(.a11y-botao) {
+    background-color: #000 !important;
+    border: 2px solid #ffeb3b !important;
+    color: #ffeb3b !important;
+    text-decoration: none !important;
+}
+
+body.a11y-alto-contraste.a11y-alto-contraste .btn *,
+body.a11y-alto-contraste.a11y-alto-contraste .nav-link *,
+body.a11y-alto-contraste.a11y-alto-contraste .dropdown-item *,
+body.a11y-alto-contraste.a11y-alto-contraste .fc-button *,
+body.a11y-alto-contraste.a11y-alto-contraste button:not(.btn-close):not(.form-check-input):not(.a11y-botao) * {
+    color: inherit !important;
+    background-color: transparent !important;
+}
+
+/* Selecionado, ativo ou com o mouse em cima: amarelo com texto preto */
+body.a11y-alto-contraste.a11y-alto-contraste .btn:hover,
+body.a11y-alto-contraste.a11y-alto-contraste .btn.active,
+body.a11y-alto-contraste.a11y-alto-contraste .btn-check:checked + .btn,
+body.a11y-alto-contraste.a11y-alto-contraste .nav-link.active,
+body.a11y-alto-contraste.a11y-alto-contraste .nav-link:hover,
+body.a11y-alto-contraste.a11y-alto-contraste .dropdown-item:hover,
+body.a11y-alto-contraste.a11y-alto-contraste .fc-button-active,
+body.a11y-alto-contraste.a11y-alto-contraste .fc-button:hover,
+body.a11y-alto-contraste.a11y-alto-contraste button:not(.btn-close):not(.form-check-input):not(.a11y-botao):hover {
+    background-color: #ffeb3b !important;
+    color: #000 !important;
+}
+
+/* Campos de formulário */
+body.a11y-alto-contraste.a11y-alto-contraste input,
+body.a11y-alto-contraste.a11y-alto-contraste select,
+body.a11y-alto-contraste.a11y-alto-contraste textarea,
+body.a11y-alto-contraste.a11y-alto-contraste .form-control,
+body.a11y-alto-contraste.a11y-alto-contraste .form-select {
+    border: 2px solid #fff !important;
+    color: #fff !important;
+    background-color: #000 !important;
+}
+
+body.a11y-alto-contraste.a11y-alto-contraste ::placeholder {
+    color: #d0d0d0 !important;
+    opacity: 1;
+}
+
+body.a11y-alto-contraste.a11y-alto-contraste .form-check-input:checked {
+    background-color: #ffeb3b !important;
+    border-color: #ffeb3b !important;
+}
+
+body.a11y-alto-contraste.a11y-alto-contraste .form-switch .form-check-input {
+    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+    background-image: var(--bs-form-switch-bg) !important;
+}
+
+body.a11y-alto-contraste.a11y-alto-contraste .form-switch .form-check-input:checked {
+    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23000'/%3e%3c/svg%3e");
+}
+
+body.a11y-alto-contraste.a11y-alto-contraste .form-check-input[type="checkbox"]:not([role="switch"]):checked,
+body.a11y-alto-contraste.a11y-alto-contraste .form-check-input[type="radio"]:checked {
+    background-image: var(--bs-form-check-bg-image) !important;
+}
+
+/* Caixas: borda branca para separar do fundo preto */
+body.a11y-alto-contraste.a11y-alto-contraste .badge,
+body.a11y-alto-contraste.a11y-alto-contraste .alert,
+body.a11y-alto-contraste.a11y-alto-contraste .card,
+body.a11y-alto-contraste.a11y-alto-contraste .shadow,
+body.a11y-alto-contraste.a11y-alto-contraste .modal-content,
+body.a11y-alto-contraste.a11y-alto-contraste .dropdown-menu,
+body.a11y-alto-contraste.a11y-alto-contraste table,
+body.a11y-alto-contraste.a11y-alto-contraste th,
+body.a11y-alto-contraste.a11y-alto-contraste td {
+    border: 1px solid #fff !important;
+}
+
+body.a11y-alto-contraste.a11y-alto-contraste :focus-visible {
+    outline: 3px solid #ffeb3b !important;
+    outline-offset: 2px !important;
+}
+
+body.a11y-alto-contraste.a11y-alto-contraste .btn-close {
+    filter: invert(1) !important;
+    background-color: transparent !important;
+    opacity: 1 !important;
+}
+
+/* Botão flutuante de acessibilidade continua reconhecível */
+body.a11y-alto-contraste.a11y-alto-contraste .a11y-botao {
+    background-color: #000 !important;
+    border: 3px solid #ffeb3b !important;
+    color: #ffeb3b !important;
+}
+
+body.a11y-alto-contraste.a11y-alto-contraste .a11y-botao * {
+    color: #ffeb3b !important;
+    background-color: transparent !important;
+}
+
+body.a11y-alto-contraste .a11y-guia {
+    border-color: #ffeb3b;
+}
+
+
+/* =========================================================
+   LINK "PULAR PARA O CONTEÚDO" (aparece ao apertar Tab)
+   ========================================================= */
+
+.a11y-pular {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 2000;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: #06402B;
+    color: #fff !important;
+    font-weight: 700;
+    text-decoration: none;
+    transform: translateY(-160%);
+}
+
+.a11y-pular:focus {
+    transform: none;
+    outline: 3px solid #ffbf00;
+    outline-offset: 2px;
+}
+
+#conteudo-principal:focus {
+    outline: none;
+}
+
+
+/* =========================================================
+   BOTÃO FLUTUANTE
+   ========================================================= */
+
+.a11y-botao {
+    position: fixed;
+    left: calc(16px + env(safe-area-inset-left, 0px));
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    z-index: 1040;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    background: #06402B;
+    color: #fff;
+    font-size: 26px;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
+    cursor: pointer;
+    transition: transform .15s ease;
+}
+
+.a11y-botao:hover {
+    transform: scale(1.06);
+}
+
+.a11y-botao:focus-visible {
+    outline: 3px solid #ffbf00;
+    outline-offset: 3px;
+}
+
+/* Bolinha amarela: há alguma opção de acessibilidade ligada. */
+.a11y-botao--ativo::after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffbf00;
+    border: 2px solid #fff;
+}
+
+
+/* =========================================================
+   PAINEL (rápido e completo usam o mesmo HTML)
+   ========================================================= */
+
+.a11y-painel {
+    --a11y-borda: var(--bs-border-color);
+    color: var(--bs-body-color);
+}
+
+.a11y-painel--rapido {
+    position: fixed;
+    left: calc(16px + env(safe-area-inset-left, 0px));
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+    z-index: 1041;
+    width: min(25rem, calc(100vw - 32px));
+    max-height: min(78vh, 680px);
+    display: flex;
+    flex-direction: column;
+    background: var(--bs-body-bg);
+    border: 1px solid var(--a11y-borda);
+    border-radius: 14px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, .28);
+    font-size: 1rem;
+}
+
+.a11y-painel--rapido[hidden] {
+    display: none !important;
+}
+
+.a11y-painel-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--a11y-borda);
+}
+
+.a11y-painel-titulo {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.a11y-painel-titulo .bi {
+    color: var(--bs-success);
+}
+
+.a11y-painel-corpo {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 4px 16px 14px;
+}
+
+.a11y-grupo + .a11y-grupo {
+    margin-top: 6px;
+}
+
+.a11y-grupo-titulo {
+    margin: 14px 0 4px;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--bs-secondary-color);
+}
+
+.a11y-linha {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    padding: 10px 0;
+    border-top: 1px solid var(--a11y-borda);
+}
+
+.a11y-grupo-titulo + .a11y-linha {
+    border-top: 0;
+}
+
+.a11y-texto {
+    min-width: 0;
+    flex: 1 1 10rem;
+}
+
+/* No painel rápido (estreito), tamanho e tema ficam embaixo do título. */
+.a11y-painel--rapido .a11y-linha--fonte,
+.a11y-painel--rapido .a11y-linha--tema {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.a11y-painel--rapido .a11y-linha--fonte .a11y-texto,
+.a11y-painel--rapido .a11y-linha--tema .a11y-texto {
+    flex: none;
+}
+
+.a11y-painel--rapido .a11y-fonte {
+    justify-content: space-between;
+}
+
+.a11y-painel--rapido .a11y-tema {
+    display: flex;
+    width: 100%;
+}
+
+.a11y-painel--rapido .a11y-tema .btn {
+    flex: 1;
+}
+
+.a11y-rotulo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.a11y-rotulo .bi {
+    color: var(--bs-success);
+    font-size: 1.05em;
+}
+
+.a11y-desc {
+    margin: 2px 0 0;
+    font-size: .875rem;
+    color: var(--bs-secondary-color);
+}
+
+.a11y-fonte {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.a11y-fonte .btn {
+    min-width: 44px;
+    font-weight: 700;
+}
+
+.a11y-fonte-nome {
+    min-width: 6.5em;
+    text-align: center;
+    font-weight: 700;
+    font-size: .9rem;
+}
+
+.a11y-tema {
+    flex-shrink: 0;
+}
+
+.a11y-switch {
+    width: 2.6em !important;
+    height: 1.4em;
+    cursor: pointer;
+}
+
+.a11y-rodape {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--a11y-borda);
+}
+
+.a11y-mais {
+    display: inline-block;
+    margin-top: 10px;
+    font-weight: 700;
+    color: var(--bs-success);
+}
+
+.a11y-tema {
+    flex-wrap: wrap;
+}
+
+
+/* =========================================================
+   TEXTO GRANDE NO CELULAR
+   Com letras maiores, linhas de botões e selos podem não caber na tela.
+   Aqui elas quebram para a linha de baixo em vez de criar rolagem lateral.
+   ========================================================= */
+
+.logo-home {
+    max-width: 100%;
+}
+
+@media (max-width: 767.98px) {
+    html.fonte-grande .d-flex,
+    html.fonte-muito-grande .d-flex,
+    html.fonte-extra-grande .d-flex,
+    html.fonte-grande .btn-group,
+    html.fonte-muito-grande .btn-group,
+    html.fonte-extra-grande .btn-group {
+        flex-wrap: wrap;
+    }
+
+    html.fonte-muito-grande .btn,
+    html.fonte-extra-grande .btn {
+        white-space: normal;
+    }
+}
+
+/* Painel completo (Configurações) no celular: tamanho e tema embaixo do título. */
+@media (max-width: 575.98px) {
+    .a11y-painel--completo .a11y-linha--fonte,
+    .a11y-painel--completo .a11y-linha--tema {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .a11y-painel--completo .a11y-linha--fonte .a11y-texto,
+    .a11y-painel--completo .a11y-linha--tema .a11y-texto {
+        flex: none;
+    }
+
+    .a11y-painel--completo .a11y-fonte {
+        justify-content: space-between;
+    }
+
+    .a11y-painel--completo .a11y-tema {
+        display: flex;
+        width: 100%;
+    }
+
+    .a11y-painel--completo .a11y-tema .btn {
+        flex: 1 1 auto;
+    }
+}
+
+/* Cabeçalho das páginas (título + logo) com texto grande no celular. */
+@media (max-width: 767.98px) {
+    html.fonte-grande .home-topo,
+    html.fonte-muito-grande .home-topo,
+    html.fonte-extra-grande .home-topo {
+        flex-wrap: wrap;
+    }
+
+    .home-titulo {
+        min-width: 0;
+    }
+
+    html.fonte-muito-grande h1,
+    html.fonte-extra-grande h1,
+    html.fonte-muito-grande h2,
+    html.fonte-extra-grande h2 {
+        overflow-wrap: anywhere;
+    }
+}
+
+
+/* =========================================================
+   ACESSIBILIDADE GERAL
+========================================================= */
+
+/* Link "Pular para o conteúdo": aparece ao navegar com Tab */
+.pular-conteudo {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 3000;
+    padding: 10px 18px;
+    background: #06402b;
+    color: #fff;
+    font-weight: 700;
+    border-radius: 8px;
+    transform: translateY(-200%);
+}
+
+.pular-conteudo:focus {
+    transform: translateY(0);
+    color: #fff;
+    outline: 3px solid #ffd54a;
+    outline-offset: 2px;
+}
+
+/* Foco sempre visível para quem usa teclado */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+    outline: 3px solid #0b5ed7;
+    outline-offset: 2px;
+}
+
+body.tema-escuro a:focus-visible,
+body.tema-escuro button:focus-visible,
+body.tema-escuro input:focus-visible,
+body.tema-escuro select:focus-visible,
+body.tema-escuro textarea:focus-visible,
+body.tema-escuro [tabindex]:focus-visible {
+    outline-color: #8ab8ff;
+}
+
+.menu-lateral a:focus-visible,
+.menu-lateral button:focus-visible,
+.rodape-principal a:focus-visible {
+    outline-color: #ffd54a;
+}
+
+/* Respeita quem pediu menos animação no sistema */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+
+/* Espaço embaixo do rodapé para o botão flutuante de acessibilidade
+   (canto inferior esquerdo) não cobrir os links do rodapé. */
+.rodape-principal {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important;
 }

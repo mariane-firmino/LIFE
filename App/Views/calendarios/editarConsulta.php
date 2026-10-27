@@ -119,7 +119,7 @@
                         <input type="text"
                             class="form-control"
                             id="descricao"
-                            name="descricao"
+                            name="descricao" maxlength="500"
                             value="Consulta de rotina">
                     </div>
 
@@ -132,7 +132,7 @@
 
                         <textarea class="form-control"
                             id="observacoes"
-                            name="observacoes"
+                            name="observacoes" maxlength="2000"
                             rows="4">Medir a pressão. Aluno já demonstrou pressão baixa antes.</textarea>
                     </div>
 

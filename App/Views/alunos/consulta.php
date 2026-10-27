@@ -73,6 +73,7 @@ function consultaAlunoClasseTurno($turno)
                 <input
                     type="search"
                     id="consultaAlunoBusca"
+                    maxlength="100"
                     class="consultaAlunoInputPesquisa"
                     placeholder="Buscar por nome do aluno"
                     autocomplete="off"
@@ -92,7 +93,7 @@ function consultaAlunoClasseTurno($turno)
                 <option value="">Todas as turmas</option>
                 <?php foreach ($turmas as $turma): ?>
                     <option value="<?= htmlspecialchars($turma) ?>">
-                        <?= htmlspecialchars($turma) ?>º ano
+                        <?= htmlspecialchars($turma) ?>
                     </option>
                 <?php endforeach; ?>
             </select>
@@ -180,8 +181,8 @@ function consultaAlunoClasseTurno($turno)
 
                                 <!-- TURMA -->
                                 <td class="consultaAlunoCelula" data-label="Turma">
-                                    <?= $turma !== '' ? htmlspecialchars($turma) . 'º ano' : '--' ?>
-                                </td>
+                                    <?= $turma !== '' ? htmlspecialchars($turma) . '' : '--' ?>
+                                </td>   
 
                                 <!-- CURSO -->
                                 <td class="consultaAlunoCelula" data-label="Curso">

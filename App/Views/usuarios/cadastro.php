@@ -15,7 +15,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Nome completo</label>
-                        <input type="text" name="nome" class="form-control <?= !empty($dados['nome_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu nome completo" value="<?= isset($dados['nome']) ? $dados['nome'] : '' ?>">
+                        <input type="text" name="nome" maxlength="225" class="form-control <?= !empty($dados['nome_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu nome completo" value="<?= isset($dados['nome']) ? $dados['nome'] : '' ?>">
                         <?php if (!empty($dados['nome_erro'])) : ?>
                             <div class="invalid-feedback">
                                 <?= $dados['nome_erro'] ?>
@@ -24,7 +24,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control <?= !empty($dados['email_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu email" value="<?= isset($dados['email']) ? $dados['email'] : '' ?>">
+                        <input type="email" name="email" maxlength="225" class="form-control <?= !empty($dados['email_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu email" value="<?= isset($dados['email']) ? $dados['email'] : '' ?>">
                         <?php if (!empty($dados['email_erro'])) : ?>
                             <div class="invalid-feedback">
                                 <?= $dados['email_erro'] ?>
@@ -33,7 +33,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">CPF</label>
-                        <input type="text" id="cpf" maxlength="14" nputmode="numeric" name="cpf" class="form-control <?= !empty($dados['cpf_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu CPF" value="<?= isset($dados['cpf']) ? $dados['cpf'] : '' ?>">
+                        <input type="text" id="cpf" maxlength="14" inputmode="numeric" data-mascara="cpf" name="cpf" class="form-control <?= !empty($dados['cpf_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu CPF" value="<?= isset($dados['cpf']) ? $dados['cpf'] : '' ?>">
                         <?php if (!empty($dados['cpf_erro'])) : ?>
                             <div class="invalid-feedback">
                                 <?= $dados['cpf_erro'] ?>
@@ -51,7 +51,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Telefone/Celular</label>
-                        <input type="text" id="telefone" inputmode="numeric" maxlength="15" name="telefone" class="form-control <?= !empty($dados['telefone_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu telefone/celular" value="<?= isset($dados['telefone']) ? $dados['telefone'] : '' ?>">
+                        <input type="text" id="telefone" inputmode="numeric" maxlength="15" data-mascara="telefone" name="telefone" class="form-control <?= !empty($dados['telefone_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu telefone/celular" value="<?= isset($dados['telefone']) ? $dados['telefone'] : '' ?>">
                         <?php if (!empty($dados['telefone_erro'])) : ?>
                             <div class="invalid-feedback">
                                 <?= $dados['telefone_erro'] ?>

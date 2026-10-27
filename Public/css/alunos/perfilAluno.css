@@ -267,3 +267,8 @@
 .pa-nota--psico {
     border-left-color: var(--bs-info);
 }
+
+/* Triagens rápidas: faixa com a cor da gravidade */
+.pa-rapida--leve  { border-left-color: var(--bs-success); }
+.pa-rapida--media { border-left-color: var(--bs-warning); }
+.pa-rapida--grave { border-left-color: var(--bs-danger); }

@@ -123,8 +123,12 @@ $fotoAluno = (!empty($aluno->foto) && is_file(dirname(__DIR__, 3) . '/Public/upl
     ? URL . '/uploads/alunos/' . basename((string) $aluno->foto)
     : URL . '/img/user.avif';
 
-// Rota da triagem conforme o sexo do aluno.
-$rotaTriagem = ($aluno->sexo === 'Masculino') ? 'triagemMasculina' : 'triagemFeminina';
+// Opções do botão "Adicionar Triagem": [rota, título, descrição, ícone].
+$opcoesTriagem = [
+    ['psicologica', 'Triagem psicológica', 'Situação psicoemocional', 'bi-chat-heart-fill'],
+    ['fisica',      'Triagem física',      'Saúde sexual e reprodutiva', 'bi-heart-pulse-fill'],
+    ['rapida',      'Triagem rápida',      'Atendimento do dia a dia', 'bi-lightning-charge-fill'],
+];
 
 // --- Indicador de atenção: ícone e texto do tooltip ---
 $iconesAtencao = [
@@ -185,9 +189,26 @@ $ehSim = function ($valor) {
     <div class="container">
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch align-items-sm-center gap-2">
 
-            <a href="<?= URL ?>/triagens/<?= $rotaTriagem ?>/<?= $id ?>" class="btn btn-success fw-bold px-3 py-2">
-                Adicionar Triagem
-            </a>
+            <!-- Adicionar Triagem: abre um menu para escolher qual triagem fazer -->
+            <div class="dropdown">
+                <button type="button" class="btn btn-success fw-bold px-3 py-2 dropdown-toggle w-100"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Adicionar Triagem
+                </button>
+                <ul class="dropdown-menu shadow">
+                    <?php foreach ($opcoesTriagem as [$rotaOpcao, $tituloOpcao, $descOpcao, $iconeOpcao]): ?>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="<?= URL ?>/triagens/<?= $rotaOpcao ?>/<?= $id ?>">
+                                <i class="bi <?= $iconeOpcao ?> text-success fs-5" aria-hidden="true"></i>
+                                <span>
+                                    <b><?= $tituloOpcao ?></b><br>
+                                    <small class="text-muted"><?= $descOpcao ?></small>
+                                </span>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
 
             <div class="d-flex gap-2">
                 <a href="<?= URL ?>/alunos/consulta"
@@ -256,7 +277,7 @@ $ehSim = function ($valor) {
                             <div class="d-flex flex-wrap justify-content-center justify-content-sm-start gap-2">
                                 <span class="badge text-bg-light border fw-normal fs-6">
                                     <i class="bi bi-mortarboard-fill text-success me-1"></i>
-                                    Turma: <?= vp(!empty($aluno->ano_turma) ? $aluno->ano_turma . 'º ano' : '', '--') ?>
+                                    Turma: <?= vp(!empty($aluno->ano_turma) ? $aluno->ano_turma . '' : '', '--') ?>
                                 </span>
                                 <span class="badge text-bg-light border fw-normal fs-6">
                                     <i class="bi bi-sun-fill text-success me-1"></i>

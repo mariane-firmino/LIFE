@@ -90,7 +90,6 @@ if (isset($stats['alunos'])) {
 }
 ?>
 
-<link rel="stylesheet" href="<?= URL ?>/css/sobre.css">
 
 <div class="layout sobre-page">
 

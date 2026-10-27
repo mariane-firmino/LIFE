@@ -113,7 +113,7 @@ $fotoPerfil = !empty($usuario->serv_foto)
                         <label for="nome" class="perfil-label">Nome</label>
                         <input
                             type="text"
-                            name="nome"
+                            name="nome" maxlength="225"
                             id="nome"
                             class="form-control"
                             placeholder="Nome completo"
@@ -126,7 +126,7 @@ $fotoPerfil = !empty($usuario->serv_foto)
                         <label for="email" class="perfil-label">E-mail</label>
                         <input
                             type="email"
-                            name="email"
+                            name="email" maxlength="225"
                             id="email"
                             class="form-control"
                             placeholder="Email completo"
@@ -155,6 +155,7 @@ $fotoPerfil = !empty($usuario->serv_foto)
                             placeholder="(00) 00000-0000"
                             maxlength="15"
                             inputmode="tel"
+                            data-mascara="telefone"
                             autocomplete="tel"
                             value="<?= htmlspecialchars($usuario->tele_numero ?? '') ?>">
                     </div>
@@ -194,40 +195,6 @@ $fotoPerfil = !empty($usuario->serv_foto)
                 imagem.src = novaUrl;
             }
         });
-    }
-</script>
-
-
-<!-- MÁSCARA DO TELEFONE -->
-<script>
-    const telefone = document.getElementById('telefone');
-
-    function aplicarMascaraTelefone(input) {
-        let valor = input.value.replace(/\D/g, '');
-
-        // Máximo de 11 números
-        if (valor.length > 11) {
-            valor = valor.substring(0, 11);
-        }
-
-        if (valor.length > 10) {
-            // Celular
-            valor = valor.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3');
-        } else {
-            // Telefone fixo
-            valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
-        }
-
-        input.value = valor;
-    }
-
-    if (telefone) {
-        telefone.addEventListener('input', function () {
-            aplicarMascaraTelefone(this);
-        });
-
-        // Aplica a máscara ao abrir a página
-        aplicarMascaraTelefone(telefone);
     }
 </script>
 

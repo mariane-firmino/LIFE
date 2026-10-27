@@ -387,6 +387,8 @@ class Alunos extends Controller
             'telefone_aluno' => $this->alunoModel->buscarTelefoneAluno($aluno->id),
             'telefone_responsavel' => $this->alunoModel->buscarTelefoneResponsavel($aluno->responsavel_id),
             'historico' => $this->alunoModel->buscarHistorico($aluno->id),
+            'triagens_rapidas' => $this->model('TriagemRapida')->listarPorAluno($aluno->id),
+            'triagens' => $this->model('Triagem')->listarPorAluno($aluno->id),
         ];
 
         $this->view('alunos/visualizarPerfil', $dados);

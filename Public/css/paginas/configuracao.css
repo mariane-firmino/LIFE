@@ -1,0 +1,333 @@
+/* =========================================================
+   PÁGINA DE CONFIGURAÇÕES   ->   Public/css/paginas/configuracao.css
+   Layout: menu das seções à esquerda (fixo ao rolar) e cartões à
+   direita. No celular o menu vira uma faixa de botões no topo.
+   As cores vêm das variáveis do Bootstrap, então funcionam no tema
+   claro, no escuro e no alto contraste.
+   ========================================================= */
+
+.cfg {
+    display: grid;
+    grid-template-columns: 230px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+/* ---------- Menu das seções ---------- */
+.cfg-menu {
+    position: sticky;
+    top: 16px;
+}
+
+.cfg-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 8px;
+    display: grid;
+    gap: 4px;
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 14px;
+}
+
+.cfg-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: var(--bs-body-color);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.cfg-menu-link .bi {
+    color: var(--bs-success);
+    font-size: 1.1em;
+}
+
+.cfg-menu-link:hover {
+    background: var(--bs-success-bg-subtle);
+    color: var(--bs-body-color);
+}
+
+.cfg-menu-link.ativo {
+    background: #06402B;
+    color: #fff;
+}
+
+.cfg-menu-link.ativo .bi {
+    color: #fff;
+}
+
+/* ---------- Cartões ---------- */
+.cfg-conteudo {
+    display: grid;
+    gap: 24px;
+    min-width: 0;
+}
+
+.cfg-cartao {
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 16px;
+    padding: 20px 24px 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .05);
+    scroll-margin-top: 16px;
+}
+
+.cfg-cartao-topo {
+    margin-bottom: 8px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--bs-success-border-subtle);
+}
+
+.cfg-cartao-topo h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.cfg-cartao-topo h2 .bi {
+    color: var(--bs-success);
+}
+
+.cfg-cartao-topo p {
+    margin: 4px 0 0;
+    color: var(--bs-secondary-color);
+}
+
+/* ---------- Linhas (rótulo à esquerda, valor/controle à direita) ---------- */
+.cfg-linha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding: 12px 0;
+    border-top: 1px solid var(--bs-border-color);
+}
+
+.cfg-cartao-topo + .cfg-linha,
+.cfg-dados .cfg-linha:first-child,
+form > .cfg-linha:first-of-type {
+    border-top: 0;
+}
+
+.cfg-dados {
+    margin: 0;
+}
+
+.cfg-dados dt {
+    font-weight: 700;
+    flex: 0 0 9rem;
+}
+
+.cfg-dados dd {
+    margin: 0;
+    flex: 1;
+    min-width: 0;
+    text-align: right;
+}
+
+.cfg-texto {
+    min-width: 0;
+}
+
+.cfg-texto label {
+    font-weight: 700;
+    margin: 0;
+}
+
+.cfg-texto p {
+    margin: 2px 0 0;
+    font-size: .875rem;
+    color: var(--bs-secondary-color);
+}
+
+.cfg-switch {
+    width: 2.6em !important;
+    height: 1.4em;
+    cursor: pointer;
+}
+
+.cfg-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.cfg-observacao {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--bs-tertiary-bg);
+    font-size: .875rem;
+    color: var(--bs-secondary-color);
+}
+
+.cfg-observacao .bi {
+    color: var(--bs-success);
+}
+
+/* ---------- Perfil ---------- */
+.cfg-perfil {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0 8px;
+}
+
+.cfg-avatar {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #06402B;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.cfg-perfil-texto {
+    display: grid;
+    min-width: 0;
+}
+
+.cfg-perfil-texto b {
+    font-size: 1.1rem;
+}
+
+.cfg-perfil-texto span {
+    color: var(--bs-secondary-color);
+}
+
+/* ---------- Lista de atalhos (Segurança) ---------- */
+.cfg-lista {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.cfg-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--bs-body-color);
+    text-align: left;
+    text-decoration: none;
+    font: inherit;
+}
+
+.cfg-item:hover {
+    border-color: var(--bs-success);
+    background: var(--bs-success-bg-subtle);
+    color: var(--bs-body-color);
+}
+
+.cfg-item > .bi:first-child {
+    font-size: 1.3rem;
+    color: var(--bs-success);
+}
+
+.cfg-item span {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+}
+
+.cfg-item small {
+    color: var(--bs-secondary-color);
+}
+
+.cfg-item-seta {
+    color: var(--bs-secondary-color);
+}
+
+.cfg-item--perigo > .bi:first-child,
+.cfg-item--perigo b {
+    color: var(--bs-danger);
+}
+
+.cfg-item--perigo:hover {
+    border-color: var(--bs-danger);
+    background: var(--bs-danger-bg-subtle);
+}
+
+/* ---------- Dica ---------- */
+.cfg-dica {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: var(--bs-warning-bg-subtle);
+    border: 1px solid var(--bs-warning-border-subtle);
+    font-size: .9rem;
+}
+
+.cfg-dica > .bi {
+    color: var(--bs-warning-text-emphasis);
+    font-size: 1.1rem;
+}
+
+.cfg-dica kbd {
+    font-size: .8em;
+}
+
+/* O painel completo de acessibilidade dentro do cartão. */
+.cfg-cartao .a11y-painel--completo .a11y-grupo-titulo {
+    margin-top: 18px;
+}
+
+/* ---------- Celular e tablet ---------- */
+@media (max-width: 991.98px) {
+    .cfg {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .cfg-menu {
+        position: static;
+    }
+
+    .cfg-menu ul {
+        display: flex;
+        overflow-x: auto;
+        gap: 6px;
+    }
+
+    .cfg-menu-link {
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .cfg-cartao {
+        padding: 16px;
+    }
+
+    .cfg-linha {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cfg-dados dd {
+        text-align: left;
+    }
+
+    .cfg-dados dt {
+        flex-basis: auto;
+    }
+}

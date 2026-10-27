@@ -36,7 +36,7 @@
     border-radius: 10px;
     background: #00551f;
     color: #fff;
-    font-size: 21px;
+    font-size: 1.3125rem;
 }
 
 .menu-titulo {
@@ -182,7 +182,7 @@
     border-radius: 50%;
     background: #f8d7da;
     color: #dc3545;
-    font-size: 23px;
+    font-size: 1.4375rem;
 }
 
 /* Modo escuro */

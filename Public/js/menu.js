@@ -77,7 +77,19 @@
     }
 
 
+    // Páginas sem id no <main> passam a ter um, para o link
+    // "Pular para o conteúdo principal" funcionar em todas.
+    function prepararAlvoDoPular() {
+        var principal = document.querySelector('main');
+
+        if (principal && !document.getElementById('conteudo-principal')) {
+            principal.id = 'conteudo-principal';
+            principal.setAttribute('tabindex', '-1');
+        }
+    }
+
     function iniciar() {
+        prepararAlvoDoPular();
         destacarPaginaAtual();
         fecharMenuAoAbrirModal();
     }

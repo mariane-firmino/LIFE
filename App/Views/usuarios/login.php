@@ -32,7 +32,7 @@
                     <input
                         type="text"
                         id="identificador"
-                        name="identificador"
+                        name="identificador" maxlength="225"
                         class="login-form-control <?= !empty($dados['identificador_erro']) ? 'is-invalid' : '' ?>"
                         placeholder="Digite seu e-mail ou SIAPE"
                         value="<?= htmlspecialchars($dados['identificador'] ?? '', ENT_QUOTES, 'UTF-8') ?>"

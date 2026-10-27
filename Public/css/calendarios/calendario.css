@@ -9,8 +9,8 @@
     --cal-border: #dfe6e1;
     --cal-text: #1f2a24;
     --cal-muted: #6b7a72;
-    --cal-primary: #1db34a;
-    --cal-primary-dark: #15963b;
+    --cal-primary: #15803d;       /* texto branco com contraste AA */
+    --cal-primary-dark: #0f5f2d;
     --cal-title: #064d2b;
     --cal-shadow: 0 2px 12px rgba(6, 77, 43, .10);
 
@@ -25,8 +25,8 @@ body.tema-escuro .cal-page {
     --cal-border: #3a485a;
     --cal-text: #e8edf2;
     --cal-muted: #8995a5;
-    --cal-primary: #3ccf72;
-    --cal-primary-dark: #69d7a2;
+    --cal-primary: #198754;
+    --cal-primary-dark: #146c43;
     --cal-title: #69d7a2;
     --cal-shadow: 0 2px 12px rgba(0, 0, 0, .5);
 }
@@ -42,6 +42,8 @@ body.tema-escuro .cal-page {
 
 /* ---------- Cartões ---------- */
 .cal-card,
+.cal-layout > * { min-width: 0; }
+
 .cal-side {
     background: var(--cal-bg);
     color: var(--cal-text);
@@ -79,7 +81,7 @@ body.tema-escuro .cal-page {
     display: flex;
     flex-wrap: wrap;
     gap: 6px 16px;
-    font-size: 13px;
+    font-size: 0.8125rem;
     color: var(--cal-muted);
 }
 .cal-legend li { display: flex; align-items: center; gap: 6px; }
@@ -131,7 +133,7 @@ body.tema-escuro .cal-page {
     border: none;
     border-radius: 6px;
     padding: 1px 4px;
-    font-size: 12px;
+    font-size: 0.75rem;
     cursor: pointer;
 }
 
@@ -143,7 +145,7 @@ body.tema-escuro .cal-page {
 /* ---------- Painel lateral ---------- */
 .cal-side-title {
     margin: 0 0 18px;
-    font-size: 19px;
+    font-size: 1.1875rem;
     font-weight: 700;
     text-align: center;
     color: var(--cal-title);
@@ -157,7 +159,7 @@ body.tema-escuro .cal-page {
     align-items: center;
     justify-content: space-between;
     margin: 0 0 10px;
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 700;
     color: var(--cal-text);
 }
@@ -168,7 +170,7 @@ body.tema-escuro .cal-page {
     border-radius: 999px;
     background: var(--cal-bg-soft);
     color: var(--cal-muted);
-    font-size: 12px;
+    font-size: 0.75rem;
     text-align: center;
 }
 
@@ -190,7 +192,7 @@ body.tema-escuro .cal-page {
     border-radius: 8px;
     background: transparent;
     color: var(--cal-text);
-    font-size: 13px;
+    font-size: 0.8125rem;
     text-align: left;
     cursor: pointer;
 }
@@ -198,7 +200,7 @@ body.tema-escuro .cal-page {
 
 .cal-item-dia { font-weight: 700; min-width: 40px; }
 .cal-item-txt { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cal-empty { padding: 4px 10px; color: var(--cal-muted); font-size: 13px; }
+.cal-empty { padding: 4px 10px; color: var(--cal-muted); font-size: 0.8125rem; }
 
 /* ---------- Modal de detalhes ---------- */
 .cal-badge {
@@ -207,7 +209,7 @@ body.tema-escuro .cal-page {
     padding: 3px 12px;
     border: 2px solid transparent;
     border-radius: 999px;
-    font-size: 12px;
+    font-size: 0.75rem;
     font-weight: 700;
 }
 .cal-badge-next { background: rgba(29, 179, 74, .12); color: #15963b; }
@@ -219,7 +221,7 @@ body.tema-escuro .cal-page {
     gap: 14px 18px;
     margin: 0;
 }
-.cal-details dt { font-size: 12px; font-weight: 700; text-transform: uppercase; color: #6c757d; }
+.cal-details dt { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #6c757d; }
 .cal-details dd { margin: 2px 0 0; word-break: break-word; }
 .cal-details .full { grid-column: 1 / -1; }
 
@@ -250,7 +252,7 @@ body.tema-escuro .form-select {
     .cal-page { padding: 0 10px 24px; }
     .cal-card { padding: 12px; border-radius: 10px; }
     .cal-btn-novo { width: 100%; }
-    .cal-legend { font-size: 12px; gap: 4px 12px; }
+    .cal-legend { font-size: 0.75rem; gap: 4px 12px; }
     .cal-details { grid-template-columns: 1fr; }
 
     #calendario .fc-toolbar { flex-direction: column; gap: 8px; }

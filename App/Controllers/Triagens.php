@@ -12,7 +12,12 @@ class Triagens extends Controller
 
     private $alunoModel;
     private $triagemModel;
+    private $triagemRapidaModel;
+    private $opcaoModel;
     private $notificationService;
+
+    // Limite de cada caixa de texto da triagem rápida.
+    private const MAX_TEXTO_RAPIDA = 2000;
 
 
     // =========================================================
@@ -25,6 +30,8 @@ class Triagens extends Controller
     {
         $this->alunoModel = $this->model('Aluno');
         $this->triagemModel = $this->model('Triagem');
+        $this->triagemRapidaModel = $this->model('TriagemRapida');
+        $this->opcaoModel = $this->model('Opcao');
         $this->notificationService = new NotificationService($this->model('Notificacao'));
     }
 
@@ -44,76 +51,158 @@ class Triagens extends Controller
 
 
     // =========================================================
-    // ABRIR TRIAGEM MASCULINA
-    // Carrega o formulário da triagem masculina para o aluno
-    // informado na URL (ex.: triagens/triagemMasculina/5).
+    // ABRIR TRIAGEM PSICOLÓGICA / FÍSICA
+    // A triagem é dividida em duas páginas. As perguntas mudam
+    // conforme o sexo do aluno (masculina ou feminina).
+    // Ex.: triagens/psicologica/5   e   triagens/fisica/5
     // =========================================================
 
-    public function triagemMasculina($alunoId = null)
+    public function psicologica($alunoId = null)
     {
-        $this->exibirFormulario('masculina', $alunoId);
+        $this->exibirFormulario('psicologica', $alunoId);
+    }
+
+    public function fisica($alunoId = null)
+    {
+        $this->exibirFormulario('fisica', $alunoId);
     }
 
 
     // =========================================================
-    // ABRIR TRIAGEM FEMININA
-    // Carrega o formulário da triagem feminina para o aluno
-    // informado na URL (ex.: triagens/triagemFeminina/5).
-    // =========================================================
-
-    public function triagemFeminina($alunoId = null)
-    {
-        $this->exibirFormulario('feminina', $alunoId);
-    }
-
-
-    // =========================================================
-    // MÉTODOS ALTERNATIVOS (ROTAS ANTIGAS)
-    //
-    // Os nomes contêm "3" no lugar da letra "e". Eram métodos
-    // separados que abriam as mesmas Views dos métodos acima.
-    // Agora apenas repassam para os métodos principais, para
-    // que links antigos continuem funcionando.
+    // ROTAS ANTIGAS
+    // Antes a triagem era uma página só, por sexo. Links antigos
+    // agora abrem a primeira parte (psicológica).
     //
     // ATENÇÃO:
     // Não remova sem verificar se alguma parte do sistema
     // (links, botões, menus) ainda usa estas rotas.
     // =========================================================
 
+    public function triagemMasculina($alunoId = null)
+    {
+        $this->psicologica($alunoId);
+    }
+
+    public function triagemFeminina($alunoId = null)
+    {
+        $this->psicologica($alunoId);
+    }
+
     public function triagemM3sculina($alunoId = null)
     {
-        $this->triagemMasculina($alunoId);
+        $this->psicologica($alunoId);
     }
 
     public function triagemFe3minina($alunoId = null)
     {
-        $this->triagemFeminina($alunoId);
+        $this->psicologica($alunoId);
     }
 
-
     // =========================================================
-    // SALVAR TRIAGEM MASCULINA
-    // Recebe o formulário masculino enviado por POST e salva
-    // as respostas no banco de dados.
+    // TRIAGEM RÁPIDA
+    // Atendimento do dia a dia (ex.: aluno com dor de cabeça).
+    // GET  triagens/rapida/5  -> abre o formulário
+    // POST triagens/rapida/5  -> valida e salva
     // =========================================================
 
-    public function salvarTriagemMasculina($alunoId = null)
+    public function rapida($alunoId = null)
     {
-        $this->salvar('masculina', $alunoId);
+        $aluno = $this->alunoOuRedireciona($alunoId);
+        $queixas = $this->opcaoModel->valoresAtivos('queixa');
+
+        // Valores do formulário (vazios ao abrir; preenchidos se voltar com erro).
+        $form = [
+            'queixa' => '',
+            'gravidade' => '',
+            'relato_aluno' => '',
+            'observacao' => '',
+            'conduta' => '',
+        ];
+        $erros = [];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            foreach ($form as $campo => $vazio) {
+                $valor = $_POST[$campo] ?? '';
+                $form[$campo] = is_string($valor) ? trim($valor) : '';
+            }
+
+            // Queixa: precisa ser uma das opções ativas do menu.
+            if (!in_array($form['queixa'], $queixas, true)) {
+                $erros['queixa'] = 'Escolha a queixa principal.';
+            }
+
+            // Gravidade: Leve, Média ou Grave.
+            if (!in_array($form['gravidade'], TriagemRapida::GRAVIDADES, true)) {
+                $erros['gravidade'] = 'Escolha a gravidade.';
+            }
+
+            // Como lidou: obrigatório.
+            if ($form['conduta'] === '') {
+                $erros['conduta'] = 'Descreva como o caso foi conduzido.';
+            }
+
+            // Limite das caixas de texto.
+            foreach (['relato_aluno', 'observacao', 'conduta'] as $campo) {
+                if (mb_strlen($form[$campo]) > self::MAX_TEXTO_RAPIDA) {
+                    $erros[$campo] = 'Use no máximo ' . self::MAX_TEXTO_RAPIDA . ' caracteres.';
+                }
+            }
+
+            if (!$erros) {
+                $salvou = $this->triagemRapidaModel->salvar($form + [
+                    'aluno_id' => (int) $aluno->id,
+                    'serv_id' => (int) $_SESSION['usuario_id'],
+                ]);
+
+                if ($salvou) {
+                    $this->notificationService->avisarUsuariosAtivos(
+                        'triagem',
+                        'Nova triagem rápida registrada',
+                        'Uma triagem rápida foi registrada. Acesse o sistema para consultar as informações autorizadas.',
+                        'alunos/consulta',
+                        (int) $_SESSION['usuario_id']
+                    );
+
+                    // Volta ao perfil já na aba das triagens rápidas.
+                    Sessao::mensagem('alunos', 'Triagem rápida salva com sucesso');
+                    URL::redirecionar('alunos/visualizarPerfil/' . (int) $aluno->id . '#aba-rapidas');
+                    exit;
+                }
+
+                Sessao::mensagem('triagens', 'Não foi possível salvar a triagem. Tente novamente.', 'alert alert-danger');
+            }
+        }
+
+        $dados = [
+            'titulo' => 'Triagem rápida',
+            'descricao' => 'Formulário de triagem rápida',
+            'aluno_id' => (int) $aluno->id,
+            'aluno_nome' => $aluno->nome,
+            'queixas' => $queixas,
+            'gravidades' => TriagemRapida::GRAVIDADES,
+            'max_texto' => self::MAX_TEXTO_RAPIDA,
+            'form' => $form,
+            'erros' => $erros,
+        ];
+
+        $this->view('triagens/triagem_rapida', $dados);
     }
 
 
     // =========================================================
-    // SALVAR TRIAGEM FEMININA
-    // Recebe o formulário feminino enviado por POST e salva
-    // as respostas no banco de dados.
+    // SALVAR TRIAGEM PSICOLÓGICA / FÍSICA
+    // Recebem o formulário enviado por POST.
     // =========================================================
 
-    public function salvarTriagemFeminina($alunoId = null)
+    public function salvarPsicologica($alunoId = null)
     {
-        $this->salvar('feminina', $alunoId);
+        $this->salvar('psicologica', $alunoId);
     }
 
+    public function salvarFisica($alunoId = null)
+    {
+        $this->salvar('fisica', $alunoId);
+    }
 
     // =========================================================
     // GARANTIR LOGIN E ALUNO VÁLIDO
@@ -151,29 +240,29 @@ class Triagens extends Controller
 
     // =========================================================
     // EXIBIR FORMULÁRIO
-    // Abre a View da triagem (masculina ou feminina), enviando
-    // o ID e o nome do aluno para a página.
+    // Abre a View da triagem ($parte = 'psicologica' ou 'fisica'),
+    // com as perguntas certas para o sexo do aluno.
     // =========================================================
 
-    private function exibirFormulario($tipo, $alunoId)
+    private function exibirFormulario($parte, $alunoId)
     {
         $aluno = $this->alunoOuRedireciona($alunoId);
         $tipo = $this->tipoPorSexo($aluno->sexo);
 
         // Dados que serão enviados para a View.
         $dados = [
-            'titulo' => 'Página de triagens',
+            'titulo' => TriagemPerguntas::PARTES[$parte],
             'descricao' => 'pagina triagens',
             'aluno_id' => (int) $aluno->id,
             'aluno_nome' => $aluno->nome,
             'aluno_sexo' => $aluno->sexo,
             'tipo' => $tipo,
-            'perguntas' => TriagemPerguntas::por($tipo),
+            'parte' => $parte,
+            'perguntas' => TriagemPerguntas::parte($tipo, $parte),
         ];
 
         $this->view('triagens/adicionar_triagem', $dados);
     }
-
 
     // =========================================================
     // SALVAR TRIAGEM
@@ -181,16 +270,14 @@ class Triagens extends Controller
     // associadas ao aluno e ao usuário que fez a triagem.
     // =========================================================
 
-    private function salvar($tipo, $alunoId)
+    private function salvar($parte, $alunoId)
     {
         $aluno = $this->alunoOuRedireciona($alunoId);
         $tipo = $this->tipoPorSexo($aluno->sexo);
         $id = (int) $aluno->id;
 
         // Página para onde o usuário volta em caso de erro.
-        $voltar = 'triagens/'
-            . ($tipo === 'masculina' ? 'triagemMasculina' : 'triagemFeminina')
-            . '/' . $id;
+        $voltar = 'triagens/' . $parte . '/' . $id;
 
         // Só aceita envio via POST.
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -203,11 +290,11 @@ class Triagens extends Controller
 
         // -----------------------------------------------------
         // VALIDA CADA PERGUNTA
-        // As perguntas de cada tipo de triagem vêm da classe
-        // TriagemPerguntas.
+        // As perguntas de cada parte (psicológica / física)
+        // vêm da classe TriagemPerguntas.
         // -----------------------------------------------------
 
-        foreach (TriagemPerguntas::por($tipo) as $numero => $pergunta) {
+        foreach (TriagemPerguntas::parte($tipo, $parte) as $numero => $pergunta) {
 
             $valor = $_POST['pergunta' . $numero] ?? '';
             $valor = is_string($valor) ? trim($valor) : '';
@@ -269,8 +356,8 @@ class Triagens extends Controller
             );
 
             // Sucesso: vai para o perfil do aluno.
-            Sessao::mensagem('alunos', 'Triagem salva com sucesso');
-            URL::redirecionar('alunos/visualizarPerfil/' . $id);
+            Sessao::mensagem('alunos', TriagemPerguntas::PARTES[$parte] . ' salva com sucesso');
+            URL::redirecionar('alunos/visualizarPerfil/' . $id . '#aba-triagens');
 
         } else {
 

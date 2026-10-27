@@ -24,6 +24,8 @@ class Opcao
     //     atualizados junto, para nada ficar inconsistente.
     //  uso_from / uso_coluna : como contar quantos alunos usam
     //     cada opção (só pode excluir quem não está em uso).
+    //  unidade  : o que é contado no "Em uso" [singular, plural]
+    //     (opcional; o padrão é ['aluno', 'alunos']).
     //
     // IMPORTANTE: tabela/coluna/uso_* são fixos no código (nunca vêm
     // do usuário), por isso podem ser usados direto no SQL.
@@ -100,6 +102,19 @@ class Opcao
             'coluna' => 'anam_acesso_saude',
             'uso_from' => 'anamnese',
             'uso_coluna' => 'anam_acesso_saude',
+        ],
+        'queixa' => [
+            'rotulo' => 'Queixas da triagem rápida',
+            'singular' => 'Queixa',
+            'ajuda' => 'Ex.: Dor de cabeça, Cólica, Febre.',
+            'icone' => 'bi-bandaid-fill',
+            'max' => 100,
+            'padrao' => null,
+            'tabela' => 'triagem_rapida',
+            'coluna' => 'trap_queixa',
+            'uso_from' => 'triagem_rapida',
+            'uso_coluna' => 'trap_queixa',
+            'unidade' => ['triagem', 'triagens'],
         ],
     ];
 

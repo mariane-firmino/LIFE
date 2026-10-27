@@ -17,20 +17,23 @@ $db = new Database;
     <link rel="stylesheet" href="<?= URL ?>/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= URL ?>/css/geral.css">
     <link rel="stylesheet" href="<?= URL ?>/css/acessibilidade.css">
+
+    <!-- Acessibilidade: carrega no <head> para aplicar tema e tamanho do texto antes da página aparecer -->
+    <script>window.LIFE_URL = <?= json_encode(URL) ?>;</script>
+    <script src="<?= URL ?>/js/acessibilidade.js"></script>
 </head>
 <body>
+    <script>LifeAcessibilidade.aplicar();</script>
     <?php
     $rotas = new Rota();
     ?>
     <?php include __DIR__ . '/../App/Views/vlibras.php'; ?>
-</body>
 <!-- linkando js -->
 <script src="<?= URL ?>/js/bootstrap.bundle.min.js"></script>
 <script src="<?= URL ?>/js/formatacao.js"></script>
 <script src="<?= URL ?>/js/consulta.js"></script>
-<script src="<?= URL ?>/js/api.js"></script>
 <script src="<?= URL ?>/js/calendario.js"></script>
 <script src="<?= URL ?>/js/menu.js"></script>
-<script src="<?= URL ?>/js/acessibilidade.js"></script>
 <script src="<?= URL ?>/js/sobre.js"></script>
+</body>
 </html>

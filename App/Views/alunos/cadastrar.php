@@ -18,7 +18,6 @@ if (!isset($_SESSION['usuario_id'])) {
 include '../App/Views/menu.php';
 
 // CSS adicional das abas (arquivo: Public/css/cadastro-aluno.css).
-echo '<link rel="stylesheet" href="' . URL . '/css/cadastro-aluno.css">';
 
 
 // ---------------------------------------------------------------------
@@ -204,7 +203,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
 
                             <div class="col-md-6">
                                 <label for="inputnomealuno" class="form-label">Nome aluno <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="inputnomealuno" name="nome" required value="<?= valor($dados, 'nome') ?>">
+                                <input type="text" class="form-control" id="inputnomealuno" name="nome" maxlength="225" required value="<?= valor($dados, 'nome') ?>">
                                 <?php erro($dados, 'nome'); ?>
                             </div>
                             <div class="col-md-6">
@@ -251,7 +250,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                             </div>
                             <div class="col-md-6">
                                 <label for="inputtelefonealuno" class="form-label">Telefone do aluno (WhatsApp)</label>
-                                <input type="text" class="form-control" maxlength="15" id="inputtelefonealuno" name="telefone_aluno" value="<?= valor($dados, 'telefone_aluno') ?>">
+                                <input type="text" class="form-control" maxlength="15" inputmode="tel" data-mascara="telefone" placeholder="(69) 99999-9999" id="inputtelefonealuno" name="telefone_aluno" value="<?= valor($dados, 'telefone_aluno') ?>">
                             </div>
                             <div class="col-md-4">
                                 <label for="inputtiposanguineo" class="form-label">Tipo sanguíneo</label>
@@ -281,12 +280,12 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
 
                             <div class="col-md-6">
                                 <label for="inputnomeresponsavel" class="form-label">Nome do responsável <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="inputnomeresponsavel" name="nome_responsavel" required value="<?= valor($dados, 'nome_responsavel') ?>">
+                                <input type="text" class="form-control" id="inputnomeresponsavel" name="nome_responsavel" maxlength="100" required value="<?= valor($dados, 'nome_responsavel') ?>">
                                 <?php erro($dados, 'nome_responsavel'); ?>
                             </div>
                             <div class="col-md-6">
                                 <label for="inputtelefonedosresponsaveis" class="form-label">Telefone dos responsáveis (WhatsApp)</label>
-                                <input type="text" class="form-control" maxlength="15" id="inputtelefonedosresponsaveis" name="telefone_responsavel" value="<?= valor($dados, 'telefone_responsavel') ?>">
+                                <input type="text" class="form-control" maxlength="15" inputmode="tel" data-mascara="telefone" placeholder="(69) 99999-9999" id="inputtelefonedosresponsaveis" name="telefone_responsavel" value="<?= valor($dados, 'telefone_responsavel') ?>">
                                 <?php erro($dados, 'telefone_responsavel'); ?>
                             </div>
 
@@ -320,7 +319,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                             </div>
                             <div class="col-md-6">
                                 <label for="inputquantasvezes" class="form-label">Quantas vezes reprovou?</label>
-                                <input type="text" class="form-control" id="inputquantasvezes" name="quantas_vezes" value="<?= valor($dados, 'quantas_vezes') ?>">
+                                <input type="text" class="form-control" id="inputquantasvezes" name="quantas_vezes" maxlength="10" value="<?= valor($dados, 'quantas_vezes') ?>">
                             </div>
                             <div class="col-md-6">
                                 <label for="inputestudafora" class="form-label">Você estuda fora do horário de aula? (Em casa)</label>
@@ -331,7 +330,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                             </div>
                             <div class="col-md-6">
                                 <label for="inputquantotempo" class="form-label">Quanto tempo você reserva para estudar fora da escola?</label>
-                                <input type="text" class="form-control" id="inputquantotempo" name="quanto_tempo" value="<?= valor($dados, 'quanto_tempo') ?>">
+                                <input type="text" class="form-control" id="inputquantotempo" name="quanto_tempo" maxlength="50" value="<?= valor($dados, 'quanto_tempo') ?>">
                             </div>
 
                             <div class="col-12 col-lg-6">
@@ -366,7 +365,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                             </div>
                             <div class="col-md-6">
                                 <label for="inputatendimentoporque" class="form-label">Por quê? (Caso a resposta anterior seja "Não")</label>
-                                <input type="text" class="form-control" id="inputatendimentoporque" name="atendimento_porque" value="<?= valor($dados, 'atendimento_porque') ?>">
+                                <input type="text" class="form-control" id="inputatendimentoporque" name="atendimento_porque" maxlength="255" value="<?= valor($dados, 'atendimento_porque') ?>">
                             </div>
 
                         </div>
@@ -419,7 +418,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                             </div>
                             <div class="col-md-6">
                                 <label for="inputalergiaqual" class="form-label">Se respondeu SIM, quais alimentos causam alergia ou restrição?</label>
-                                <input type="text" class="form-control" id="inputalergiaqual" name="alergia_qual" value="<?= valor($dados, 'alergia_qual') ?>">
+                                <input type="text" class="form-control" id="inputalergiaqual" name="alergia_qual" maxlength="255" value="<?= valor($dados, 'alergia_qual') ?>">
                             </div>
                             <div class="col-md-6">
                                 <label for="inputdoencacronica" class="form-label">Você possui alguma doença crônica ou pré-existente?</label>
@@ -430,7 +429,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                             </div>
                             <div class="col-md-6">
                                 <label for="inputdoencaqual" class="form-label">Diga qual doença? Caso sua resposta anterior tenha sido SIM.</label>
-                                <input type="text" class="form-control" id="inputdoencaqual" name="doenca_qual" value="<?= valor($dados, 'doenca_qual') ?>">
+                                <input type="text" class="form-control" id="inputdoencaqual" name="doenca_qual" maxlength="255" value="<?= valor($dados, 'doenca_qual') ?>">
                             </div>
                             <div class="col-md-6">
                                 <label for="inputmedicacaocontinua" class="form-label">Você faz uso contínuo ou regular de algum tipo de medicação?</label>
@@ -441,7 +440,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                             </div>
                             <div class="col-md-6">
                                 <label for="inputmedicacaoqual" class="form-label">Qual medicação?</label>
-                                <input type="text" class="form-control" id="inputmedicacaoqual" name="medicacao_qual" value="<?= valor($dados, 'medicacao_qual') ?>">
+                                <input type="text" class="form-control" id="inputmedicacaoqual" name="medicacao_qual" maxlength="255" value="<?= valor($dados, 'medicacao_qual') ?>">
                             </div>
                             <div class="col-md-6">
                                 <label for="inputacompanhamentopsi" class="form-label">Já realizou acompanhamento psicológico/psiquiátrico?</label>
@@ -466,7 +465,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                             </div>
                             <div class="col-md-6">
                                 <label for="inputinternadomotivo" class="form-label">Por qual motivo? Caso sua resposta tenha sido SIM, na questão anterior</label>
-                                <input type="text" class="form-control" id="inputinternadomotivo" name="internado_motivo" value="<?= valor($dados, 'internado_motivo') ?>">
+                                <input type="text" class="form-control" id="inputinternadomotivo" name="internado_motivo" maxlength="255" value="<?= valor($dados, 'internado_motivo') ?>">
                             </div>
                             <div class="col-md-6">
                                 <label for="inputjacirurgia" class="form-label">Já passou por alguma cirurgia antes?</label>
@@ -477,7 +476,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                             </div>
                             <div class="col-md-6">
                                 <label for="inputcirurgiaqual" class="form-label">Qual tipo de cirurgia você foi submetido? Caso sua resposta tenha sido SIM, na questão anterior.</label>
-                                <input type="text" class="form-control" id="inputcirurgiaqual" name="cirurgia_qual" value="<?= valor($dados, 'cirurgia_qual') ?>">
+                                <input type="text" class="form-control" id="inputcirurgiaqual" name="cirurgia_qual" maxlength="255" value="<?= valor($dados, 'cirurgia_qual') ?>">
                             </div>
 
                         </div>
@@ -508,7 +507,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                             </div>
                             <div class="col-md-6">
                                 <label for="inputalimentacaohabitual" class="form-label">O que você, geralmente, come durante as principais refeições do seu dia?</label>
-                                <input type="text" class="form-control" id="inputalimentacaohabitual" name="alimentacao_habitual" value="<?= valor($dados, 'alimentacao_habitual') ?>">
+                                <input type="text" class="form-control" id="inputalimentacaohabitual" name="alimentacao_habitual" maxlength="1000" value="<?= valor($dados, 'alimentacao_habitual') ?>">
                             </div>
                             <div class="col-md-6">
                                 <label for="inputfuma" class="form-label">Você fuma algum tipo de cigarro?</label>
@@ -540,7 +539,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                             </div>
                             <div class="col-md-6">
                                 <label for="inputdrogasqual" class="form-label">Qual/quais? Caso sua resposta tenha sido SIM, na questão anterior.</label>
-                                <input type="text" class="form-control" id="inputdrogasqual" name="drogas_qual" value="<?= valor($dados, 'drogas_qual') ?>">
+                                <input type="text" class="form-control" id="inputdrogasqual" name="drogas_qual" maxlength="255" value="<?= valor($dados, 'drogas_qual') ?>">
                             </div>
                             <div class="col-md-6">
                                 <label for="inputatividadefisica" class="form-label">Pratica algum tipo de atividade física?</label>

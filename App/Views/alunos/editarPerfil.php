@@ -117,11 +117,11 @@ $id = (int) $dados['aluno_id'];
                             </h5>
                             <div class="row g-3">
                                 <?php
-                                ep_input($dados, 'nome', 'Nome completo', 'col-md-6');
+                                ep_input($dados, 'nome', 'Nome completo', 'col-md-6', 'maxlength="225"');
                                 ep_input($dados, 'data_nascimento', 'Data de nascimento', 'col-md-6', '', 'date');
                                 ep_select($dados, 'sexo', 'Sexo biológico', ['Masculino', 'Feminino', 'Outro']);
                                 ep_input($dados, 'matricula', 'Matrícula', 'col-md-6', 'maxlength="13"');
-                                ep_input($dados, 'rg', 'RG', 'col-md-6', 'maxlength="6"');
+                                ep_input($dados, 'rg', 'RG', 'col-md-6', 'maxlength="6" inputmode="numeric" data-mascara="rg"');
                                 ep_select($dados, 'curso', 'Curso', $dados['listas']['curso'] ?? []);
                                 ep_select($dados, 'turno', 'Turno', $dados['listas']['turno'] ?? [], 'col-md-6');
                                 ep_select($dados, 'ano_turma', 'Ano da turma', $dados['listas']['ano_turma'] ?? [], 'col-md-6');
@@ -142,9 +142,9 @@ $id = (int) $dados['aluno_id'];
                             </h5>
                             <div class="row g-3">
                                 <?php
-                                ep_input($dados, 'telefone_aluno', 'Telefone do aluno (WhatsApp)', 'col-12', 'maxlength="15" placeholder="(69) 99999-9999"');
-                                ep_input($dados, 'nome_responsavel', 'Nome do responsável', 'col-12');
-                                ep_input($dados, 'telefone_responsavel', 'Telefone do responsável (WhatsApp)', 'col-12', 'maxlength="15" placeholder="(69) 99999-9999"');
+                                ep_input($dados, 'telefone_aluno', 'Telefone do aluno (WhatsApp)', 'col-12', 'maxlength="15" inputmode="tel" data-mascara="telefone" placeholder="(69) 99999-9999"');
+                                ep_input($dados, 'nome_responsavel', 'Nome do responsável', 'col-12', 'maxlength="100"');
+                                ep_input($dados, 'telefone_responsavel', 'Telefone do responsável (WhatsApp)', 'col-12', 'maxlength="15" inputmode="tel" data-mascara="telefone" placeholder="(69) 99999-9999"');
                                 ?>
                             </div>
                         </div>
@@ -164,13 +164,13 @@ $id = (int) $dados['aluno_id'];
                         ep_select($dados, 'tipo_escola', 'Tipo de escola que estudou antes do IFRO', $dados['listas']['tipo_escola'] ?? []);
                         ep_select($dados, 'motivo_ifro', 'Por que escolheu o IFRO para estudar?', $dados['listas']['motivo_ifro'] ?? []);
                         ep_select($dados, 'ja_reprovou', 'Já reprovou antes?', $simNao);
-                        ep_input($dados, 'quantas_vezes', 'Quantas vezes reprovou?');
+                        ep_input($dados, 'quantas_vezes', 'Quantas vezes reprovou?', 'col-md-6', 'maxlength="10"');
                         ep_select($dados, 'estuda_fora', 'Estuda fora do horário de aula? (em casa)', $simNao);
-                        ep_input($dados, 'quanto_tempo', 'Quanto tempo reserva para estudar fora da escola?');
+                        ep_input($dados, 'quanto_tempo', 'Quanto tempo reserva para estudar fora da escola?', 'col-md-6', 'maxlength="50"');
                         ep_nota($dados, 'nota_curso', 'Em uma escala (0-10), o quanto gosta do curso?');
                         ep_nota($dados, 'nota_motivacao', 'Em uma escala (0-10), o quanto se sente motivado(a) para estudar?');
                         ep_select($dados, 'atendimento', 'Comparece ao atendimento individual com o professor?', $simNao);
-                        ep_input($dados, 'atendimento_porque', 'Por quê? (caso a resposta anterior seja "Não")');
+                        ep_input($dados, 'atendimento_porque', 'Por quê? (caso a resposta anterior seja "Não")', 'col-md-6', 'maxlength="255"');
                         ?>
                     </div>
                 </div>
@@ -228,17 +228,17 @@ $id = (int) $dados['aluno_id'];
                         <?php
                         ep_select($dados, 'acesso_saude', 'Como é realizado o acesso ao serviço de saúde?', $dados['listas']['acesso_saude'] ?? []);
                         ep_select($dados, 'alergia_alimentar', 'Possui alergia ou restrição alimentar?', $simNaoNs);
-                        ep_input($dados, 'alergia_qual', 'Se sim, quais alimentos?', 'col-12');
+                        ep_input($dados, 'alergia_qual', 'Se sim, quais alimentos?', 'col-12', 'maxlength="255"');
                         ep_select($dados, 'doenca_cronica', 'Possui doença crônica ou pré-existente?', $simNaoNs);
-                        ep_input($dados, 'doenca_qual', 'Se sim, qual doença?');
+                        ep_input($dados, 'doenca_qual', 'Se sim, qual doença?', 'col-md-6', 'maxlength="255"');
                         ep_select($dados, 'medicacao_continua', 'Faz uso contínuo de alguma medicação?', $simNao);
-                        ep_input($dados, 'medicacao_qual', 'Qual medicação?');
+                        ep_input($dados, 'medicacao_qual', 'Qual medicação?', 'col-md-6', 'maxlength="255"');
                         ep_select($dados, 'acompanhamento_psi', 'Já realizou acompanhamento psicológico/psiquiátrico?', $simNao);
                         ep_select($dados, 'cartao_vacina', 'Tem cartão de vacina?', $simNao);
                         ep_select($dados, 'ja_internado', 'Já ficou internado(a)?', $simNao);
-                        ep_input($dados, 'internado_motivo', 'Se sim, por qual motivo?');
+                        ep_input($dados, 'internado_motivo', 'Se sim, por qual motivo?', 'col-md-6', 'maxlength="255"');
                         ep_select($dados, 'ja_cirurgia', 'Já passou por alguma cirurgia?', $simNao);
-                        ep_input($dados, 'cirurgia_qual', 'Se sim, qual cirurgia?');
+                        ep_input($dados, 'cirurgia_qual', 'Se sim, qual cirurgia?', 'col-md-6', 'maxlength="255"');
                         ?>
                     </div>
                 </div>
@@ -259,12 +259,12 @@ $id = (int) $dados['aluno_id'];
                             'Sonolência diurna',
                         ]);
                         ep_select($dados, 'refeicoes_dia', 'Refeições por dia', ['3', 'Mais que 3', 'Menos que 3']);
-                        ep_input($dados, 'alimentacao_habitual', 'O que costuma comer nas principais refeições?', 'col-12');
+                        ep_input($dados, 'alimentacao_habitual', 'O que costuma comer nas principais refeições?', 'col-12', 'maxlength="1000"');
                         ep_select($dados, 'fuma', 'Fuma algum tipo de cigarro?', $simNao);
                         ep_select($dados, 'bebida_alcoolica', 'Consome bebida alcoólica?', $simNao);
                         ep_select($dados, 'pais_sabem', 'Os pais sabem (caso tenha respondido "Sim" acima)?', $simNao);
                         ep_select($dados, 'drogas_ilicitas', 'Já fez uso ou teve contato com droga ilícita?', $simNao);
-                        ep_input($dados, 'drogas_qual', 'Se sim, qual/quais?');
+                        ep_input($dados, 'drogas_qual', 'Se sim, qual/quais?', 'col-md-6', 'maxlength="255"');
                         ep_select($dados, 'atividade_fisica', 'Pratica atividade física?', $simNao);
                         ep_select($dados, 'frequencia_atividade', 'Frequência semanal de atividade física', ['3x por semana', '(+) de 3x por semana', '(-) de 3x por semana']);
                         ep_select($dados, 'banhos_dia', 'Banhos por dia', ['1 por dia', '2 por dia', '3 por dia', 'Mais de 3 por dia'], 'col-md-12');

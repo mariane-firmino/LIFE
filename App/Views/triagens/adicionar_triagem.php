@@ -7,10 +7,15 @@ if (!isset($_SESSION['usuario_id'])) {
 include '../App/Views/menu.php';
 
 $tipo = $dados['tipo'];
+$parte = $dados['parte'];                 // 'psicologica' ou 'fisica'
 $perguntas = $dados['perguntas'];
-$perguntaSexualInicial = 7;
-$totalPerguntas = count($perguntas);
-$rotaSalvar = $tipo === 'masculina' ? 'salvarTriagemMasculina' : 'salvarTriagemFeminina';
+$numeros = array_keys($perguntas);
+$ultimaPergunta = end($numeros);
+$rotaSalvar = $parte === 'fisica' ? 'salvarFisica' : 'salvarPsicologica';
+$alunoId = (int) $dados['aluno_id'];
+
+// A outra parte da triagem (para o link "Ir para a triagem ...").
+$outraParte = $parte === 'fisica' ? 'psicologica' : 'fisica';
 ?>
 <div class="layout">
     <!-- CABEÇALHO -->
@@ -19,36 +24,48 @@ $rotaSalvar = $tipo === 'masculina' ? 'salvarTriagemMasculina' : 'salvarTriagemF
         <header class="home-topo">
 
             <div class="home-titulo">
-                <h1>Triagem do Estudante</h1>
+                <h1><?= htmlspecialchars($dados['titulo'], ENT_QUOTES, 'UTF-8') ?></h1>
                 <p>Preencha a triagem de <?= htmlspecialchars($dados['aluno_nome'], ENT_QUOTES, 'UTF-8') ?>.</p>
             </div>
 
             <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
 
         </header>
-
     </div>
 
-    <form action="<?= URL ?>/triagens/<?= $rotaSalvar ?>/<?= (int) $dados['aluno_id'] ?>" method="POST">
+    <nav style="--bs-breadcrumb-divider: '>';" class="m-3" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="<?= URL ?>/alunos/consulta">Consultar Aluno</a></li>
+            <li class="breadcrumb-item"><a href="<?= URL ?>/alunos/visualizarPerfil/<?= $alunoId ?>">Visualizar Perfil</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars($dados['titulo'], ENT_QUOTES, 'UTF-8') ?></li>
+        </ol>
+    </nav>
+
+    <div class="container">
+        <?php Sessao::mensagem('triagens'); ?>
+    </div>
+
+    <form action="<?= URL ?>/triagens/<?= $rotaSalvar ?>/<?= $alunoId ?>" method="POST">
         <div class="shadow p-3 mb-5 rounded">
             <div class="container text-justify">
                 <div class="row g-4">
                     <div class="col-12">
-                        <h3>Situação Psicoemocional</h3>
+                        <?php if ($parte === 'fisica'): ?>
+                            <h3>Saúde Sexual e Reprodutiva de Adolescentes</h3>
+                            <h5>Para <?= $tipo === 'masculina' ? 'meninos' : 'meninas' ?></h5>
+                        <?php else: ?>
+                            <h3>Situação Psicoemocional</h3>
+                        <?php endif; ?>
                     </div>
                 </div>
 
-                <?php foreach ($perguntas as $numero => $pergunta): ?>
-                    <?php if ($numero === $perguntaSexualInicial): ?>
-                        <div class="row g-4 mt-4">
-                            <div class="col-12">
-                                <h3>Saúde Sexual e Reprodutiva de Adolescentes</h3>
-                                <h5>Para <?= $tipo === 'masculina' ? 'meninos' : 'meninas' ?></h5>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if ($numero === 1 || $numero === 3 || $numero === 5 || $numero === 7 || $numero === 9 || $numero === 11 || $numero === 13 || $numero === 15): ?>
+                <?php
+                // Duas perguntas por linha.
+                $posicao = 0;
+                foreach ($perguntas as $numero => $pergunta):
+                    $posicao++;
+                    ?>
+                    <?php if ($posicao % 2 === 1): ?>
                         <div class="row g-4 mt-3">
                     <?php endif; ?>
 
@@ -75,7 +92,7 @@ $rotaSalvar = $tipo === 'masculina' ? 'salvarTriagemMasculina' : 'salvarTriagemF
                         <?php endif; ?>
                     </div>
 
-                    <?php if ($numero === $totalPerguntas || $numero % 2 === 0): ?>
+                    <?php if ($numero === $ultimaPergunta || $posicao % 2 === 0): ?>
                         </div>
                     <?php endif; ?>
                 <?php endforeach; ?>
@@ -88,6 +105,13 @@ $rotaSalvar = $tipo === 'masculina' ? 'salvarTriagemMasculina' : 'salvarTriagemF
                         <button type="submit" class="btn btn-success w-100">Salvar informações</button>
                     </div>
                 </div>
+
+                <p class="text-end small mt-3 mb-0">
+                    <a href="<?= URL ?>/triagens/<?= $outraParte ?>/<?= $alunoId ?>" class="text-success fw-bold">
+                        Ir para a <?= mb_strtolower(TriagemPerguntas::PARTES[$outraParte]) ?>
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </p>
             </div>
         </div>
     </form>

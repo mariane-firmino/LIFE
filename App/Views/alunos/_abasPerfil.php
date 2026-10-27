@@ -6,7 +6,7 @@
 // É incluído pela view visualizarPerfil.php (usa as mesmas variáveis
 // e as funções vp(), vpSimQual() definidas lá).
 //
-// Abas: Histórico de saúde, Cartão de vacina, Cartão do SUS,
+// Abas: Histórico de saúde, Triagens, Triagens rápidas, Cartão de vacina, Cartão do SUS,
 // Laudos médicos, Informações psicológicas, Anotações rápidas,
 // Informações extras, Educação formal, Hábitos de vida e
 // Histórico de visitas.
@@ -19,6 +19,8 @@ $complemento  = $dados['complemento'] ?? null;
 $docs         = $dados['docs'] ?? ['vacina' => [], 'sus' => [], 'laudo' => []];
 $notasRapidas = $dados['notas_rapidas'] ?? [];
 $notasPsico   = $dados['notas_psico'] ?? [];
+$rapidas      = $dados['triagens_rapidas'] ?? [];
+$triagens     = $dados['triagens'] ?? [];
 $podePsico    = !empty($dados['pode_psico']);
 $usuarioId    = (int) ($_SESSION['usuario_id'] ?? 0);
 $alunoId      = (int) $aluno->id;
@@ -201,6 +203,8 @@ if (!function_exists('paNotas')) {
 // ---------------------------------------------------------------------
 $abasPerfil = [
     ['saude',    'Histórico de saúde',        'bi-heart-pulse-fill'],
+    ['triagens', 'Triagens',                  'bi-clipboard2-pulse-fill'],
+    ['rapidas',  'Triagens rápidas',          'bi-lightning-charge-fill'],
     ['vacina',   'Cartão de vacina',          'bi-shield-plus'],
     ['sus',      'Cartão do SUS',             'bi-credit-card-2-front-fill'],
     ['laudos',   'Laudos médicos',            'bi-file-earmark-medical-fill'],
@@ -262,6 +266,115 @@ $infoExtras = trim((string) ($complemento->info_extras ?? ''));
                     ['Já fez cirurgia', vpSimQual($saude->ja_cirurgia, $saude->cirurgia_qual)],
                 ]);
             endif; ?>
+        </div>
+
+        <!-- ================== TRIAGENS (respostas separadas em psicológica e física) ================== -->
+        <div class="tab-pane" id="aba-triagens" role="tabpanel" aria-labelledby="perfil-triagens-tab" tabindex="0">
+            <?php paTituloPainel(
+                'Triagens',
+                'bi-clipboard2-pulse-fill',
+                '<div class="d-flex flex-wrap gap-2">'
+                . '<a href="' . URL . '/triagens/psicologica/' . $alunoId . '" class="btn btn-success btn-sm fw-bold">'
+                . '<i class="bi bi-plus-lg me-1" aria-hidden="true"></i> Psicológica</a>'
+                . '<a href="' . URL . '/triagens/fisica/' . $alunoId . '" class="btn btn-success btn-sm fw-bold">'
+                . '<i class="bi bi-plus-lg me-1" aria-hidden="true"></i> Física</a>'
+                . '</div>'
+            ); ?>
+
+            <?php if (!$triagens): ?>
+                <p class="text-muted mb-0">Nenhuma triagem registrada.</p>
+            <?php else: ?>
+                <div class="d-flex flex-column gap-4">
+                    <?php foreach ($triagens as $tri): ?>
+                        <div class="border rounded bg-body p-3">
+                            <small class="text-muted d-block mb-3">
+                                <i class="bi bi-calendar-event me-1" aria-hidden="true"></i>
+                                <?= date('d/m/Y H:i', strtotime($tri['data'])) ?>
+                                &bull; <b><?= vp($tri['serv_nome'], 'Autor removido') ?></b>
+                                <?= !empty($tri['func_nome']) ? ' (' . vp($tri['func_nome']) . ')' : '' ?>
+                            </small>
+
+                            <div class="row g-3">
+                                <?php
+                                // Mostra só as partes respondidas nesta triagem (agora cada
+                                // parte é salva em uma página própria; triagens antigas têm as duas).
+                                $partes = array_filter([
+                                    'psicologica' => ['Triagem psicológica', 'bi-chat-heart-fill', 'pa-nota--psico'],
+                                    'fisica'      => ['Triagem física', 'bi-heart-pulse-fill', ''],
+                                ], function ($chaveParte) use ($tri) {
+                                    return !empty($tri[$chaveParte]);
+                                }, ARRAY_FILTER_USE_KEY);
+                                $colunaParte = count($partes) > 1 ? 'col-12 col-lg-6' : 'col-12';
+
+                                foreach ($partes as $chaveParte => [$tituloParte, $iconeParte, $classeParte]): ?>
+                                    <div class="<?= $colunaParte ?>">
+                                        <div class="pa-nota <?= $classeParte ?> h-100">
+                                            <h3 class="h6 fw-bold mb-3">
+                                                <i class="bi <?= $iconeParte ?> me-1" aria-hidden="true"></i> <?= $tituloParte ?>
+                                            </h3>
+                                            <?php foreach ($tri[$chaveParte] as $r): ?>
+                                                <div class="mb-2">
+                                                    <small class="text-muted"><?= vp($r->pergunta) ?></small>
+                                                    <div class="text-break"><b><?= vp($r->resposta) ?></b></div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <!-- ================== TRIAGENS RÁPIDAS ================== -->
+        <div class="tab-pane" id="aba-rapidas" role="tabpanel" aria-labelledby="perfil-rapidas-tab" tabindex="0">
+            <?php paTituloPainel(
+                'Triagens Rápidas',
+                'bi-lightning-charge-fill',
+                '<a href="' . URL . '/triagens/rapida/' . $alunoId . '" class="btn btn-success btn-sm fw-bold">'
+                . '<i class="bi bi-plus-lg me-1" aria-hidden="true"></i> Nova triagem rápida</a>'
+            ); ?>
+
+            <?php if (!$rapidas): ?>
+                <p class="text-muted mb-0">Nenhuma triagem rápida registrada.</p>
+            <?php else:
+                // Cor do selo de gravidade.
+                $corGravidade = ['Leve' => 'text-bg-success', 'Média' => 'text-bg-warning', 'Grave' => 'text-bg-danger'];
+                ?>
+                <div class="d-flex flex-column gap-3">
+                    <?php foreach ($rapidas as $t): ?>
+                        <div class="pa-nota pa-rapida pa-rapida--<?= $t->gravidade === 'Grave' ? 'grave' : ($t->gravidade === 'Média' ? 'media' : 'leve') ?>">
+                            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                                <div class="d-flex flex-wrap align-items-center gap-2">
+                                    <b class="fs-6"><?= vp($t->queixa) ?></b>
+                                    <span class="badge <?= $corGravidade[$t->gravidade] ?? 'text-bg-secondary' ?>"><?= vp($t->gravidade) ?></span>
+                                </div>
+                                <small class="text-muted">
+                                    <?= date('d/m/Y H:i', strtotime($t->criado_em)) ?>
+                                    &bull; <b><?= vp($t->serv_nome, 'Autor removido') ?></b>
+                                    <?= !empty($t->func_nome) ? ' (' . vp($t->func_nome) . ')' : '' ?>
+                                </small>
+                            </div>
+
+                            <?php
+                            $blocos = [
+                                ['Informações do aluno', $t->relato_aluno],
+                                ['Informações da enfermeira', $t->observacao],
+                                ['Como lidou', $t->conduta],
+                            ];
+                            foreach ($blocos as [$rotulo, $texto]):
+                                if (trim((string) $texto) === '') continue; ?>
+                                <div class="mb-2">
+                                    <small class="text-muted"><?= $rotulo ?></small>
+                                    <div class="text-break"><?= nl2br(htmlspecialchars($texto)) ?></div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         </div>
 
         <!-- ================== CARTÃO DE VACINA ================== -->

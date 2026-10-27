@@ -6,3 +6,11 @@
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule  ^(.+)$ index.php?url=$1 [QSA,L]
 </IfModule>
+
+# CSS e JS: o navegador sempre confere se o arquivo mudou antes de usar a cópia
+# guardada (assim as mudanças de visual e acessibilidade aparecem na hora).
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

@@ -74,7 +74,7 @@
 
 .right_esqueci_minha_seha h1{
 
-    font-size:38px;
+    font-size:2.375rem;
 
     margin-bottom:12px;
 
@@ -82,7 +82,7 @@
 
 .right_esqueci_minha_seha p{
 
-    font-size:17px;
+    font-size:1.0625rem;
 
     text-align:center;
 
@@ -102,7 +102,7 @@ form{
 
     margin-bottom:10px;
 
-    font-size:22px;
+    font-size:1.375rem;
 
 }
 
@@ -120,7 +120,7 @@ form{
 
     padding-left:15px;
 
-    font-size:18px;
+    font-size:1.125rem;
 
     margin-bottom:50px;
 
@@ -140,7 +140,7 @@ form{
 
     color:white;
 
-    font-size:19px;
+    font-size:1.1875rem;
 
     cursor:pointer;
 
@@ -186,7 +186,7 @@ form{
 
     margin:0 15px;
 
-    font-size:15px;
+    font-size:0.9375rem;
 
 }
 
@@ -196,7 +196,7 @@ form{
 
     text-decoration:none;
 
-    font-size:15px;
+    font-size:0.9375rem;
 
 }
 
@@ -234,7 +234,7 @@ form{
     }
 
     .right_esqueci_minha_seha h1{
-        font-size:28px;
+        font-size:1.75rem;
         text-align:center;
     }
 
@@ -245,19 +245,19 @@ form{
 
 @media (max-width: 480px) {
     .right_esqueci_minha_seha h1{
-        font-size:24px;
+        font-size:1.5rem;
     }
 
     .right_esqueci_minha_seha p{
-        font-size:13px;
+        font-size:0.8125rem;
     }
 
     .ems-label{
-        font-size:18px;
+        font-size:1.125rem;
     }
 
     .ems-input, .ems-button{
         height:45px;
-        font-size:16px;
+        font-size:1rem;
     }
 }

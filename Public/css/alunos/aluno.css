@@ -12,7 +12,7 @@
 .enf-secao-titulo {
     margin: 0 8px 16px;
     color: #064d2b;
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: 700;
 }
 
@@ -81,8 +81,8 @@
     margin: 0;
     padding: 0;
     color: #53645b;
-    font-size: 15px !important;
-    line-height: 21px !important;
+    font-size: 0.9375rem !important;
+    line-height: 1.3125rem !important;
     font-weight: 600;
     text-align: left;
 }
@@ -98,7 +98,7 @@
     border-radius: 50%;
     background-color: var(--enf-cor-fundo);
     color: var(--enf-cor);
-    font-size: 19px;
+    font-size: 1.1875rem;
     line-height: 1;
 }
 
@@ -108,14 +108,14 @@
 .enf-card-numero {
     margin: 14px 0 4px;
     color: var(--enf-cor);
-    font-size: 40px;
-    line-height: 44px;
+    font-size: 2.5rem;
+    line-height: 2.75rem;
     font-weight: 700;
 }
 
 .enf-card-sub {
     color: #7b8b83;
-    font-size: 13px;
+    font-size: 0.8125rem;
 }
 
 
@@ -144,7 +144,7 @@
     background-color: #198754;
     color: #ffffff;
 
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 600;
     text-decoration: none;
     gap: 8px;
@@ -176,7 +176,7 @@
 
     .enf-corpo { padding: 18px 16px 16px; }
 
-    .enf-card-numero { font-size: 34px; line-height: 38px; }
+    .enf-card-numero { font-size: 2.125rem; line-height: 2.375rem; }
 }
 
 
@@ -193,7 +193,7 @@
         padding-right: 15px;
     }
 
-    .enf-secao-titulo { margin-left: 6px; font-size: 17px; }
+    .enf-secao-titulo { margin-left: 6px; font-size: 1.0625rem; }
 
     .enf-cards > div { padding-left: 6px; padding-right: 6px; }
 
@@ -201,7 +201,7 @@
 
     .enf-corpo { padding: 16px 16px 14px; }
 
-    .enf-card-numero { font-size: 32px; line-height: 36px; margin-top: 10px; }
+    .enf-card-numero { font-size: 2rem; line-height: 2.25rem; margin-top: 10px; }
 
     .enf-botao-area { margin-top: 22px; justify-content: center; }
 
@@ -210,7 +210,7 @@
         max-width: 360px;
         min-width: 0;
         min-height: 44px;
-        font-size: 14px;
+        font-size: 0.875rem;
     }
 }
 
@@ -224,13 +224,13 @@
     .enf-conteudo { padding-left: 10px; padding-right: 10px; }
 
     .enf-cards .enf-perfil .enf-card-titulo {
-        font-size: 14px !important;
-        line-height: 19px !important;
+        font-size: 0.875rem !important;
+        line-height: 1.1875rem !important;
     }
 
-    .enf-card-icone { width: 34px; height: 34px; font-size: 16px; }
+    .enf-card-icone { width: 34px; height: 34px; font-size: 1rem; }
 
-    .enf-card-numero { font-size: 28px; line-height: 32px; }
+    .enf-card-numero { font-size: 1.75rem; line-height: 2rem; }
 }
 
 

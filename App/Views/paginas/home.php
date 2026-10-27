@@ -12,6 +12,8 @@ include '../App/Views/menu.php';
  *   notificacoes, alunos, atendimentos_hoje, atendimentos_periodicos
  * Enquanto não enviar, aparece 0.
  */
+$alunosAtencao = $dados['alunos_atencao'] ?? [];
+
 $cards = [
     [
         'classe' => 'home-card--notificacoes',
@@ -45,7 +47,7 @@ $cards = [
 
 <div class="layout">
 
-    <main class="conteudo">
+    <main class="conteudo" id="conteudo-principal" tabindex="-1">
 
         <!-- CABEÇALHO -->
         <header class="home-topo">
@@ -55,19 +57,19 @@ $cards = [
                 <p>Bem-vindo, <?= htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário') ?>!</p>
             </div>
 
-            <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
+            <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logotipo do sistema LIFE">
 
         </header>
 
 
         <!-- CARDS -->
-        <h2 class="home-secao-titulo">Resumo de hoje</h2>
+        <h2 class="home-secao-titulo" id="titulo-resumo">Resumo de hoje</h2>
 
-        <section class="home-cards">
+        <section class="home-cards" aria-labelledby="titulo-resumo">
 
             <?php foreach ($cards as $card): ?>
 
-                <article class="home-card <?= $card['classe'] ?>">
+                <article class="home-card <?= $card['classe'] ?>" aria-label="<?= htmlspecialchars($card['titulo']) ?>: <?= (int) $card['valor'] ?>">
 
                     <span class="home-card-icone" aria-hidden="true">
                         <i class="bi <?= $card['icone'] ?>"></i>
@@ -82,6 +84,70 @@ $cards = [
                 </article>
 
             <?php endforeach; ?>
+
+        </section>
+
+
+        <!-- LISTA: PESSOAS QUE PRECISAM DE ATENÇÃO -->
+        <section class="home-atencao" aria-labelledby="titulo-atencao">
+
+            <div class="home-atencao-cabecalho">
+                <h2 class="home-secao-titulo" id="titulo-atencao">Lista de pessoas que precisam de atenção</h2>
+                <?php if ($alunosAtencao): ?>
+                    <span class="home-atencao-total"><?= count($alunosAtencao) ?> <?= count($alunosAtencao) === 1 ? 'aluno' : 'alunos' ?></span>
+                <?php endif; ?>
+            </div>
+
+            <p class="home-atencao-legenda">
+                Alunos com sinais de alerta na triagem mais recente (últimos 30 dias).
+            </p>
+
+            <?php if (!$alunosAtencao): ?>
+
+                <p class="home-atencao-vazio" role="status">
+                    <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+                    Nenhum aluno precisa de atenção no momento.
+                </p>
+
+            <?php else: ?>
+
+                <ul class="home-atencao-lista">
+                    <?php foreach ($alunosAtencao as $aluno): ?>
+                        <li class="home-atencao-item">
+                            <a class="home-atencao-link"
+                               href="<?= URL ?>/alunos/visualizarPerfil/<?= (int) $aluno['id'] ?>">
+
+                                <span class="home-atencao-avatar" aria-hidden="true">
+                                    <i class="bi bi-person-fill"></i>
+                                </span>
+
+                                <span class="home-atencao-info">
+                                    <strong class="home-atencao-nome"><?= htmlspecialchars($aluno['nome']) ?></strong>
+                                    <span class="home-atencao-meta">
+                                        <?php if ($aluno['turma'] !== ''): ?>
+                                            <?= htmlspecialchars($aluno['turma']) ?> ·
+                                        <?php endif; ?>
+                                        Triagem em <?= date('d/m/Y', strtotime($aluno['data'])) ?>
+                                    </span>
+                                    <span class="home-atencao-motivos">
+                                        <span class="visually-hidden">Motivos:</span>
+                                        <?php foreach ($aluno['motivos'] as $motivo): ?>
+                                            <span class="home-atencao-motivo"><?= htmlspecialchars($motivo) ?></span>
+                                        <?php endforeach; ?>
+                                    </span>
+                                </span>
+
+                                <span class="home-atencao-ver">
+                                    Ver perfil<span class="visually-hidden"> de <?= htmlspecialchars($aluno['nome']) ?></span>
+                                    <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                                </span>
+
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+
+            <?php endif; ?>
 
         </section>
 

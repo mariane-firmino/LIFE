@@ -1,110 +1,75 @@
+<!-- Redefinir senha: mesmo visual do login (Public/css/usuarios/login.css) -->
 <div class="container-login">
 
-    <div class="container-gustavo">
+    <div class="card-login">
 
-        <div class="left">
-
+        <!-- LADO DA LOGO -->
+        <div class="lado-logo">
             <img
-                src="<?= URL ?>/img/life-menor.png"
-                alt="Logo Enfermaria"
-                class="logo"
+                src="<?= URL ?>/img/logo-life.png"
+                alt="Logo LIFE"
             >
-
         </div>
 
+        <!-- LADO DO FORMULÁRIO -->
+        <div class="lado-form">
 
-        <div class="right">
-
-            <h1>Redefinir senha</h1>
-
+            <h2>REDEFINIR SENHA</h2>
 
             <?php if (!empty($dados['erro'])): ?>
-
-                <div class="alert alert-danger">
+                <div class="alert alert-danger" role="alert">
                     <?= htmlspecialchars($dados['erro']) ?>
                 </div>
-
             <?php endif; ?>
 
+            <?php if (!empty($dados['token'])): ?>
 
-            <?php if (empty($dados['erro']) || !empty($dados['token'])): ?>
+                <p>Digite sua nova senha abaixo.</p>
 
-                <?php if (!empty($dados['token'])): ?>
+                <form method="POST" action="<?= URL ?>/usuarios/redefinirSenha">
 
-                    <p>
-                        Digite sua nova senha abaixo.
-                    </p>
+                    <input type="hidden" name="token" value="<?= htmlspecialchars($dados['token']) ?>">
 
-
-                    <form
-                        method="POST"
-                        action="<?= URL ?>/usuarios/redefinirSenha"
-                    >
-
+                    <div class="campo-login">
+                        <label class="login-label" for="senha">Nova senha:</label>
                         <input
-                            type="hidden"
-                            name="token"
-                            value="<?= htmlspecialchars($dados['token']) ?>"
+                            type="password"
+                            id="senha"
+                            name="senha"
+                            class="login-form-control"
+                            minlength="8"
+                            autocomplete="new-password"
+                            required
                         >
+                    </div>
 
-
-                        <div class="mb-3">
-
-                            <label for="senha">
-                                Nova senha:
-                            </label>
-
-                            <input
-                                type="password"
-                                id="senha"
-                                name="senha"
-                                class="form-control"
-                                minlength="6"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div class="mb-3">
-
-                            <label for="confirmarSenha">
-                                Confirmar nova senha:
-                            </label>
-
-                            <input
-                                type="password"
-                                id="confirmarSenha"
-                                name="confirmarSenha"
-                                class="form-control"
-                                minlength="6"
-                                required
-                            >
-
-                        </div>
-
-
-                        <button
-                            type="submit"
-                            class="btn btn-success"
+                    <div class="campo-login">
+                        <label class="login-label" for="confirmarSenha">Confirmar nova senha:</label>
+                        <input
+                            type="password"
+                            id="confirmarSenha"
+                            name="confirmarSenha"
+                            class="login-form-control"
+                            minlength="8"
+                            autocomplete="new-password"
+                            required
                         >
-                            Alterar senha
-                        </button>
+                    </div>
 
-                    </form>
+                    <button type="submit" class="btn-login">
+                        Alterar senha
+                    </button>
 
-                <?php endif; ?>
+                </form>
 
             <?php endif; ?>
 
-
-            <br>
-
-            <a
-                href="<?= URL ?>/usuarios/login"
-            >
-                Voltar para o login
-            </a>
+            <!-- LINKS -->
+            <div class="links">
+                <p>
+                    <a href="<?= URL ?>/usuarios/login">Voltar para o login</a>
+                </p>
+            </div>
 
         </div>
 

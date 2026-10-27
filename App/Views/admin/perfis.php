@@ -19,7 +19,6 @@ if (!isset($_SESSION['usuario_id'])) {
 include '../App/Views/admin/menuAdmin.php';
 
 // CSS adicional das páginas do administrador.
-echo '<link rel="stylesheet" href="' . URL . '/css/admin.css">';
 
 
 // ---------------------------------------------------------------------
@@ -208,7 +207,7 @@ $formComErro = $abaAtiva === 'aba-adicionar' && !empty($form);
                 <!-- Filtro: esconde as linhas que não contêm o texto digitado -->
                 <div class="mb-3" style="max-width: 360px;">
                     <label for="filtroServidores" class="form-label small mb-1">Filtrar servidores</label>
-                    <input type="search" id="filtroServidores" class="form-control form-control-sm"
+                    <input type="search" id="filtroServidores" maxlength="100" class="form-control form-control-sm"
                         placeholder="Nome, e-mail, SIAPE ou função">
                 </div>
 
@@ -298,7 +297,7 @@ $formComErro = $abaAtiva === 'aba-adicionar' && !empty($form);
 
                     <div class="col-md-4">
                         <label for="admCpf" class="form-label">CPF <span class="text-danger">*</span></label>
-                        <input type="text" id="admCpf" name="cpf" inputmode="numeric" maxlength="14"
+                        <input type="text" id="admCpf" name="cpf" inputmode="numeric" maxlength="14" data-mascara="cpf"
                             placeholder="000.000.000-00" required
                             class="form-control<?= admInvalido($form, 'cpf') ?>" value="<?= admValor($form, 'cpf') ?>">
                         <?php admErro($form, 'cpf'); ?>
@@ -327,7 +326,8 @@ $formComErro = $abaAtiva === 'aba-adicionar' && !empty($form);
 
                     <div class="col-md-6">
                         <label for="admTel" class="form-label">Telefone (opcional)</label>
-                        <input type="text" id="admTel" name="telefone" maxlength="15" inputmode="tel"
+                        <input type="text" id="admTel" name="telefone" maxlength="15" inputmode="tel" data-mascara="telefone"
+                            placeholder="(00) 00000-0000"
                             class="form-control<?= admInvalido($form, 'telefone') ?>" value="<?= admValor($form, 'telefone') ?>">
                         <?php admErro($form, 'telefone'); ?>
                     </div>

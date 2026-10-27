@@ -74,6 +74,10 @@ class Paginas extends Controller
                 $inicioMes->format('Y-m-d'),
                 $inicioProximoMes->format('Y-m-d')
             ),
+            // Alunos com alerta na triagem mais recente (últimos 30 dias)
+            'alunos_atencao' => $home->listarAlunosEmAtencao(
+                $agora->modify('-30 days')->format('Y-m-d H:i:s')
+            ),
         ];
 
         // Abre: App/Views/paginas/home.php

@@ -14,7 +14,6 @@ if (!isset($_SESSION['usuario_id'])) {
 include '../App/Views/admin/menuAdmin.php';
 
 // CSS adicional das páginas do administrador.
-echo '<link rel="stylesheet" href="' . URL . '/css/admin.css">';
 
 // Escapa texto para HTML.
 if (!function_exists('h')) {

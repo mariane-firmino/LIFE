@@ -3,9 +3,55 @@
 // Perguntas, tipos e opções válidas das triagens (devem ser iguais aos formulários em App/Views/triagens)
 class TriagemPerguntas
 {
+    // Nas duas triagens, as perguntas 1 a 6 são da parte psicológica
+    // ("Situação Psicoemocional"); a partir da 7 é a parte física
+    // ("Saúde Sexual e Reprodutiva"). Igual à View adicionar_triagem.php.
+    public const PRIMEIRA_PERGUNTA_FISICA = 7;
+
+    // As duas páginas de triagem: chave da URL => título.
+    public const PARTES = [
+        'psicologica' => 'Triagem Psicológica',
+        'fisica' => 'Triagem Física',
+    ];
+
     public static function por($tipo)
     {
         return $tipo === 'masculina' ? self::masculina() : self::feminina();
+    }
+
+    // Só as perguntas de uma parte ('psicologica' ou 'fisica'), mantendo
+    // a numeração original (os campos do formulário são "pergunta{N}").
+    public static function parte($tipo, $parte)
+    {
+        $fisica = $parte === 'fisica';
+
+        return array_filter(
+            self::por($tipo),
+            function ($numero) use ($fisica) {
+                return ($numero >= self::PRIMEIRA_PERGUNTA_FISICA) === $fisica;
+            },
+            ARRAY_FILTER_USE_KEY
+        );
+    }
+
+    // Diz se uma pergunta já salva é da parte 'psicologica' ou 'fisica'.
+    // Compara pelo texto, que é o que fica gravado na tabela triagem.
+    public static function area($textoPergunta)
+    {
+        static $psicologicas = null;
+
+        if ($psicologicas === null) {
+            $psicologicas = [];
+            foreach ([self::masculina(), self::feminina()] as $lista) {
+                foreach ($lista as $numero => $p) {
+                    if ($numero < self::PRIMEIRA_PERGUNTA_FISICA) {
+                        $psicologicas[$p['pergunta']] = true;
+                    }
+                }
+            }
+        }
+
+        return isset($psicologicas[$textoPergunta]) ? 'psicologica' : 'fisica';
     }
 
     public static function masculina()

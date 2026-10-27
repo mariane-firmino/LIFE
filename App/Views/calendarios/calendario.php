@@ -15,7 +15,6 @@ $responsaveis = $dados['responsaveis'];
 ?>
 
 <!-- FullCalendar (sem Composer: carrega direto do CDN) -->
-<link rel="stylesheet" href="<?= URL ?>/css/calendario.css">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.15/locales/pt-br.global.min.js"></script>
 

@@ -22,7 +22,6 @@ if (!isset($_SESSION['usuario_id'])) {
 include '../App/Views/admin/menuAdmin.php';
 
 // CSS adicional das páginas do administrador.
-echo '<link rel="stylesheet" href="' . URL . '/css/admin.css">';
 
 // Escapa texto para HTML.
 if (!function_exists('h')) {
@@ -83,6 +82,7 @@ $primeiro = array_key_first($grupos);
                 $cfg = $grupo['cfg'];
                 $opcoes = $grupo['opcoes'];
                 $uso = $grupo['uso'];       // ['valor' => quantos alunos usam]
+                [$umItem, $variosItens] = $cfg['unidade'] ?? ['aluno', 'alunos'];
                 ?>
                 <!-- ============ LISTA: <?= h($cfg['rotulo']) ?> ============ -->
                 <div class="tab-pane <?= $chave === $primeiro ? 'show active' : '' ?>" id="aba-<?= h($chave) ?>"
@@ -133,7 +133,7 @@ $primeiro = array_key_first($grupos);
                                         <tr class="<?= $ativa ? '' : 'adm-linha-inativa' ?>">
                                             <td class="text-break"><b><?= h($o->valor) ?></b></td>
                                             <td class="text-nowrap">
-                                                <?= $emUso ?> <?= $emUso === 1 ? 'aluno' : 'alunos' ?>
+                                                <?= $emUso ?> <?= $emUso === 1 ? $umItem : $variosItens ?>
                                             </td>
                                             <td>
                                                 <?php if ($ativa): ?>
@@ -150,7 +150,8 @@ $primeiro = array_key_first($grupos);
                                                     data-acao="<?= URL ?>/admin/editarOpcao/<?= (int) $o->id ?>"
                                                     data-valor="<?= h($o->valor) ?>"
                                                     data-max="<?= (int) $cfg['max'] ?>"
-                                                    data-uso="<?= $emUso ?>">
+                                                    data-uso="<?= $emUso ?>"
+                                                    data-unidade="<?= h($variosItens) ?>">
                                                     <i class="bi bi-pencil-fill" aria-hidden="true"></i> Editar
                                                 </button>
 
@@ -176,7 +177,7 @@ $primeiro = array_key_first($grupos);
                                                 <?php else: ?>
                                                     <!-- Em uso: não pode excluir (só desativar) -->
                                                     <button type="button" class="btn btn-sm btn-outline-danger" disabled
-                                                        title="Em uso por alunos: desative em vez de excluir">
+                                                        title="Em uso por <?= h($variosItens) ?>: desative em vez de excluir">
                                                         <i class="bi bi-trash-fill" aria-hidden="true"></i> Excluir
                                                     </button>
                                                 <?php endif; ?>
@@ -243,14 +244,15 @@ $primeiro = array_key_first($grupos);
                 var botao = evento.relatedTarget;        // botão "Editar" que abriu o modal
                 var campo = document.getElementById('editarValor');
                 var uso = parseInt(botao.getAttribute('data-uso'), 10) || 0;
+                var unidade = botao.getAttribute('data-unidade') || 'alunos';
 
                 document.getElementById('formEditarOpcao').action = botao.getAttribute('data-acao');
                 campo.value = botao.getAttribute('data-valor');
                 campo.maxLength = botao.getAttribute('data-max');
 
                 document.getElementById('editarAviso').textContent = uso > 0
-                    ? 'Esta opção é usada por ' + uso + ' aluno(s). O nome deles será atualizado junto.'
-                    : 'Nenhum aluno usa esta opção ainda.';
+                    ? 'Esta opção está em uso (' + uso + ' ' + unidade + '). Os registros serão atualizados junto.'
+                    : 'Esta opção ainda não está em uso.';
             });
 
             // Já deixa o cursor no campo quando o modal terminar de abrir.

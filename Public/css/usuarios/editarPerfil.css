@@ -48,7 +48,7 @@
 .perfil-foto-dica {
     margin: 12px 0 0;
     color: #71827a;
-    font-size: 12px;
+    font-size: 0.75rem;
 }
 
 /* Campos do formulário */
@@ -66,7 +66,7 @@
     border-radius: 10px;
     background-color: #f8fbf9;
     color: #203b32;
-    font-size: 15px;
+    font-size: 0.9375rem;
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
@@ -87,7 +87,7 @@
     background: #f1f8f4;
     border-radius: 8px;
     color: #5b6e65;
-    font-size: 13px;
+    font-size: 0.8125rem;
 }
 
 /* Breadcrumb */

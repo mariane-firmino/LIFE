@@ -1,52 +1,72 @@
 
-const inputCpf = document.querySelector("#cpf");
-const inputTelefone = document.querySelector("#telefone");
-const inputTelefoneAluno = document.querySelector("#inputtelefonealuno");
+// =====================================================================
+// MÁSCARAS (CPF, telefone e RG)
+// Para usar num campo, basta colocar no <input>:
+//   data-mascara="cpf"       ->  000.000.000-00
+//   data-mascara="telefone"  ->  (00) 00000-0000  ou  (00) 0000-0000
+//   data-mascara="rg"        ->  só números (até 6)
+// =====================================================================
 
-// Função para permitir somente números e formatar o CPF
-if (inputCpf) {
-    inputCpf.addEventListener("input", function () {
-        // Remove tudo que não for número
-        let numeros = this.value.replace(/\D/g, "");
+const mascaras = {
+    cpf: function (valor) {
+        // Remove tudo que não for número e limita a 11 números
+        let numeros = valor.replace(/\D/g, "").substring(0, 11);
 
-        // Limita a 11 números
-        numeros = numeros.substring(0, 11);
-
-        // Formata o CPF
-        numeros = numeros
+        return numeros
             .replace(/(\d{3})(\d)/, "$1.$2")
             .replace(/(\d{3})(\d)/, "$1.$2")
             .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    },
 
-        this.value = numeros;
-    });
-}
+    telefone: function (valor) {
+        // Limita a 11 números (DDD + telefone)
+        const numeros = valor.replace(/\D/g, "").substring(0, 11);
 
-// Função para permitir somente números e formatar o telefone
-function formatarTelefone(campo) {
-    if (!campo) return;
+        if (numeros.length === 11) {
+            // Celular: (00) 00000-0000
+            return numeros.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+        }
+        if (numeros.length >= 7) {
+            // Fixo, ou celular ainda sendo digitado: (00) 0000-0000
+            return numeros.replace(/^(\d{2})(\d{4})(\d+)$/, "($1) $2-$3");
+        }
+        if (numeros.length > 2) {
+            return numeros.replace(/^(\d{2})(\d+)$/, "($1) $2");
+        }
+
+        return numeros;
+    },
+
+    rg: function (valor) {
+        // O banco guarda no máximo 6 caracteres
+        return valor.replace(/\D/g, "").substring(0, 6);
+    }
+};
+
+// Quantos números um valor já salvo precisa ter para ser formatado ao abrir
+// a página. Valores fora disso (dados antigos) ficam como estão, para não
+// cortar nenhum número.
+const tamanhosValidos = {
+    cpf: [11],
+    telefone: [10, 11],
+    rg: []
+};
+
+document.querySelectorAll("[data-mascara]").forEach(function (campo) {
+    const tipo = campo.dataset.mascara;
+    const formatar = mascaras[tipo];
+    if (!formatar) return;
 
     campo.addEventListener("input", function () {
-        // Remove letras, espaços e outros caracteres
-        let numeros = this.value.replace(/\D/g, "");
-
-        // Limita a 11 números (DDD + telefone)
-        numeros = numeros.substring(0, 11);
-
-        // Formata o telefone
-        if (numeros.length > 0) {
-            numeros = numeros.replace(/^(\d{2})(\d)/, "($1) $2");
-        }
-
-        if (numeros.length > 10) {
-            numeros = numeros.replace(/(\d{5})(\d{4})$/, "$1-$2");
-        } else if (numeros.length > 9) {
-            numeros = numeros.replace(/(\d{4})(\d{4})$/, "$1-$2");
-        }
-
-        this.value = numeros;
+        this.value = formatar(this.value);
     });
-}
+
+    // Formata o valor que já veio preenchido (ex.: telas de edição)
+    const numeros = campo.value.replace(/\D/g, "");
+    if (tamanhosValidos[tipo].includes(numeros.length)) {
+        campo.value = formatar(campo.value);
+    }
+});
 
 // Aplica formatação ao siape
 const inputSiape = document.querySelector("#siape");
@@ -70,10 +90,6 @@ camposNome.forEach(function (campo) {
     });
 });
 
-
-// Aplica a formatação aos dois campos
-formatarTelefone(inputTelefone);
-formatarTelefone(inputTelefoneAluno);
 
 // Formatação para a senha
 
