@@ -332,6 +332,18 @@ CREATE TABLE `opcao_sistema` (
 LOCK TABLES `opcao_sistema` WRITE;
 /*!40000 ALTER TABLE `opcao_sistema` DISABLE KEYS */;
 INSERT INTO `opcao_sistema` VALUES (1,'ano_turma','24',1,1),(2,'ano_turma','25',2,1),(3,'ano_turma','26',3,1),(4,'curso','Técnico em informática',1,1),(5,'curso','Manutenção e Suporte em Informática',2,1),(6,'curso','Biotecnologia',3,1),(7,'curso','Enfermagem',4,1),(8,'curso','Licenciatura em Ciências',5,1),(9,'curso','Licenciatura em Biologia',6,1),(10,'turno','Matutino',1,1),(11,'turno','Vespertino',2,1),(12,'turno','Noturno',3,1),(13,'tipo_escola','Escola pública',1,1),(14,'tipo_escola','Escola privada',2,1),(15,'tipo_escola','Escola estadual',3,1),(16,'motivo_ifro','Qualidade do ensino',1,1),(17,'motivo_ifro','Proximidade da escola',2,1),(18,'motivo_ifro','Programa de bolsas',3,1),(19,'motivo_ifro','Recomendação de outros',4,1),(20,'acesso_saude','SUS',1,1),(21,'acesso_saude','Privado',2,1),(22,'acesso_saude','Convênio',3,1);
+INSERT INTO `opcao_sistema` (`opca_grupo`, `opca_valor`, `opca_ordem`, `opca_ativo`) VALUES
+('motivo_triagem_psicologica', 'Crise de ansiedade', 1, 1),
+('motivo_triagem_psicologica', 'Ataque de pânico', 2, 1),
+('motivo_triagem_psicologica', 'Choro intenso', 3, 1),
+('motivo_triagem_psicologica', 'Nervosismo', 4, 1),
+('motivo_triagem_psicologica', 'Outro', 5, 1),
+('sintoma_triagem_psicologica', 'Falta de ar', 1, 1),
+('sintoma_triagem_psicologica', 'Tontura', 2, 1),
+('sintoma_triagem_psicologica', 'Tremores', 3, 1),
+('sintoma_triagem_psicologica', 'Taquicardia', 4, 1),
+('sintoma_triagem_psicologica', 'Choro intenso', 5, 1),
+('sintoma_triagem_psicologica', 'Aperto no peito', 6, 1);
 /*!40000 ALTER TABLE `opcao_sistema` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -51,14 +51,11 @@ $cards = [
 
         <!-- CABEÇALHO -->
         <header class="home-topo">
-
             <div class="home-titulo">
                 <h1>Início</h1>
                 <p>Bem-vindo, <?= htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário') ?>!</p>
             </div>
-
             <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logotipo do sistema LIFE">
-
         </header>
 
 

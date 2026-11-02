@@ -39,21 +39,16 @@ function perfilValor($valor)
 
     <!-- CABEÇALHO -->
     <div class="container-fluid px-4 pt-5 pb-3">
-
         <div class="row align-items-center">
-
             <!-- CABEÇALHO -->
             <header class="home-topo">
                 <div class="home-titulo">
                     <h1>Perfil</h1>
                     <p>Bem-vindo, <?= htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário') ?>!</p>
                 </div>
-
                 <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
             </header>
-
         </div>
-
     </div>
 
 

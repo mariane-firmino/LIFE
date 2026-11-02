@@ -51,15 +51,42 @@ class Triagens extends Controller
 
 
     // =========================================================
-    // ABRIR TRIAGEM PSICOLÓGICA / FÍSICA
-    // A triagem é dividida em duas páginas. As perguntas mudam
-    // conforme o sexo do aluno (masculina ou feminina).
-    // Ex.: triagens/psicologica/5   e   triagens/fisica/5
+    // TRIAGEM PSICOLÓGICA RÁPIDA / FÍSICA
+    // A rota psicológica redireciona para seu formulário próprio;
+    // a física continua usando o formulário compartilhado.
     // =========================================================
 
     public function psicologica($alunoId = null)
     {
-        $this->exibirFormulario('psicologica', $alunoId);
+        URL::redirecionar('triagens/psicologico_rapido/' . (int) $alunoId);
+        exit;
+    }
+
+    public function psicologico_rapido($alunoId = null)
+    {
+        $aluno = $this->alunoOuRedireciona($alunoId);
+        $motivos = $this->opcaoModel->valoresAtivos('motivo_triagem_psicologica');
+        $sintomas = $this->opcaoModel->valoresAtivos('sintoma_triagem_psicologica');
+
+        $dados = [
+            'titulo' => 'Triagem Psicológica',
+            'descricao' => 'Formulário de triagem psicológica rápida',
+            'aluno_id' => (int) $aluno->id,
+            'aluno_nome' => $aluno->nome,
+            'motivos' => array_combine($motivos, $motivos),
+            'sintomas' => array_combine($sintomas, $sintomas),
+            'gravidades' => TriagemRapida::GRAVIDADES,
+            'max_texto' => self::MAX_TEXTO_RAPIDA,
+            'form' => [
+                'motivo' => '',
+                'gravidade' => '',
+                'sintomas' => [],
+                'observacoes' => '',
+            ],
+            'erros' => [],
+        ];
+
+        $this->view('triagens/psicologica_rapida', $dados);
     }
 
     public function fisica($alunoId = null)
@@ -71,7 +98,7 @@ class Triagens extends Controller
     // =========================================================
     // ROTAS ANTIGAS
     // Antes a triagem era uma página só, por sexo. Links antigos
-    // agora abrem a primeira parte (psicológica).
+    // agora abrem a triagem psicológica rápida.
     //
     // ATENÇÃO:
     // Não remova sem verificar se alguma parte do sistema
@@ -84,16 +111,6 @@ class Triagens extends Controller
     }
 
     public function triagemFeminina($alunoId = null)
-    {
-        $this->psicologica($alunoId);
-    }
-
-    public function triagemM3sculina($alunoId = null)
-    {
-        $this->psicologica($alunoId);
-    }
-
-    public function triagemFe3minina($alunoId = null)
     {
         $this->psicologica($alunoId);
     }

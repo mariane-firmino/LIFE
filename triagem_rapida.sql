@@ -39,3 +39,18 @@ INSERT IGNORE INTO `opcao_sistema` (`opca_grupo`, `opca_valor`, `opca_ordem`, `o
 ('queixa', 'Crise de ansiedade', 11, 1),
 ('queixa', 'Pressão alta / baixa', 12, 1),
 ('queixa', 'Outro', 13, 1);
+
+-- Opções configuráveis da triagem psicológica, administradas em
+-- Informações do Sistema > Triagem Psicológica.
+INSERT IGNORE INTO `opcao_sistema` (`opca_grupo`, `opca_valor`, `opca_ordem`, `opca_ativo`) VALUES
+('motivo_triagem_psicologica', 'Crise de ansiedade', 1, 1),
+('motivo_triagem_psicologica', 'Ataque de pânico', 2, 1),
+('motivo_triagem_psicologica', 'Choro intenso', 3, 1),
+('motivo_triagem_psicologica', 'Nervosismo', 4, 1),
+('motivo_triagem_psicologica', 'Outro', 5, 1),
+('sintoma_triagem_psicologica', 'Falta de ar', 1, 1),
+('sintoma_triagem_psicologica', 'Tontura', 2, 1),
+('sintoma_triagem_psicologica', 'Tremores', 3, 1),
+('sintoma_triagem_psicologica', 'Taquicardia', 4, 1),
+('sintoma_triagem_psicologica', 'Choro intenso', 5, 1),
+('sintoma_triagem_psicologica', 'Aperto no peito', 6, 1);

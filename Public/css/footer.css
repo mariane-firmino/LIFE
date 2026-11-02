@@ -27,19 +27,14 @@
 .rodape-link {
     color: white;
     text-decoration: none;
-
     font-size: 1.125rem;
     font-weight: bold;
-
     line-height: 1.6875rem;
 }
 
 .rodape-link:hover {
     color: #dddddd;
 }
-
-
-
 
 .rodape-logo {
     display: flex;
@@ -56,7 +51,6 @@
 
 .rodape-suporte {
     text-align: right;
-
     font-size: 0.9375rem;
 }
 

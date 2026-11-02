@@ -83,6 +83,7 @@ $primeiro = array_key_first($grupos);
                 $opcoes = $grupo['opcoes'];
                 $uso = $grupo['uso'];       // ['valor' => quantos alunos usam]
                 [$umItem, $variosItens] = $cfg['unidade'] ?? ['aluno', 'alunos'];
+                $rastreiaUso = isset($cfg['uso_from'], $cfg['uso_coluna']);
                 ?>
                 <!-- ============ LISTA: <?= h($cfg['rotulo']) ?> ============ -->
                 <div class="tab-pane <?= $chave === $primeiro ? 'show active' : '' ?>" id="aba-<?= h($chave) ?>"
@@ -120,7 +121,9 @@ $primeiro = array_key_first($grupos);
                                 <thead class="table-light">
                                     <tr>
                                         <th scope="col" class="text-success"><?= h($cfg['singular']) ?></th>
-                                        <th scope="col" class="text-success">Em uso</th>
+                                        <?php if ($rastreiaUso): ?>
+                                            <th scope="col" class="text-success">Em uso</th>
+                                        <?php endif; ?>
                                         <th scope="col" class="text-success">Status</th>
                                         <th scope="col" class="text-success text-end">Ações</th>
                                     </tr>
@@ -132,9 +135,11 @@ $primeiro = array_key_first($grupos);
                                         ?>
                                         <tr class="<?= $ativa ? '' : 'adm-linha-inativa' ?>">
                                             <td class="text-break"><b><?= h($o->valor) ?></b></td>
-                                            <td class="text-nowrap">
-                                                <?= $emUso ?> <?= $emUso === 1 ? $umItem : $variosItens ?>
-                                            </td>
+                                            <?php if ($rastreiaUso): ?>
+                                                <td class="text-nowrap">
+                                                    <?= $emUso ?> <?= $emUso === 1 ? $umItem : $variosItens ?>
+                                                </td>
+                                            <?php endif; ?>
                                             <td>
                                                 <?php if ($ativa): ?>
                                                     <span class="badge text-bg-success">Ativa</span>
@@ -151,6 +156,7 @@ $primeiro = array_key_first($grupos);
                                                     data-valor="<?= h($o->valor) ?>"
                                                     data-max="<?= (int) $cfg['max'] ?>"
                                                     data-uso="<?= $emUso ?>"
+                                                    data-rastreia-uso="<?= $rastreiaUso ? '1' : '0' ?>"
                                                     data-unidade="<?= h($variosItens) ?>">
                                                     <i class="bi bi-pencil-fill" aria-hidden="true"></i> Editar
                                                 </button>
@@ -245,14 +251,17 @@ $primeiro = array_key_first($grupos);
                 var campo = document.getElementById('editarValor');
                 var uso = parseInt(botao.getAttribute('data-uso'), 10) || 0;
                 var unidade = botao.getAttribute('data-unidade') || 'alunos';
+                var rastreiaUso = botao.getAttribute('data-rastreia-uso') === '1';
 
                 document.getElementById('formEditarOpcao').action = botao.getAttribute('data-acao');
                 campo.value = botao.getAttribute('data-valor');
                 campo.maxLength = botao.getAttribute('data-max');
 
-                document.getElementById('editarAviso').textContent = uso > 0
-                    ? 'Esta opção está em uso (' + uso + ' ' + unidade + '). Os registros serão atualizados junto.'
-                    : 'Esta opção ainda não está em uso.';
+                document.getElementById('editarAviso').textContent = !rastreiaUso
+                    ? 'Esta lista alimenta o formulário, mas não possui histórico de uso vinculado.'
+                    : uso > 0
+                        ? 'Esta opção está em uso (' + uso + ' ' + unidade + '). Os registros serão atualizados junto.'
+                        : 'Esta opção ainda não está em uso.';
             });
 
             // Já deixa o cursor no campo quando o modal terminar de abrir.

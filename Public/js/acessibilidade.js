@@ -312,6 +312,43 @@
         document.body.appendChild(botao);
 
         botao.addEventListener('click', function () { alternarPainel(); });
+        ajustarBotaoAoRodape(botao);
+    }
+
+    function ajustarBotaoAoRodape(botao) {
+        var rodape = document.querySelector('.rodape-principal');
+        var painel = document.getElementById('a11yPainel');
+        if (!rodape) return;
+
+        var agendado = false;
+        function atualizarPosicao() {
+            agendado = false;
+
+            var retangulo = rodape.getBoundingClientRect();
+            var rodapeVisivel = retangulo.top < window.innerHeight && retangulo.bottom > 0;
+            if (!rodapeVisivel) {
+                botao.style.removeProperty('--a11y-bottom-offset');
+                painel.style.removeProperty('--a11y-panel-bottom-offset');
+                return;
+            }
+
+            var margem = 16;
+            var maximo = Math.max(margem, window.innerHeight - botao.offsetHeight - margem);
+            var distancia = Math.min(maximo, Math.max(margem, window.innerHeight - retangulo.top + margem));
+            botao.style.setProperty('--a11y-bottom-offset', distancia + 'px');
+            var distanciaPainel = Math.min(window.innerHeight - margem, distancia + botao.offsetHeight + 12);
+            painel.style.setProperty('--a11y-panel-bottom-offset', distanciaPainel + 'px');
+        }
+
+        function agendarAtualizacao() {
+            if (agendado) return;
+            agendado = true;
+            window.requestAnimationFrame(atualizarPosicao);
+        }
+
+        window.addEventListener('scroll', agendarAtualizacao, { passive: true });
+        window.addEventListener('resize', agendarAtualizacao);
+        atualizarPosicao();
     }
 
     function alternarPainel(abrir) {

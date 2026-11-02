@@ -50,16 +50,17 @@ unset($_SESSION['configuracao_mensagem'], $_SESSION['configuracao_tipo_mensagem'
 
 <div class="layout">
 
-    <!-- ===================================== Título ======================================= -->
-    <div class="container-fluid ps-4 pe-4 pt-5 pb-3">
-        <div class="row align-items-start">
-            <div class="col-8 linha-verde">
-                <h1>Configurações</h1>
-                <p>Sua conta, acessibilidade, notificações e segurança em um só lugar.</p>
-            </div>
-            <div class="col-4 text-end">
+    <!-- CABEÇALHO -->
+    <div class="container-fluid px-4 pt-5 pb-3">
+        <div class="row align-items-center">
+            <!-- CABEÇALHO -->
+            <header class="home-topo">
+                <div class="home-titulo">
+                    <h1>Configurações</h1>
+                    <p>Sua conta, acessibilidade, notificações e segurança em um só lugar.</p>
+                </div>
                 <img src="<?= URL ?>/img/life-menor.png" class="logo-home" alt="Logo">
-            </div>
+            </header>
         </div>
     </div>
 
@@ -287,23 +288,28 @@ unset($_SESSION['configuracao_mensagem'], $_SESSION['configuracao_tipo_mensagem'
 
 <script>
     // Menu das seções: destaca a seção que está na tela.
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         var links = document.querySelectorAll('[data-cfg-secao]');
         if (!('IntersectionObserver' in window) || !links.length) return;
 
-        var marcar = function (id) {
-            links.forEach(function (l) {
+        var marcar = function(id) {
+            links.forEach(function(l) {
                 var ativo = l.getAttribute('data-cfg-secao') === id;
                 l.classList.toggle('ativo', ativo);
-                if (ativo) l.setAttribute('aria-current', 'true'); else l.removeAttribute('aria-current');
+                if (ativo) l.setAttribute('aria-current', 'true');
+                else l.removeAttribute('aria-current');
             });
         };
 
-        var observador = new IntersectionObserver(function (entradas) {
-            entradas.forEach(function (e) { if (e.isIntersecting) marcar(e.target.id); });
-        }, { rootMargin: '-30% 0px -60% 0px' });
+        var observador = new IntersectionObserver(function(entradas) {
+            entradas.forEach(function(e) {
+                if (e.isIntersecting) marcar(e.target.id);
+            });
+        }, {
+            rootMargin: '-30% 0px -60% 0px'
+        });
 
-        links.forEach(function (l) {
+        links.forEach(function(l) {
             var secao = document.getElementById(l.getAttribute('data-cfg-secao'));
             if (secao) observador.observe(secao);
         });

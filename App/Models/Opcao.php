@@ -19,7 +19,8 @@ class Opcao
     //  rotulo / singular / ajuda : textos da tela
     //  max      : tamanho máximo do valor
     //  padrao   : regra extra de formato (ou null)
-    //  tabela / coluna : onde esse valor está gravado nos dados.
+    //  tabela / coluna : onde esse valor está gravado nos dados, quando
+    //     o formulário já persiste o valor em uma tabela de histórico.
     //     Ao RENOMEAR uma opção, os registros antigos são
     //     atualizados junto, para nada ficar inconsistente.
     //  uso_from / uso_coluna : como contar quantos alunos usam
@@ -115,6 +116,22 @@ class Opcao
             'uso_from' => 'triagem_rapida',
             'uso_coluna' => 'trap_queixa',
             'unidade' => ['triagem', 'triagens'],
+        ],
+        'motivo_triagem_psicologica' => [
+            'rotulo' => 'Motivos da triagem psicológica',
+            'singular' => 'Motivo',
+            'ajuda' => 'Motivos disponíveis no formulário da triagem psicológica.',
+            'icone' => 'bi-chat-heart-fill',
+            'max' => 100,
+            'padrao' => null,
+        ],
+        'sintoma_triagem_psicologica' => [
+            'rotulo' => 'Sintomas da triagem psicológica',
+            'singular' => 'Sintoma',
+            'ajuda' => 'Sintomas disponíveis para marcar no formulário da triagem psicológica.',
+            'icone' => 'bi-heart-pulse-fill',
+            'max' => 100,
+            'padrao' => null,
         ],
     ];
 
@@ -228,7 +245,7 @@ class Opcao
     public function usoPorValor($grupo)
     {
         $cfg = self::GRUPOS[$grupo] ?? null;
-        if (!$cfg) {
+        if (!$cfg || !isset($cfg['uso_from'], $cfg['uso_coluna'])) {
             return [];
         }
 
@@ -302,16 +319,18 @@ class Opcao
             $this->db->bind(':id', (int) $id);
             $this->db->executa();
 
-            // 2) Atualiza os dados que usavam o valor antigo.
-            //    (tabela e coluna vêm da constante GRUPOS, são seguras)
-            $this->db->query("
-                UPDATE {$cfg['tabela']}
-                SET {$cfg['coluna']} = :novo
-                WHERE {$cfg['coluna']} = :antigo
-            ");
-            $this->db->bind(':novo', $novoValor);
-            $this->db->bind(':antigo', $opcao->valor);
-            $this->db->executa();
+            // 2) Atualiza os registros que usavam o valor antigo, quando
+            //    este grupo estiver vinculado a uma tabela de histórico.
+            if (isset($cfg['tabela'], $cfg['coluna'])) {
+                $this->db->query("
+                    UPDATE {$cfg['tabela']}
+                    SET {$cfg['coluna']} = :novo
+                    WHERE {$cfg['coluna']} = :antigo
+                ");
+                $this->db->bind(':novo', $novoValor);
+                $this->db->bind(':antigo', $opcao->valor);
+                $this->db->executa();
+            }
 
             $this->db->commit();
 

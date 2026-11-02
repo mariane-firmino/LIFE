@@ -598,7 +598,7 @@ body.a11y-alto-contraste .a11y-guia {
 .a11y-botao {
     position: fixed;
     left: calc(16px + env(safe-area-inset-left, 0px));
-    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(var(--a11y-bottom-offset, 16px) + env(safe-area-inset-bottom, 0px));
     z-index: 1040;
     width: 52px;
     height: 52px;
@@ -650,7 +650,7 @@ body.a11y-alto-contraste .a11y-guia {
 .a11y-painel--rapido {
     position: fixed;
     left: calc(16px + env(safe-area-inset-left, 0px));
-    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(var(--a11y-panel-bottom-offset, 80px) + env(safe-area-inset-bottom, 0px));
     z-index: 1041;
     width: min(25rem, calc(100vw - 32px));
     max-height: min(78vh, 680px);
@@ -954,11 +954,4 @@ body.tema-escuro [tabindex]:focus-visible {
         transition-duration: .01ms !important;
         scroll-behavior: auto !important;
     }
-}
-
-
-/* Espaço embaixo do rodapé para o botão flutuante de acessibilidade
-   (canto inferior esquerdo) não cobrir os links do rodapé. */
-.rodape-principal {
-    padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important;
 }

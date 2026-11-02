@@ -1,0 +1,107 @@
+.tr-psico__header {
+    padding: 3rem 1.5rem 1.25rem;
+}
+
+.tr-psico__header h1 {
+    margin-bottom: .5rem;
+    color: var(--bs-emphasis-color);
+    font-weight: 700;
+}
+
+.tr-psico__header p {
+    margin-bottom: 0;
+    color: var(--bs-secondary-color);
+}
+
+.tr-psico__logo img {
+    max-width: 7rem;
+    height: auto;
+}
+
+.tr-psico__breadcrumb {
+    --bs-breadcrumb-divider: ">";
+}
+
+.tr-psico__content {
+    max-width: 1040px;
+    margin-bottom: 3rem;
+}
+
+.tr-psico__form {
+    border: 1px solid var(--bs-border-color);
+    border-radius: .75rem;
+    background: var(--bs-body-bg);
+}
+
+.tr-psico__form .form-label {
+    color: var(--bs-emphasis-color);
+}
+
+.tr-psico__form .form-text {
+    color: var(--bs-secondary-color);
+}
+
+.tr-gravidade[data-nivel="Leve"] {
+    border-left: 5px solid var(--bs-success);
+}
+
+.tr-gravidade[data-nivel="Média"] {
+    border-left: 5px solid var(--bs-warning);
+}
+
+.tr-gravidade[data-nivel="Grave"] {
+    border-left: 5px solid var(--bs-danger);
+}
+
+.tr-sintomas .form-check {
+    height: 100%;
+    padding: .7rem .75rem .7rem 2.25rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: .5rem;
+    background: var(--bs-body-bg);
+    transition: border-color .15s ease-in-out, background-color .15s ease-in-out;
+}
+
+.tr-sintomas .form-check:has(.form-check-input:checked) {
+    border-color: var(--bs-success);
+    background: var(--bs-success-bg-subtle);
+}
+
+.tr-sintomas .form-check-input {
+    margin-left: -1.5rem;
+}
+
+.tr-sintomas .form-check-label {
+    width: 100%;
+    color: var(--bs-body-color);
+    cursor: pointer;
+}
+
+.tr-sintomas .form-check-input:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
+.tr-psico__cancel {
+    background-color: var(--bs-secondary-bg);
+}
+
+@media (max-width: 767.98px) {
+    .tr-psico__header {
+        padding: 2rem 1rem 1rem;
+    }
+
+    .tr-psico__logo {
+        margin-top: 1rem;
+        text-align: left !important;
+    }
+
+    .tr-psico__logo img {
+        max-width: 5rem;
+    }
+
+    .tr-psico__content {
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+}
