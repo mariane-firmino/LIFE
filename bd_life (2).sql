@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `bd_life` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `bd_life`;
 -- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: bd_life
@@ -239,7 +237,7 @@ CREATE TABLE `consulta` (
   PRIMARY KEY (`cons_id`),
   KEY `ix_consulta_data` (`cons_data`),
   KEY `ix_consulta_hora` (`cons_horario`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -248,7 +246,7 @@ CREATE TABLE `consulta` (
 
 LOCK TABLES `consulta` WRITE;
 /*!40000 ALTER TABLE `consulta` DISABLE KEYS */;
-INSERT INTO `consulta` VALUES (1,'2026-09-22','14:00:00','Consulta - Periódica',NULL,'çkjdjfnkladnfga','wefWGFerg'),(2,'2026-10-30','14:52:00','Consulta - Periódica','Enfermeira','testee','Teste'),(3,'2026-10-30','14:52:00','Consulta - Periódica','Enfermeira','testee','Teste'),(4,'2026-10-18','15:23:00','Consulta - Periódica','Enfermeira','teste notificacao','oiiii'),(5,'2026-10-18','15:23:00','Consulta - Periódica','Enfermeira','teste notificacao','oiiii');
+INSERT INTO `consulta` VALUES (1,'2026-09-22','14:00:00','Consulta - Periódica',NULL,'çkjdjfnkladnfga','wefWGFerg'),(2,'2026-10-30','14:52:00','Consulta - Periódica','Enfermeira','testee','Teste'),(3,'2026-10-30','14:52:00','Consulta - Periódica','Enfermeira','testee','Teste'),(4,'2026-10-18','15:23:00','Consulta - Periódica','Enfermeira','teste notificacao','oiiii'),(5,'2026-10-18','15:23:00','Consulta - Periódica','Enfermeira','teste notificacao','oiiii'),(6,'2026-10-27','20:19:00','Avaliação','Enfermeira','dfg hf','WED FSDGFASDR'),(7,'2026-10-27','20:19:00','Avaliação','Enfermeira','dfg hf','WED FSDGFASDR');
 /*!40000 ALTER TABLE `consulta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -294,7 +292,7 @@ CREATE TABLE `notificacao` (
   PRIMARY KEY (`noti_id`),
   KEY `fk_notificacao` (`serv_id`),
   CONSTRAINT `fk_notificacao` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -303,7 +301,7 @@ CREATE TABLE `notificacao` (
 
 LOCK TABLES `notificacao` WRITE;
 /*!40000 ALTER TABLE `notificacao` DISABLE KEYS */;
-INSERT INTO `notificacao` VALUES (9,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',2,'Pendente','consulta'),(10,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',6,'Pendente','consulta'),(11,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',7,'Pendente','consulta'),(12,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',10,'Pendente','consulta'),(13,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',11,'Pendente','consulta'),(14,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',12,'Pendente','consulta'),(15,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',13,'Pendente','consulta'),(16,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',14,'Pendente','consulta'),(17,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',2,'Pendente','consulta'),(18,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',6,'Pendente','consulta'),(19,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',7,'Pendente','consulta'),(20,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',10,'Pendente','consulta'),(21,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',11,'Pendente','consulta'),(22,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',12,'Pendente','consulta'),(23,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',13,'Pendente','consulta'),(24,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',14,'Pendente','consulta'),(25,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',2,'Pendente','triagem'),(26,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',6,'Pendente','triagem'),(27,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',7,'Pendente','triagem'),(28,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',10,'Pendente','triagem'),(29,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',11,'Pendente','triagem'),(30,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',12,'Pendente','triagem'),(31,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',13,'Pendente','triagem'),(32,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',14,'Pendente','triagem');
+INSERT INTO `notificacao` VALUES (9,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',2,'Pendente','consulta'),(10,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',6,'Pendente','consulta'),(11,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',7,'Pendente','consulta'),(12,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',10,'Pendente','consulta'),(13,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',11,'Pendente','consulta'),(14,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',12,'Pendente','consulta'),(15,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',13,'Pendente','consulta'),(16,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',14,'Pendente','consulta'),(17,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',2,'Pendente','consulta'),(18,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',6,'Pendente','consulta'),(19,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',7,'Pendente','consulta'),(20,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',10,'Pendente','consulta'),(21,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',11,'Pendente','consulta'),(22,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',12,'Pendente','consulta'),(23,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',13,'Pendente','consulta'),(24,'Nova consulta na agenda','2026-10-25 00:38:36','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',14,'Pendente','consulta'),(25,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',2,'Pendente','triagem'),(26,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',6,'Pendente','triagem'),(27,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',7,'Pendente','triagem'),(28,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',10,'Pendente','triagem'),(29,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',11,'Pendente','triagem'),(30,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',12,'Pendente','triagem'),(31,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',13,'Pendente','triagem'),(32,'Nova triagem registrada','2026-10-25 00:40:37','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',14,'Pendente','triagem'),(33,'Novo cadastro aguardando aprovação','2026-10-26 11:36:38','Há um cadastro de servidor aguardando análise.',14,'Pendente','conta'),(34,'Cadastro ativado','2026-10-26 11:38:31','Seu cadastro foi aprovado e seu acesso ao sistema está liberado.',15,'Pendente','conta'),(35,'Novo cadastro aguardando aprovação','2026-10-26 11:51:55','Há um cadastro de servidor aguardando análise.',14,'Pendente','conta'),(36,'Cadastro ativado','2026-10-26 11:52:50','Seu cadastro foi aprovado e seu acesso ao sistema está liberado.',16,'Pendente','conta'),(37,'Novo cadastro aguardando aprovação','2026-10-26 11:59:10','Há um cadastro de servidor aguardando análise.',14,'Pendente','conta'),(38,'Cadastro ativado','2026-10-26 12:00:05','Seu cadastro foi aprovado e seu acesso ao sistema está liberado.',17,'Pendente','conta'),(39,'Novo cadastro aguardando aprovação','2026-10-26 12:02:57','Há um cadastro de servidor aguardando análise.',14,'Pendente','conta'),(40,'Cadastro ativado','2026-10-26 12:03:15','Seu cadastro foi aprovado e seu acesso ao sistema está liberado.',18,'Pendente','conta'),(41,'Novo cadastro aguardando aprovação','2026-10-26 12:13:03','Há um cadastro de servidor aguardando análise.',14,'Pendente','conta'),(42,'Cadastro ativado','2026-10-26 12:18:17','Seu cadastro foi aprovado e seu acesso ao sistema está liberado.',19,'Pendente','conta'),(43,'Nova consulta na agenda','2026-10-26 12:19:19','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',2,'Pendente','consulta'),(44,'Nova consulta na agenda','2026-10-26 12:19:19','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',6,'Pendente','consulta'),(45,'Nova consulta na agenda','2026-10-26 12:19:19','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',7,'Pendente','consulta'),(46,'Nova consulta na agenda','2026-10-26 12:19:19','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',9,'Pendente','consulta'),(47,'Nova consulta na agenda','2026-10-26 12:19:25','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',10,'Pendente','consulta'),(48,'Nova consulta na agenda','2026-10-26 12:19:25','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',11,'Pendente','consulta'),(49,'Nova consulta na agenda','2026-10-26 12:19:25','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',12,'Pendente','consulta'),(50,'Nova consulta na agenda','2026-10-26 12:19:25','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',13,'Pendente','consulta'),(51,'Nova consulta na agenda','2026-10-26 12:19:25','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',14,'Pendente','consulta'),(52,'Nova consulta na agenda','2026-10-26 12:19:25','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',15,'Pendente','consulta'),(53,'Nova consulta na agenda','2026-10-26 12:19:25','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',16,'Pendente','consulta'),(54,'Nova consulta na agenda','2026-10-26 12:19:25','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',17,'Pendente','consulta'),(55,'Nova consulta na agenda','2026-10-26 12:19:25','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',18,'Pendente','consulta'),(56,'Nova consulta na agenda','2026-10-26 12:19:25','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',2,'Pendente','consulta'),(57,'Nova consulta na agenda','2026-10-26 12:19:25','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',6,'Pendente','consulta'),(58,'Nova consulta na agenda','2026-10-26 12:19:25','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',7,'Pendente','consulta'),(59,'Nova consulta na agenda','2026-10-26 12:19:25','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',9,'Pendente','consulta'),(60,'Nova consulta na agenda','2026-10-26 12:19:30','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',10,'Pendente','consulta'),(61,'Nova consulta na agenda','2026-10-26 12:19:30','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',11,'Pendente','consulta'),(62,'Nova consulta na agenda','2026-10-26 12:19:30','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',12,'Pendente','consulta'),(63,'Nova consulta na agenda','2026-10-26 12:19:30','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',13,'Pendente','consulta'),(64,'Nova consulta na agenda','2026-10-26 12:19:30','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',14,'Pendente','consulta'),(65,'Nova consulta na agenda','2026-10-26 12:19:30','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',15,'Pendente','consulta'),(66,'Nova consulta na agenda','2026-10-26 12:19:30','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',16,'Pendente','consulta'),(67,'Nova consulta na agenda','2026-10-26 12:19:30','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',17,'Pendente','consulta'),(68,'Nova consulta na agenda','2026-10-26 12:19:30','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',18,'Pendente','consulta'),(69,'Acesso desativado','2026-10-26 12:22:41','Seu acesso ao sistema foi desativado. Entre em contato com a administração se precisar de esclarecimentos.',17,'Pendente','conta');
 /*!40000 ALTER TABLE `notificacao` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -322,7 +320,7 @@ CREATE TABLE `opcao_sistema` (
   `opca_ativo` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`opca_id`),
   UNIQUE KEY `uk_opcao_grupo_valor` (`opca_grupo`,`opca_valor`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -331,19 +329,7 @@ CREATE TABLE `opcao_sistema` (
 
 LOCK TABLES `opcao_sistema` WRITE;
 /*!40000 ALTER TABLE `opcao_sistema` DISABLE KEYS */;
-INSERT INTO `opcao_sistema` VALUES (1,'ano_turma','24',1,1),(2,'ano_turma','25',2,1),(3,'ano_turma','26',3,1),(4,'curso','Técnico em informática',1,1),(5,'curso','Manutenção e Suporte em Informática',2,1),(6,'curso','Biotecnologia',3,1),(7,'curso','Enfermagem',4,1),(8,'curso','Licenciatura em Ciências',5,1),(9,'curso','Licenciatura em Biologia',6,1),(10,'turno','Matutino',1,1),(11,'turno','Vespertino',2,1),(12,'turno','Noturno',3,1),(13,'tipo_escola','Escola pública',1,1),(14,'tipo_escola','Escola privada',2,1),(15,'tipo_escola','Escola estadual',3,1),(16,'motivo_ifro','Qualidade do ensino',1,1),(17,'motivo_ifro','Proximidade da escola',2,1),(18,'motivo_ifro','Programa de bolsas',3,1),(19,'motivo_ifro','Recomendação de outros',4,1),(20,'acesso_saude','SUS',1,1),(21,'acesso_saude','Privado',2,1),(22,'acesso_saude','Convênio',3,1);
-INSERT INTO `opcao_sistema` (`opca_grupo`, `opca_valor`, `opca_ordem`, `opca_ativo`) VALUES
-('motivo_triagem_psicologica', 'Crise de ansiedade', 1, 1),
-('motivo_triagem_psicologica', 'Ataque de pânico', 2, 1),
-('motivo_triagem_psicologica', 'Choro intenso', 3, 1),
-('motivo_triagem_psicologica', 'Nervosismo', 4, 1),
-('motivo_triagem_psicologica', 'Outro', 5, 1),
-('sintoma_triagem_psicologica', 'Falta de ar', 1, 1),
-('sintoma_triagem_psicologica', 'Tontura', 2, 1),
-('sintoma_triagem_psicologica', 'Tremores', 3, 1),
-('sintoma_triagem_psicologica', 'Taquicardia', 4, 1),
-('sintoma_triagem_psicologica', 'Choro intenso', 5, 1),
-('sintoma_triagem_psicologica', 'Aperto no peito', 6, 1);
+INSERT INTO `opcao_sistema` VALUES (1,'ano_turma','24',1,1),(2,'ano_turma','25',2,1),(3,'ano_turma','26',3,1),(4,'curso','Técnico em informática',1,1),(5,'curso','Manutenção e Suporte em Informática',2,1),(6,'curso','Biotecnologia',3,1),(7,'curso','Enfermagem',4,1),(8,'curso','Licenciatura em Ciências',5,1),(9,'curso','Licenciatura em Biologia',6,1),(10,'turno','Matutino',1,1),(11,'turno','Vespertino',2,1),(12,'turno','Noturno',3,1),(13,'tipo_escola','Escola pública',1,1),(14,'tipo_escola','Escola privada',2,1),(15,'tipo_escola','Escola estadual',3,1),(16,'motivo_ifro','Qualidade do ensino',1,1),(17,'motivo_ifro','Proximidade da escola',2,1),(18,'motivo_ifro','Programa de bolsas',3,1),(19,'motivo_ifro','Recomendação de outros',4,1),(20,'acesso_saude','SUS',1,1),(21,'acesso_saude','Privado',2,1),(22,'acesso_saude','Convênio',3,1),(23,'queixa','Dor de cabeça',1,1),(24,'queixa','Cólica',2,1),(25,'queixa','Febre',3,1),(26,'queixa','Dor de barriga',4,1),(27,'queixa','Enjoo / vômito',5,1),(28,'queixa','Tontura / mal-estar',6,1),(29,'queixa','Dor de garganta',7,1),(30,'queixa','Gripe / resfriado',8,1),(31,'queixa','Machucado / ferimento',9,1),(32,'queixa','Alergia',10,1),(33,'queixa','Crise de ansiedade',11,1),(34,'queixa','Pressão alta / baixa',12,1),(35,'queixa','Outro',13,1);
 /*!40000 ALTER TABLE `opcao_sistema` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -483,7 +469,7 @@ CREATE TABLE `servidor` (
   KEY `ix_servidor_email` (`serv_email`),
   KEY `fk_servidor_funcao` (`func_id`),
   CONSTRAINT `fk_servidor_funcao` FOREIGN KEY (`func_id`) REFERENCES `funcao` (`func_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -492,7 +478,7 @@ CREATE TABLE `servidor` (
 
 LOCK TABLES `servidor` WRITE;
 /*!40000 ALTER TABLE `servidor` DISABLE KEYS */;
-INSERT INTO `servidor` VALUES (2,'Mariane Cardoso',123456,'mariane@gmail.com','045.652.632-38','2008-12-12',1,NULL,'$2y$10$gTmzNise7cHCyVyQGx6aZOlOe53uHQhHUBPLP61s.g.H8pT0Thsi.','ativo','servidor','2026-10-24 23:46:12'),(6,'gustavo',1234567,'gustavo@gmail.com','070.090.612-62','2025-06-26',1,NULL,'$2y$10$prYKDQaKEeJeu.q.nZUeT.iQ1eIDPKdgq0sqZ/.fjxvrCIYwH.8sy','ativo','servidor','2026-10-24 23:46:12'),(7,'flavia rodrigues de araujo durães',3433608,'flavia.duraes@ifro.edu.br','631.532.202-63','1978-10-28',1,NULL,'$2y$10$h/pr.bWJnh2x7r0ekwMRrOvpQsYuP5TsUY8ZUBLGNC1vMN08GJHue','ativo','servidor','2026-10-24 23:46:12'),(9,'Mariane Cardoso',852963,'mari@gmail.com','111.222.333-44','2008-12-12',2,_binary 'perfil_9_1792856679.jpg','$2y$10$NPu.8HrPojEcxbzV3vECWeW6F5idWv84WZUaPl0FgvM2ivaeDT6ky','ativo','servidor','2026-10-24 23:46:12'),(10,'testee',369852,'teste@gmail.com','111.222.333-44','2000-02-05',2,NULL,'$2y$10$o48AbXjXFvplp3TkHl98LOQuXQX0wXdI7k.PmI3UFREmC7QNRWXd6','ativo','servidor','2026-10-24 23:46:12'),(11,'Laís',2218736,'laislinda@gmail.com','000.000.000-00','2008-02-01',1,NULL,'$2y$10$dd7ynb0e5Hm/ZDuLabGRPOA4zUs5KjV3Ezo9MXvPe/yvmlmMOAWHq','ativo','servidor','2026-10-24 23:46:12'),(12,'MARI',2352353,'cardosomariane451@gmail.com','342.323.252-52','2008-06-16',2,NULL,'$2y$10$y.QdXBowMf8bFyNCRd.GSOAlT.71reN05dQxmaylv6TO0XScZqaSa','ativo','servidor','2026-10-24 23:46:12'),(13,'wdasddvcsdv',4353443,'rafaelcaldeirasan@gmail.com','214.321.534-54','2007-01-01',1,NULL,'$2y$10$lX461G0Du5fkP6UjbDzXhOtWn1xS2jGSQ9Txnsex9afo.lN2F.AIu','ativo','servidor','2026-10-24 23:46:12'),(14,'Admin',1,'admin@ifro.edu.br','000.000.000-01','2000-01-01',1,NULL,'$2y$10$M03KLdjd/4bjmxg9js/J6u9rOrBkoTGtXOCOrG89ctI5u9WhZ/cdq','ativo','admin','2026-10-24 20:01:41');
+INSERT INTO `servidor` VALUES (2,'Mariane Cardoso',123456,'mariane@gmail.com','045.652.632-38','2008-12-12',1,NULL,'$2y$10$gTmzNise7cHCyVyQGx6aZOlOe53uHQhHUBPLP61s.g.H8pT0Thsi.','ativo','servidor','2026-10-24 23:46:12'),(6,'gustavo',1234567,'gustavo@gmail.com','070.090.612-62','2025-06-26',1,NULL,'$2y$10$prYKDQaKEeJeu.q.nZUeT.iQ1eIDPKdgq0sqZ/.fjxvrCIYwH.8sy','ativo','servidor','2026-10-24 23:46:12'),(7,'flavia rodrigues de araujo durães',3433608,'flavia.duraes@ifro.edu.br','631.532.202-63','1978-10-28',1,NULL,'$2y$10$h/pr.bWJnh2x7r0ekwMRrOvpQsYuP5TsUY8ZUBLGNC1vMN08GJHue','ativo','servidor','2026-10-24 23:46:12'),(9,'Mariane Cardoso',852963,'mari@gmail.com','111.222.333-44','2008-12-12',2,_binary 'perfil_9_1793621220.jpg','$2y$10$NPu.8HrPojEcxbzV3vECWeW6F5idWv84WZUaPl0FgvM2ivaeDT6ky','ativo','servidor','2026-10-24 23:46:12'),(10,'testee',369852,'teste@gmail.com','111.222.333-44','2000-02-05',2,NULL,'$2y$10$o48AbXjXFvplp3TkHl98LOQuXQX0wXdI7k.PmI3UFREmC7QNRWXd6','ativo','servidor','2026-10-24 23:46:12'),(11,'Laís',2218736,'laislinda@gmail.com','000.000.000-00','2008-02-01',1,NULL,'$2y$10$dd7ynb0e5Hm/ZDuLabGRPOA4zUs5KjV3Ezo9MXvPe/yvmlmMOAWHq','ativo','servidor','2026-10-24 23:46:12'),(12,'MARI',2352353,'cardosomariane451@gmail.com','342.323.252-52','2008-06-16',2,NULL,'$2y$10$y.QdXBowMf8bFyNCRd.GSOAlT.71reN05dQxmaylv6TO0XScZqaSa','ativo','servidor','2026-10-24 23:46:12'),(13,'wdasddvcsdv',4353443,'rafaelcaldeirasan@gmail.com','214.321.534-54','2007-01-01',1,NULL,'$2y$10$lX461G0Du5fkP6UjbDzXhOtWn1xS2jGSQ9Txnsex9afo.lN2F.AIu','ativo','servidor','2026-10-24 23:46:12'),(14,'Admin',1,'enfermariaifro@gmail.com','000.000.000-01','2000-01-01',1,NULL,'$2y$10$M03KLdjd/4bjmxg9js/J6u9rOrBkoTGtXOCOrG89ctI5u9WhZ/cdq','ativo','admin','2026-10-24 20:01:41'),(15,'Laís Lima',4534534,'lais.limaboonfim@gmail.com','836.456.345-64','2009-12-01',1,NULL,'$2y$10$z9opVa0APq7ZPNfdFlEjkuckaEP7ySXtl8ESbjPpyxX6bV3ux6nAy','ativo','servidor','2026-10-26 07:36:38'),(16,'Anne',2546535,'mariane.firmino@estudante.ifro.edu.br','254.646.354-43','2009-12-03',1,NULL,'$2y$10$VZ7lTShypFIwp4jnC2ACuOwZCB6Civ8nKIuJ1z5OO3oOWU6ny8Z1K','ativo','servidor','2026-10-26 07:51:55'),(17,'Creuza',1584354,'marianecfm2024@gmail.com','364.516.546-15','2003-09-12',1,NULL,'$2y$10$PcdZnk6EFwja78HOlGy1gOuZfsVUAisEIpYPnskb3lwL3TwgcoSB.','inativo','servidor','2026-10-26 07:59:10'),(18,'Loki',2546344,'rafaelsantosfx1322@gmail.com','168.438.484-61','2005-12-02',2,NULL,'$2y$10$TjRYRvu.XIkoco6q6/xZzei5EDIEpItKY4uhMWlX3zWIrr7Kk6qKS','ativo','servidor','2026-10-26 08:02:57'),(19,'dddfsfesdf',2151514,'gs6487409@gmail.com','215.441.415-22','2125-02-21',2,NULL,'$2y$10$DEy/Z2dMCGpYSUw2up2uz.nxsBZg/oFjF1CTmH3bpLAX.P7FuBWYC','ativo','servidor','2026-10-26 08:13:03');
 /*!40000 ALTER TABLE `servidor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -517,7 +503,7 @@ CREATE TABLE `telefone` (
   CONSTRAINT `fk_telefone_aluno1` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`),
   CONSTRAINT `fk_telefone_responsavel1` FOREIGN KEY (`resp_id`) REFERENCES `responsavel` (`resp_id`),
   CONSTRAINT `fk_telefone_servidor` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -526,7 +512,7 @@ CREATE TABLE `telefone` (
 
 LOCK TABLES `telefone` WRITE;
 /*!40000 ALTER TABLE `telefone` DISABLE KEYS */;
-INSERT INTO `telefone` VALUES (1,'(96) 99926-2045',2,NULL,NULL),(3,'(69) 98423-4216',6,NULL,NULL),(4,'(69) 99600-4977',7,NULL,NULL),(5,'(69) 99375-9393',9,NULL,NULL),(6,'96 99965-25363',NULL,1,NULL),(7,'65 32365-5896',NULL,NULL,1),(8,'(96) 32145-6987',10,NULL,NULL),(9,'(99) 99999-9999',11,NULL,NULL),(10,'(23) 43423-5254',12,NULL,NULL),(11,'(55) 34345-4335',13,NULL,NULL),(12,'(65) 15656-1515',NULL,2,NULL),(13,'(55) 6555-4548',NULL,NULL,2),(14,'(25) 64561-2031',14,NULL,NULL);
+INSERT INTO `telefone` VALUES (1,'(96) 99926-2045',2,NULL,NULL),(3,'(69) 98423-4216',6,NULL,NULL),(4,'(69) 99600-4977',7,NULL,NULL),(5,'(69) 99375-9393',9,NULL,NULL),(6,'96 99965-25363',NULL,1,NULL),(7,'65 32365-5896',NULL,NULL,1),(8,'(96) 32145-6987',10,NULL,NULL),(9,'(99) 99999-9999',11,NULL,NULL),(10,'(23) 43423-5254',12,NULL,NULL),(11,'(55) 34345-4335',13,NULL,NULL),(12,'(65) 15656-1515',NULL,2,NULL),(13,'(55) 6555-4548',NULL,NULL,2),(14,'(25) 64561-2031',14,NULL,NULL),(15,'(56) 34536-5345',15,NULL,NULL),(16,'(69) 54871-3325',16,NULL,NULL),(17,'(69) 25874-2153',17,NULL,NULL),(18,'(69) 25686-8265',18,NULL,NULL),(19,'(65) 96582-8585',19,NULL,NULL);
 /*!40000 ALTER TABLE `telefone` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -576,6 +562,40 @@ INSERT INTO `triagem` VALUES (2,NULL,9,2,NULL,'Satisfeito','Quando você olha no
 UNLOCK TABLES;
 
 --
+-- Table structure for table `triagem_rapida`
+--
+
+DROP TABLE IF EXISTS `triagem_rapida`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `triagem_rapida` (
+  `trap_id` int NOT NULL AUTO_INCREMENT,
+  `alun_id` int NOT NULL,
+  `serv_id` int DEFAULT NULL,
+  `trap_queixa` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `trap_gravidade` enum('Leve','Média','Grave') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `trap_relato_aluno` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `trap_observacao` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `trap_conduta` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `trap_criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`trap_id`),
+  KEY `ix_triagem_rapida_aluno` (`alun_id`,`trap_criado_em`),
+  KEY `fk_triagem_rapida_servidor_idx` (`serv_id`),
+  CONSTRAINT `fk_triagem_rapida_aluno` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_triagem_rapida_servidor` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `triagem_rapida`
+--
+
+LOCK TABLES `triagem_rapida` WRITE;
+/*!40000 ALTER TABLE `triagem_rapida` DISABLE KEYS */;
+/*!40000 ALTER TABLE `triagem_rapida` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `turma`
 --
 
@@ -600,44 +620,6 @@ LOCK TABLES `turma` WRITE;
 INSERT INTO `turma` VALUES (1,'Manutenção e Suporte em Informática','26','Matutino'),(2,'Licenciatura em Ciências','26','Vespertino');
 /*!40000 ALTER TABLE `turma` ENABLE KEYS */;
 UNLOCK TABLES;
---
--- Table structure for table `triagem_rapida`
---
-
-DROP TABLE IF EXISTS `triagem_rapida`;
-CREATE TABLE `triagem_rapida` (
-  `trap_id` int NOT NULL AUTO_INCREMENT,
-  `alun_id` int NOT NULL,
-  `serv_id` int DEFAULT NULL,
-  `trap_queixa` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `trap_gravidade` enum('Leve','Média','Grave') COLLATE utf8mb4_general_ci NOT NULL,
-  `trap_relato_aluno` text COLLATE utf8mb4_general_ci,
-  `trap_observacao` text COLLATE utf8mb4_general_ci,
-  `trap_conduta` text COLLATE utf8mb4_general_ci NOT NULL,
-  `trap_criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`trap_id`),
-  KEY `ix_triagem_rapida_aluno` (`alun_id`,`trap_criado_em`),
-  KEY `fk_triagem_rapida_servidor_idx` (`serv_id`),
-  CONSTRAINT `fk_triagem_rapida_aluno` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_triagem_rapida_servidor` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Lista de queixas do menu suspenso (o admin pode mudar em "Informações do sistema").
-INSERT IGNORE INTO `opcao_sistema` (`opca_grupo`, `opca_valor`, `opca_ordem`, `opca_ativo`) VALUES
-('queixa', 'Dor de cabeça', 1, 1),
-('queixa', 'Cólica', 2, 1),
-('queixa', 'Febre', 3, 1),
-('queixa', 'Dor de barriga', 4, 1),
-('queixa', 'Enjoo / vômito', 5, 1),
-('queixa', 'Tontura / mal-estar', 6, 1),
-('queixa', 'Dor de garganta', 7, 1),
-('queixa', 'Gripe / resfriado', 8, 1),
-('queixa', 'Machucado / ferimento', 9, 1),
-('queixa', 'Alergia', 10, 1),
-('queixa', 'Crise de ansiedade', 11, 1),
-('queixa', 'Pressão alta / baixa', 12, 1),
-('queixa', 'Outro', 13, 1);
-
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -648,4 +630,4 @@ INSERT IGNORE INTO `opcao_sistema` (`opca_grupo`, `opca_valor`, `opca_ordem`, `o
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-24 20:46:54
+-- Dump completed on 2026-11-03  7:11:58
