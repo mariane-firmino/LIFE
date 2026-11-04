@@ -51,6 +51,17 @@ $fotoPerfil = !empty($usuario->serv_foto)
     <!-- FORMULÁRIO -->
     <div class="container mt-4 mb-5">
 
+        <?php
+        // Mensagem de erro enviada pelo controller (ex.: e-mail já usado).
+        $mensagemErro = $_SESSION['erro'] ?? '';
+        unset($_SESSION['erro']);
+        ?>
+        <?php if ($mensagemErro !== ''): ?>
+            <div class="alert alert-danger" role="alert">
+                <?= htmlspecialchars($mensagemErro, ENT_QUOTES, 'UTF-8') ?>
+            </div>
+        <?php endif; ?>
+
         <form
             class="perfil-card"
             action="<?= URL ?>/usuarios/editarPerfil"
@@ -114,6 +125,8 @@ $fotoPerfil = !empty($usuario->serv_foto)
                         <input
                             type="text"
                             name="nome" maxlength="225"
+                            pattern="[\p{L}]+( [\p{L}]+)*"
+                            title="Use apenas letras, sem números ou caracteres especiais"
                             id="nome"
                             class="form-control"
                             placeholder="Nome completo"

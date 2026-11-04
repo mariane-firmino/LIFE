@@ -73,6 +73,29 @@ class Usuario
 
 
     // ---------------------------------------------------------
+    // E-MAIL EM USO POR OUTRO SERVIDOR
+    // Usado na edição de perfil: ignora o próprio usuário.
+    // Retorna true se outro servidor já usa o e-mail.
+    // ---------------------------------------------------------
+
+    public function emailEmUsoPorOutro($email, $servId)
+    {
+        $this->db->query("
+            SELECT serv_id
+            FROM servidor
+            WHERE serv_email = :e
+              AND serv_id <> :id
+            LIMIT 1
+        ");
+
+        $this->db->bind(':e', $email);
+        $this->db->bind(':id', (int) $servId);
+
+        return $this->db->resultado() ? true : false;
+    }
+
+
+    // ---------------------------------------------------------
     // CHECAR CPF
     // Verifica se o CPF já está cadastrado.
     // Retorna o registro encontrado ou false/null se estiver

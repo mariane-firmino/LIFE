@@ -106,7 +106,37 @@ $id = (int) $dados['aluno_id'];
 
         <form method="post" action="<?= URL ?>/alunos/editarPerfil/<?= $id ?>" novalidate>
 
+            <!-- ============ ABAS ============
+                 Cada parte do perfil fica em uma aba. O botão "Editar" de cada
+                 aba do perfil chega aqui com #aba-saude, #aba-educacao...
+                 e o script no fim da página abre a aba certa.
+                 Todos os campos continuam no mesmo formulário (são enviados juntos). -->
+            <?php
+            $abasEdicao = [
+                ['dados',    'Dados pessoais',     'bi-person-fill'],
+                ['educacao', 'Educação formal',    'bi-mortarboard-fill'],
+                ['saude',    'Histórico de saúde', 'bi-heart-fill'],
+                ['habitos',  'Hábitos de vida',    'bi-activity'],
+            ];
+            ?>
+            <ul class="nav nav-tabs" id="abasEdicao" role="tablist">
+                <?php foreach ($abasEdicao as $i => [$aid, $titulo, $icone]): ?>
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link <?= $i === 0 ? 'active' : '' ?>"
+                            id="edicao-<?= $aid ?>-tab"
+                            data-bs-toggle="tab" data-bs-target="#aba-<?= $aid ?>"
+                            role="tab" aria-controls="aba-<?= $aid ?>"
+                            aria-selected="<?= $i === 0 ? 'true' : 'false' ?>">
+                            <i class="bi <?= $icone ?> me-1" aria-hidden="true"></i><?= $titulo ?>
+                        </button>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+
+            <div class="tab-content">
+
             <!-- ============ DADOS PESSOAIS + CONTATO ============ -->
+            <div class="tab-pane show active" id="aba-dados" role="tabpanel" aria-labelledby="edicao-dados-tab" tabindex="0">
             <div class="row g-4 mb-4">
 
                 <div class="col-lg-8">
@@ -152,8 +182,10 @@ $id = (int) $dados['aluno_id'];
                 </div>
 
             </div>
+            </div><!-- /aba-dados -->
 
             <!-- ============ EDUCAÇÃO FORMAL ============ -->
+            <div class="tab-pane" id="aba-educacao" role="tabpanel" aria-labelledby="edicao-educacao-tab" tabindex="0">
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body">
                     <h5 class="text-success fw-bold mb-4">
@@ -175,8 +207,10 @@ $id = (int) $dados['aluno_id'];
                     </div>
                 </div>
             </div>
+            </div><!-- /aba-educacao -->
 
             <!-- ============ HISTÓRICO DE SAÚDE ============ -->
+            <div class="tab-pane" id="aba-saude" role="tabpanel" aria-labelledby="edicao-saude-tab" tabindex="0">
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body">
                     <h5 class="text-success fw-bold mb-4">
@@ -243,8 +277,10 @@ $id = (int) $dados['aluno_id'];
                     </div>
                 </div>
             </div>
+            </div><!-- /aba-saude -->
 
             <!-- ============ HÁBITOS DE VIDA ============ -->
+            <div class="tab-pane" id="aba-habitos" role="tabpanel" aria-labelledby="edicao-habitos-tab" tabindex="0">
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body">
                     <h5 class="text-success fw-bold mb-4">
@@ -272,6 +308,9 @@ $id = (int) $dados['aluno_id'];
                     </div>
                 </div>
             </div>
+            </div><!-- /aba-habitos -->
+
+            </div><!-- /tab-content -->
 
             <div class="d-flex justify-content-between align-items-center mt-4">
                 <a href="<?= URL ?>/alunos/visualizarPerfil/<?= $id ?>" class="btn btn-link text-danger text-decoration-none">
@@ -285,5 +324,42 @@ $id = (int) $dados['aluno_id'];
         </form>
     </div>
 </div>
+
+<script>
+    // Abre a aba certa da edição:
+    // 1) se algum campo voltou com erro, abre a aba desse campo;
+    // 2) senão, abre a aba pedida no endereço (#aba-saude...);
+    // 3) senão, fica em "Dados pessoais".
+    document.addEventListener('DOMContentLoaded', function () {
+        var nav = document.getElementById('abasEdicao');
+        if (!nav || !window.bootstrap) { return; }
+
+        var abaComErro = document.querySelector('#abasEdicao ~ .tab-content .is-invalid, #abasEdicao ~ .tab-content .text-danger.small');
+        var pane = abaComErro ? abaComErro.closest('.tab-pane') : null;
+        var alvoId = pane ? '#' + pane.id : location.hash;
+
+        if (alvoId) {
+            try {
+                var botao = nav.querySelector('[data-bs-target="' + alvoId + '"]');
+                if (botao) {
+                    // Troca sem animação ao abrir a página (evita a aba
+                    // "Dados pessoais" piscar em verde antes da aba certa).
+                    nav.classList.add('sem-transicao');
+                    bootstrap.Tab.getOrCreateInstance(botao).show();
+                    requestAnimationFrame(function () {
+                        requestAnimationFrame(function () { nav.classList.remove('sem-transicao'); });
+                    });
+                }
+            } catch (e) { /* hash inválido: ignora */ }
+        }
+
+        // Mantém a aba no endereço (F5 não perde o lugar).
+        nav.querySelectorAll('[data-bs-toggle="tab"]').forEach(function (b) {
+            b.addEventListener('shown.bs.tab', function (e) {
+                history.replaceState(null, '', e.target.getAttribute('data-bs-target'));
+            });
+        });
+    });
+</script>
 
 <?php include '../App/Views/footer.php'; ?>

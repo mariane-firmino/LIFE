@@ -4,6 +4,9 @@ include "./../App/configuracao.php";
 include "./../App/autoload.php";
 
 $db = new Database;
+
+// Registra o dispositivo e desloga sessões encerradas remotamente.
+ControleSessao::verificar();
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -32,7 +35,8 @@ $db = new Database;
 <script src="<?= URL ?>/js/bootstrap.bundle.min.js"></script>
 <script src="<?= URL ?>/js/formatacao.js"></script>
 <script src="<?= URL ?>/js/consulta.js"></script>
-<script src="<?= URL ?>/js/calendario.js"></script>
+<!-- calendario.js NÃO entra aqui: é carregado só pela view do calendário.
+     Carregar nos dois lugares fazia cada consulta ser salva duas vezes. -->
 <script src="<?= URL ?>/js/menu.js"></script>
 <script src="<?= URL ?>/js/sobre.js"></script>
 </body>

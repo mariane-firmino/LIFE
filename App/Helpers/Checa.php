@@ -3,7 +3,10 @@ class checa
 { // criando a classe checa
     public static function checarNome($nome)
     {
-        if (!preg_match('/^([áÁàÀãÃâÂéÉèÈêÊíÍìÌóÓòÒõÕôÔúÚùÙçÇaA-zZ]+)+((\s[áÁàÀãÃâÂéÉèÈêÊíÍìÌóÓòÒõÕôÔúÚùÙçÇaA-zZ]+)+)?$/', $nome)):
+        // Só letras (com ou sem acento) e um espaço entre as palavras.
+        // Não aceita números nem caracteres especiais (ex.: _ ^ [ ] @ #).
+        // (A regra antiga usava "A-z", que deixava passar _ ^ [ ] ` \.)
+        if (!preg_match('/^\p{L}+(?: \p{L}+)*$/u', (string) $nome)):
             return true; // Retorna TRUE se o nome for INVALIDO
         else:
             return false; // Retorna FALSE se o nome foi VÁLIDO

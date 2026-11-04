@@ -169,14 +169,24 @@
    ===================================================================== */
 
 /* Menu das abas: todas visíveis, quebrando em várias linhas */
-#abasPerfil {
-    margin-top: 70px;
+/* As abas da tela "Editar perfil do aluno" (#abasEdicao) usam o mesmo visual. */
+#abasPerfil,
+#abasEdicao {
     gap: .5rem;
     padding-bottom: .75rem;
     border-bottom: 3px solid var(--bs-success);
 }
 
-#abasPerfil .nav-link {
+#abasPerfil {
+    margin-top: 70px;
+}
+
+#abasEdicao {
+    margin-bottom: 1.5rem;
+}
+
+#abasPerfil .nav-link,
+#abasEdicao .nav-link {
     margin-bottom: 0;
     padding: .6rem 1.1rem;
     border: 1px solid var(--bs-border-color);
@@ -189,29 +199,38 @@
     transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s;
 }
 
-#abasPerfil .nav-link .bi {
+#abasEdicao.sem-transicao .nav-link {
+    transition: none;
+}
+
+#abasPerfil .nav-link .bi,
+#abasEdicao .nav-link .bi {
     color: var(--bs-success);
     font-size: 1.1em;
 }
 
-#abasPerfil .nav-link:hover {
+#abasPerfil .nav-link:hover,
+#abasEdicao .nav-link:hover {
     background: var(--bs-success-bg-subtle);
     border-color: var(--bs-success-border-subtle);
     color: var(--bs-success-text-emphasis);
 }
 
-#abasPerfil .nav-link.active {
+#abasPerfil .nav-link.active,
+#abasEdicao .nav-link.active {
     background: var(--bs-success);
     border-color: var(--bs-success);
     color: #fff;
     box-shadow: 0 .25rem .6rem rgba(25, 135, 84, .3);
 }
 
-#abasPerfil .nav-link.active .bi {
+#abasPerfil .nav-link.active .bi,
+#abasEdicao .nav-link.active .bi {
     color: #fff;
 }
 
-#abasPerfil .nav-link:focus-visible {
+#abasPerfil .nav-link:focus-visible,
+#abasEdicao .nav-link:focus-visible {
     outline: 3px solid var(--bs-primary);
     outline-offset: 2px;
 }
@@ -225,7 +244,8 @@
 }
 
 @media (max-width: 575.98px) {
-    #abasPerfil .nav-link {
+    #abasPerfil .nav-link,
+    #abasEdicao .nav-link {
         padding: .5rem .8rem;
         font-size: .95rem;
     }

@@ -15,7 +15,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Nome completo</label>
-                        <input type="text" name="nome" maxlength="225" class="form-control <?= !empty($dados['nome_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu nome completo" value="<?= isset($dados['nome']) ? $dados['nome'] : '' ?>">
+                        <input type="text" name="nome" maxlength="225" pattern="[\p{L}]+( [\p{L}]+)*" title="Use apenas letras, sem números ou caracteres especiais" class="form-control <?= !empty($dados['nome_erro']) ? 'is-invalid' : '' ?>" placeholder="Digite seu nome completo" value="<?= isset($dados['nome']) ? $dados['nome'] : '' ?>">
                         <?php if (!empty($dados['nome_erro'])) : ?>
                             <div class="invalid-feedback">
                                 <?= $dados['nome_erro'] ?>
@@ -42,7 +42,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Data de Nascimento</label>
-                        <input type="date" name="data_nascimento" class="form-control <?= !empty($dados['data_nascimento_erro']) ? 'is-invalid' : '' ?>" placeholder="Selecione a data de nascimento">
+                        <input type="date" name="data_nascimento" class="form-control <?= !empty($dados['data_nascimento_erro']) ? 'is-invalid' : '' ?>" placeholder="Selecione a data de nascimento" value="<?= isset($dados['data_nascimento']) ? $dados['data_nascimento'] : '' ?>">
                         <?php if (!empty($dados['data_nascimento_erro'])) : ?>
                             <div class="invalid-feedback">
                                 <?= $dados['data_nascimento_erro'] ?>
@@ -73,9 +73,9 @@
                     <div class="col-12">
                         <label class="form-label">Função</label>
                         <select class="form-select <?= !empty($dados['funcao_erro']) ? 'is-invalid' : '' ?>" name="funcao">
-                            <option selected>Selecione</option>
-                            <?php foreach ($dados['funcoes'] as $funcao): ?>
-                                <option value="<?= $funcao->func_id; ?>">
+                            <option value="" <?= empty($dados['funcao']) ? 'selected' : '' ?>>Selecione</option>
+                            <?php foreach ($dados['funcoes'] ?? [] as $funcao): ?>
+                                <option value="<?= $funcao->func_id; ?>" <?= (isset($dados['funcao']) && $dados['funcao'] == $funcao->func_id) ? 'selected' : '' ?>>
                                     <?= $funcao->func_nome; ?>
                                 </option>
                             <?php endforeach; ?>

@@ -1,4 +1,11 @@
 <?php
+// Administrador sempre vê o menu do administrador,
+// inclusive nas páginas compartilhadas (perfil, configurações...).
+if (($_SESSION['usuario_perfil'] ?? '') === 'admin') {
+    include __DIR__ . '/admin/menuAdmin.php';
+    return;
+}
+
 // =========================================================
 // DADOS DO MENU
 // Apenas prepara os valores que serão mostrados.

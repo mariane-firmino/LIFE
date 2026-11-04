@@ -5,6 +5,11 @@
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", function () {
+    // Proteção: se o script for incluído mais de uma vez na página,
+    // só a primeira cópia inicia (senão cada consulta é salva em dobro).
+    if (window.__calendarioIniciado) return;
+    window.__calendarioIniciado = true;
+
     const cfg = window.CALENDARIO_CONFIG;
     const el = document.getElementById("calendario");
     if (!el || !cfg || typeof FullCalendar === "undefined") {

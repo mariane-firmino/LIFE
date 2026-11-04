@@ -493,9 +493,9 @@ class Alunos extends Controller
                     $temErro = true;
                 endif;
 
-                // Ano da turma: exatamente 2 dígitos.
-                if (!preg_match('/^\d{2}$/', $dados['ano_turma'])) :
-                    $dados['ano_turma_erro'] = 'Informe 2 dígitos (ex: 26)';
+                // Série da turma: 1º, 2º, 3º...
+                if (!preg_match('/^[1-9]º$/u', $dados['ano_turma'])) :
+                    $dados['ano_turma_erro'] = 'Selecione a série da turma (ex: 1º)';
                     $temErro = true;
                 endif;
 

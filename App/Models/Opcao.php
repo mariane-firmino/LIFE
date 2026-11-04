@@ -35,10 +35,10 @@ class Opcao
         'ano_turma' => [
             'rotulo' => 'Anos das turmas',
             'singular' => 'Ano da turma',
-            'ajuda' => 'Use 2 dígitos. Ex.: 26',
+            'ajuda' => 'Use a série com º. Ex.: 1º, 2º, 3º',
             'icone' => 'bi-calendar-event-fill',
             'max' => 2,
-            'padrao' => '/^\d{2}$/',
+            'padrao' => '/^[1-9]º$/u',
             'tabela' => 'turma',
             'coluna' => 'turm_ano',
             'uso_from' => 'aluno a JOIN turma t ON a.turm_id = t.turm_id',

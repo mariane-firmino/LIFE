@@ -130,7 +130,7 @@ class Usuarios extends Controller
 
                 // Verifica o nome.
                 if (Checa::checarNome($formulario['nome'])):
-                    $dados['nome_erro'] = 'O nome informado é invalido';
+                    $dados['nome_erro'] = 'O nome deve conter apenas letras (sem números ou caracteres especiais)';
 
                 // Verifica o formato do e-mail.
                 elseif (Checa::checarEmail($formulario['email'])):
@@ -235,6 +235,10 @@ class Usuarios extends Controller
             ];
 
         endif;
+
+        // Garante que a lista de funções esteja sempre disponível,
+        // inclusive quando o cadastro falha na validação.
+        $dados['funcoes'] = $this->usuarioModel->listarFuncoes();
 
         // Abre a view de cadastro.
         $this->view('usuarios/cadastro', $dados);
@@ -344,6 +348,10 @@ class Usuarios extends Controller
         $_SESSION['usuario_foto'] = $usuario->serv_foto;
         $_SESSION['usuario_perfil'] = $usuario->serv_perfil ?? 'servidor';
 
+        // Registra este dispositivo (página "Gerenciar dispositivos").
+        session_regenerate_id(true);
+        $_SESSION['sessao_token'] = ControleSessao::modelo()->registrar($usuario->serv_id);
+
         URL::redirecionar($_SESSION['usuario_perfil'] === 'admin' ? 'admin/home' : 'paginas/home');
     }
 
@@ -356,6 +364,12 @@ class Usuarios extends Controller
 
     public function logout()
     {
+        // Marca o dispositivo atual como encerrado.
+        if (!empty($_SESSION['sessao_token'])) {
+            ControleSessao::modelo()->encerrarPorToken($_SESSION['sessao_token']);
+        }
+        unset($_SESSION['sessao_token']);
+
         unset($_SESSION['usuario_id']);
         unset($_SESSION['usuario_nome']);
         unset($_SESSION['usuario_email']);
@@ -754,8 +768,28 @@ class Usuarios extends Controller
                 exit;
             }
 
+            if (mb_strlen($nome) > 225 || Checa::checarNome($nome)) {
+                $_SESSION['erro'] = 'O nome deve conter apenas letras (sem números ou caracteres especiais).';
+                URL::redirecionar('usuarios/editarPerfil');
+                exit;
+            }
+
             if ($email === '') {
                 $_SESSION['erro'] = 'Preencha o e-mail.';
+                URL::redirecionar('usuarios/editarPerfil');
+                exit;
+            }
+
+            if (Checa::checarEmail($email)) {
+                $_SESSION['erro'] = 'O e-mail informado é inválido.';
+                URL::redirecionar('usuarios/editarPerfil');
+                exit;
+            }
+
+            // Impede usar um e-mail que já pertence a outro servidor
+            // (antes isso quebrava a página com erro do banco).
+            if ($this->usuarioModel->emailEmUsoPorOutro($email, $id)) {
+                $_SESSION['erro'] = 'Este e-mail já está sendo usado por outro usuário.';
                 URL::redirecionar('usuarios/editarPerfil');
                 exit;
             }

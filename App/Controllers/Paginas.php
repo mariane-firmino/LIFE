@@ -57,6 +57,12 @@ class Paginas extends Controller
             exit;
         }
 
+        // Administrador tem a sua própria home (com o menu do admin).
+        if (($_SESSION['usuario_perfil'] ?? '') === 'admin') {
+            URL::redirecionar('admin/home');
+            exit;
+        }
+
         $home = $this->model('Home');
         $fusoHorario = new DateTimeZone('America/Porto_Velho');
         $agora = new DateTimeImmutable('now', $fusoHorario);
@@ -222,13 +228,111 @@ class Paginas extends Controller
 
     public function gerenciarDispositivos()
     {
+        if (!isset($_SESSION['usuario_id'])) {
+            URL::redirecionar('usuarios/login');
+            exit;
+        }
+
+        // Token contra envio de formulário por outro site (CSRF).
+        if (empty($_SESSION['csrf_dispositivos'])) {
+            $_SESSION['csrf_dispositivos'] = bin2hex(random_bytes(32));
+        }
+
+        $dispositivos = ControleSessao::modelo()->listarAtivos(
+            $_SESSION['usuario_id'],
+            $_SESSION['sessao_token'] ?? ''
+        );
+
         // Dados enviados para a View.
         $dados = [
             'titulo' => 'Página de gerenciamento de dispositivos',
-            'descricao' => 'pagina gerenciamento de dispositivos'
+            'descricao' => 'pagina gerenciamento de dispositivos',
+            'dispositivos' => $dispositivos,
+            'csrf' => $_SESSION['csrf_dispositivos'],
         ];
 
         // Abre: App/Views/paginas/gerenciarDispositivos.php
         $this->view('paginas/gerenciarDispositivos', $dados);
+    }
+
+
+    // =========================================================
+    // ENCERRAR UM DISPOSITIVO (POST)
+    // =========================================================
+
+    public function encerrarDispositivo($id = null)
+    {
+        if (!$this->podeAlterarDispositivos()) {
+            return;
+        }
+
+        $modelo = ControleSessao::modelo();
+
+        // Encerrar o próprio dispositivo = sair do sistema.
+        foreach ($modelo->listarAtivos($_SESSION['usuario_id'], $_SESSION['sessao_token'] ?? '') as $d) {
+            if ((int) $d->sess_id === (int) $id && $d->atual) {
+                URL::redirecionar('usuarios/logout');
+                exit;
+            }
+        }
+
+        if ($modelo->encerrar((int) $id, $_SESSION['usuario_id'])) {
+            Sessao::mensagem('dispositivos', 'Sessão encerrada no dispositivo selecionado.', 'alert alert-success');
+        } else {
+            Sessao::mensagem('dispositivos', 'Dispositivo não encontrado.', 'alert alert-danger');
+        }
+
+        URL::redirecionar('paginas/gerenciarDispositivos');
+        exit;
+    }
+
+
+    // =========================================================
+    // ENCERRAR TODAS AS OUTRAS SESSÕES (POST)
+    // =========================================================
+
+    public function encerrarOutrosDispositivos()
+    {
+        if (!$this->podeAlterarDispositivos()) {
+            return;
+        }
+
+        $total = ControleSessao::modelo()->encerrarOutras(
+            $_SESSION['usuario_id'],
+            $_SESSION['sessao_token'] ?? ''
+        );
+
+        if ($total > 0) {
+            $texto = $total === 1
+                ? '1 sessão em outro dispositivo foi encerrada.'
+                : $total . ' sessões em outros dispositivos foram encerradas.';
+            Sessao::mensagem('dispositivos', $texto, 'alert alert-success');
+        } else {
+            Sessao::mensagem('dispositivos', 'Não há outros dispositivos conectados.', 'alert alert-info');
+        }
+
+        URL::redirecionar('paginas/gerenciarDispositivos');
+        exit;
+    }
+
+
+    // Confere login, método POST e token CSRF.
+    private function podeAlterarDispositivos()
+    {
+        if (!isset($_SESSION['usuario_id'])) {
+            URL::redirecionar('usuarios/login');
+            exit;
+        }
+
+        $token = $_POST['csrf'] ?? '';
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST'
+            || empty($_SESSION['csrf_dispositivos'])
+            || !hash_equals($_SESSION['csrf_dispositivos'], $token)) {
+            Sessao::mensagem('dispositivos', 'Requisição inválida. Tente novamente.', 'alert alert-danger');
+            URL::redirecionar('paginas/gerenciarDispositivos');
+            exit;
+        }
+
+        return true;
     }
 }

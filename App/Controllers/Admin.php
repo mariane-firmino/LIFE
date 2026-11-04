@@ -47,6 +47,8 @@ class Admin extends Controller
 
         // 2) Precisa ser administrador ativo (confere no banco).
         if (!$this->admModel->usuarioEhAdmin($_SESSION['usuario_id'])) {
+            // Atualiza a sessão para não voltar para cá em loop.
+            $_SESSION['usuario_perfil'] = 'servidor';
             URL::redirecionar('paginas/home');
             exit;
         }
@@ -320,6 +322,9 @@ class Admin extends Controller
 
         $aba = 'aba-' . $grupo;
         $valor = trim((string) ($_POST['valor'] ?? ''));
+        if ($grupo === 'ano_turma') {
+            $valor = self::normalizarSerie($valor);
+        }
 
         $erro = $this->validarValorOpcao($grupo, $valor, 0);
         if ($erro) {
@@ -345,6 +350,9 @@ class Admin extends Controller
         $aba = 'aba-' . $opcao->grupo;
 
         $valor = trim((string) ($_POST['valor'] ?? ''));
+        if ($opcao->grupo === 'ano_turma') {
+            $valor = self::normalizarSerie($valor);
+        }
 
         // Não mudou nada: não precisa gravar.
         if ($valor === $opcao->valor) {
@@ -443,9 +451,24 @@ class Admin extends Controller
     // VALIDAR VALOR DE OPÇÃO
     // Devolve a mensagem de erro, ou '' se estiver tudo certo.
     // ---------------------------------------------------------
+    public static function normalizarSerie($valor)
+    {
+        $valor = trim((string) $valor);
+        if (preg_match('/^([1-9])\s*(º|°|o|ª)?$/iu', $valor, $m)) {
+            return $m[1] . 'º';
+        }
+        return $valor;
+    }
+
     private function validarValorOpcao($grupo, $valor, $ignorarId)
     {
         $cfg = Opcao::GRUPOS[$grupo];
+
+        // Série da turma: "1", "1°" ou "1o" viram "1º" automaticamente
+        // (o símbolo º é difícil de digitar em alguns teclados).
+        if ($grupo === 'ano_turma') {
+            $valor = self::normalizarSerie($valor);
+        }
 
         if ($valor === '') {
             return 'Preencha o campo antes de salvar.';
