@@ -335,6 +335,31 @@ class Aluno
     // CONSULTAS
     // =========================================================
 
+    public function obterResumo()
+    {
+        $this->db->query("
+            SELECT
+                COUNT(*) AS total,
+                COALESCE(SUM(alun_sexo = 'Masculino'), 0) AS meninos,
+                COALESCE(SUM(alun_sexo = 'Feminino'), 0) AS meninas,
+                (
+                    SELECT COUNT(DISTINCT an.alun_id)
+                    FROM anamnese an
+                    WHERE LOWER(TRIM(an.anam_doenca_cronica)) = 'sim'
+                ) AS com_doenca
+            FROM aluno
+        ");
+
+        $resumo = $this->db->resultado();
+
+        return [
+            'total' => (int) $resumo->total,
+            'meninos' => (int) $resumo->meninos,
+            'meninas' => (int) $resumo->meninas,
+            'com_doenca' => (int) $resumo->com_doenca,
+        ];
+    }
+
     // ---------------------------------------------------------
     // LISTAR TODOS OS ALUNOS
     // Retorna todos os alunos com turma e responsável,

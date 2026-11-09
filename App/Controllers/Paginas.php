@@ -212,64 +212,80 @@ class Paginas extends Controller
             exit;
         }
 
-        // Garante que a tabela consulta já tem a coluna do aluno.
-        $this->model('Consulta');
         $relatorio = $this->model('Relatorio');
 
-        $fuso = new DateTimeZone('America/Porto_Velho');
-        $hoje = new DateTimeImmutable('today', $fuso);
+        $fusoHorario = new DateTimeZone('America/Porto_Velho');
+        $agora = new DateTimeImmutable('now', $fusoHorario);
 
-        // Filtros (GET). Padrão: mês atual.
-        $dataValida = function ($valor) {
-            $d = DateTime::createFromFormat('Y-m-d', (string) $valor);
-            return $d && $d->format('Y-m-d') === $valor;
-        };
-        $inicio = $_GET['inicio'] ?? '';
-        $fim = $_GET['fim'] ?? '';
-        if (!$dataValida($inicio)) {
-            $inicio = $hoje->modify('first day of this month')->format('Y-m-d');
-        }
-        if (!$dataValida($fim)) {
-            $fim = $hoje->modify('last day of this month')->format('Y-m-d');
-        }
-        if ($fim < $inicio) {
-            [$inicio, $fim] = [$fim, $inicio];
+        // ---- Filtros (validados contra as opções reais) ----
+        $periodos = Relatorio::opcoesPeriodo($agora);
+        $periodo = (string) ($_GET['periodo'] ?? $agora->format('Y-m'));
+        if (!isset($periodos[$periodo])) {
+            $periodo = $agora->format('Y-m');
         }
 
-        $tipo = $_GET['tipo'] ?? 'todos';
-        if (!array_key_exists($tipo, Relatorio::TIPOS)) {
+        $tipo = (string) ($_GET['tipo'] ?? 'todos');
+        if (!isset(Relatorio::TIPOS[$tipo])) {
             $tipo = 'todos';
         }
-        $turma = ctype_digit((string) ($_GET['turma'] ?? '')) ? (int) $_GET['turma'] : 0;
 
-        $atendimentos = $relatorio->atendimentos($inicio, $fim, $tipo, $turma);
+        $turmas = $relatorio->listarTurmas();
+        $turmaId = (int) ($_GET['turma'] ?? 0);
+        $turmasValidas = array_map(static fn($t) => (int) $t->turm_id, $turmas);
+        if (!in_array($turmaId, $turmasValidas, true)) {
+            $turmaId = 0;
+        }
+        $turmaFiltro = $turmaId > 0 ? $turmaId : null;
 
-        // Números dos cards.
-        $agoraIso = (new DateTimeImmutable('now', $fuso))->format('Y-m-d H:i:s');
-        $totalConsultas = 0;
-        $consultasMarcadas = 0;
-        $alunosAtendidos = [];
-        foreach ($atendimentos as $a) {
-            $jaAconteceu = ($a->data . ' ' . ($a->hora ?: '00:00:00')) <= $agoraIso;
-            if ($a->origem === 'consulta') {
-                $jaAconteceu ? $totalConsultas++ : $consultasMarcadas++;
-            }
-            if ($jaAconteceu && !empty($a->alun_id)) {
-                $alunosAtendidos[(int) $a->alun_id] = true;
+        [$inicio, $fim] = Relatorio::intervalo($periodo);
+
+        // ---- Números dos cards ----
+        $totalConsultas = $relatorio->totalConsultas($inicio, $fim);
+        $consultasMarcadas = $relatorio->consultasMarcadas($inicio, $fim, $agora->format('Y-m-d H:i:s'));
+        $totalEstudantes = $relatorio->totalEstudantesAtendidos($inicio, $fim, $turmaFiltro);
+        $totalTriagens = $relatorio->totalTriagens($inicio, $fim, $turmaFiltro);
+
+        // ---- Detalhes ----
+        // Tipo específico: carrega só a lista escolhida.
+        // Tipo "todos": carrega as três (a tela só mostra o resumo, mas a
+        // versão impressa traz a relação completa de cada relatório).
+        $agoraTexto = $agora->format('Y-m-d H:i:s');
+        $tiposParaCarregar = $tipo === 'todos'
+            ? ['consultas', 'estudantes', 'triagens']
+            : [$tipo];
+
+        $listas = [];
+        foreach ($tiposParaCarregar as $t) {
+            if ($t === 'consultas') {
+                $listas[$t] = $relatorio->listarConsultas($inicio, $fim, $agoraTexto);
+            } elseif ($t === 'estudantes') {
+                $listas[$t] = $relatorio->listarEstudantesAtendidos($inicio, $fim, $turmaFiltro);
+            } elseif ($t === 'triagens') {
+                $listas[$t] = $relatorio->listarTriagens($inicio, $fim, $turmaFiltro);
             }
         }
+        $detalhes = $listas[$tipo] ?? [];
 
         // Dados enviados para a View.
         $dados = [
             'titulo' => 'Página de relatório',
             'descricao' => 'pagina relatorio',
-            'filtros' => ['inicio' => $inicio, 'fim' => $fim, 'tipo' => $tipo, 'turma' => $turma],
+            'periodos' => $periodos,
+            'periodo' => $periodo,
             'tipos' => Relatorio::TIPOS,
-            'turmas' => $relatorio->listarTurmas(),
-            'atendimentos' => $atendimentos,
+            'tipo' => $tipo,
+            'turmas' => $turmas,
+            'turma' => $turmaId,
             'total_consultas' => $totalConsultas,
             'consultas_marcadas' => $consultasMarcadas,
-            'estudantes_atendidos' => count($alunosAtendidos),
+            'total_estudantes' => $totalEstudantes,
+            'total_triagens' => $totalTriagens,
+            'detalhes' => $detalhes,
+            'listas' => $listas,
+            'limite_detalhes' => Relatorio::LIMITE_DETALHES,
+            'gerado_em' => $agora->format('d/m/Y H:i'),
+            // 1 = abre só o documento de impressão (página aberta pelo botão Imprimir)
+            'imprimir' => (($_GET['imprimir'] ?? '') === '1'),
         ];
 
         // Abre: App/Views/paginas/relatorio.php
@@ -384,9 +400,11 @@ class Paginas extends Controller
         }
 
         $token = $_POST['csrf'] ?? '';
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST'
+        if (
+            $_SERVER['REQUEST_METHOD'] !== 'POST'
             || empty($_SESSION['csrf_dispositivos'])
-            || !hash_equals($_SESSION['csrf_dispositivos'], $token)) {
+            || !hash_equals($_SESSION['csrf_dispositivos'], $token)
+        ) {
             Sessao::mensagem('dispositivos', 'Requisição inválida. Tente novamente.', 'alert alert-danger');
             URL::redirecionar('paginas/gerenciarDispositivos');
             exit;
