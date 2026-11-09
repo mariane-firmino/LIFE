@@ -5,7 +5,7 @@
 
 // Só usuários logados acessam esta página.
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ' . URL . '/login');
+    header('Location: ' . URL . '/usuarios/login');
     exit;
 }
 
@@ -216,6 +216,12 @@ $ehSim = function ($valor) {
                     style="background-color: #f5f0f0;">
                     <i class="bi bi-arrow-left me-1"></i>
                     Voltar
+                </a>
+
+                <a href="<?= URL ?>/alunos/imprimirFicha/<?= $id ?>" target="_blank" rel="noopener"
+                    class="btn btn-outline-success fw-bold px-3 py-2">
+                    <i class="bi bi-printer-fill me-2" aria-hidden="true"></i>
+                    Imprimir Ficha
                 </a>
 
                 <a href="<?= URL ?>/alunos/editarPerfil/<?= $id ?>" class="btn btn-success fw-bold px-3 py-2">

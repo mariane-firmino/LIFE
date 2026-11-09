@@ -2,9 +2,45 @@
 
 class EmailSender
 {
+    // Conexão SMTP reaproveitada quando vários e-mails saem na mesma requisição.
+    private $mail = null;
+
+    public function __destruct()
+    {
+        if ($this->mail !== null) {
+            try {
+                $this->mail->smtpClose();
+            } catch (Throwable $e) {
+                // nada a fazer
+            }
+        }
+    }
+
+    // Endereço usado nos links dos e-mails.
+    // "localhost" só abre no próprio computador do servidor; por isso,
+    // quando o sistema é acessado por outro endereço (IP da rede, domínio),
+    // os links usam esse mesmo endereço. Para fixar um endereço, defina a
+    // variável de ambiente LIFE_URL_PUBLICA (ex.: http://192.168.0.10/life).
+    private function urlBase(): string
+    {
+        $publica = trim((string) getenv('LIFE_URL_PUBLICA'));
+        if ($publica !== '') {
+            return rtrim($publica, '/');
+        }
+
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        if ($host !== '' && preg_match('/^[A-Za-z0-9.\-\[\]:]+$/', $host)) {
+            $https = !empty($_SERVER['HTTPS']) && strtolower((string) $_SERVER['HTTPS']) !== 'off';
+            $caminho = (string) parse_url(URL, PHP_URL_PATH);
+            return ($https ? 'https' : 'http') . '://' . $host . rtrim($caminho, '/');
+        }
+
+        return URL;
+    }
+
     public function enviarRecuperacao(string $email, string $nome, string $token): bool
     {
-        $link = URL . '/usuarios/redefinirSenha/' . rawurlencode($token);
+        $link = $this->urlBase() . '/usuarios/redefinirSenha/' . rawurlencode($token);
         $nomeSeguro = htmlspecialchars($nome, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $linkSeguro = htmlspecialchars($link, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 
@@ -34,7 +70,7 @@ class EmailSender
         string $mensagem,
         string $rota
     ): bool {
-        $link = URL . '/' . ltrim($rota, '/');
+        $link = $this->urlBase() . '/' . ltrim($rota, '/');
         $tituloSeguro = htmlspecialchars($titulo, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $mensagemSegura = htmlspecialchars($mensagem, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $linkSeguro = htmlspecialchars($link, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -74,7 +110,8 @@ class EmailSender
 
         $host = getenv('LIFE_SMTP_HOST') ?: 'smtp.gmail.com';
         $usuario = getenv('LIFE_SMTP_USERNAME') ?: 'enfermariaifro@gmail.com';
-        $senha = getenv('LIFE_SMTP_PASSWORD') ?: 'kekf kxtf ykxp iqyw';
+        // Senha de app do Gmail: é mostrada com espaços, mas é usada sem eles.
+        $senha = str_replace(' ', '', (string) (getenv('LIFE_SMTP_PASSWORD') ?: 'kekf kxtf ykxp iqyw'));
         $remetente = getenv('LIFE_SMTP_FROM') ?: $usuario;
         $nomeRemetente = getenv('LIFE_SMTP_FROM_NAME') ?: 'LIFE IFRO';
         $porta = (int) (getenv('LIFE_SMTP_PORT') ?: 587);
@@ -90,29 +127,55 @@ class EmailSender
             return false;
         }
 
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            error_log('E-mail não enviado: endereço inválido (' . $email . ').');
+            return false;
+        }
+
+        $mail = null;
         try {
-            $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
-            $mail->isSMTP();
-            $mail->Host = $host;
-            $mail->SMTPAuth = true;
-            $mail->Username = $usuario;
-            $mail->Password = $senha;
-            $mail->SMTPSecure = $seguranca === 'ssl'
-                ? \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS
-                : \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = $porta;
-            $mail->setFrom($remetente, $nomeRemetente);
+            if ($this->mail === null) {
+                $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+                $mail->isSMTP();
+                $mail->Host = $host;
+                $mail->SMTPAuth = true;
+                $mail->Username = $usuario;
+                $mail->Password = $senha;
+                $mail->SMTPSecure = $seguranca === 'ssl'
+                    ? \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS
+                    : \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = $porta;
+                // Sem isso o PHPMailer espera até 5 minutos e a página "trava".
+                $mail->Timeout = 15;
+                // Reaproveita a conexão para avisar vários usuários de uma vez.
+                $mail->SMTPKeepAlive = true;
+                $mail->CharSet = 'UTF-8';
+                $mail->isHTML(true);
+                $mail->setFrom($remetente, $nomeRemetente);
+                $this->mail = $mail;
+            }
+
+            $mail = $this->mail;
+            $mail->clearAddresses();
             $mail->addAddress($email, $nome);
-            $mail->isHTML(true);
-            $mail->CharSet = 'UTF-8';
             $mail->Subject = $assunto;
             $mail->Body = $html;
             $mail->AltBody = $texto;
             $mail->send();
 
             return true;
-        } catch (\PHPMailer\PHPMailer\Exception $e) {
-            error_log('Falha ao enviar e-mail: ' . $mail->ErrorInfo);
+        } catch (Throwable $e) {
+            $detalhe = ($mail !== null && $mail->ErrorInfo !== '') ? $mail->ErrorInfo : $e->getMessage();
+            error_log('Falha ao enviar e-mail para ' . $email . ': ' . $detalhe);
+
+            // Conexão pode ter caído: a próxima tentativa abre outra.
+            if ($this->mail !== null) {
+                try {
+                    $this->mail->smtpClose();
+                } catch (Throwable $ignorado) {
+                }
+                $this->mail = null;
+            }
             return false;
         }
     }

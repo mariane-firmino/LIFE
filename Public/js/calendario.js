@@ -185,7 +185,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const txt = document.createElement("span");
             txt.className = "cal-item-txt";
-            txt.textContent = `${horaHM(ev.start)} · ${ev.extendedProps.tipo}`;
+            txt.textContent = `${horaHM(ev.start)} · ${ev.extendedProps.tipo}` +
+                (ev.extendedProps.aluno ? ` · ${ev.extendedProps.aluno}` : "");
 
             item.append(dot, dia, txt);
             container.appendChild(item);
@@ -203,6 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
             weekday: "long", day: "2-digit", month: "long", year: "numeric"
         });
         $("det-hora").textContent = horaHM(ev.start);
+        $("det-aluno").textContent = p.aluno || "Não informado";
         $("det-tipo").textContent = p.tipo;
         $("det-responsavel").textContent = p.responsavel || "Não informado";
         $("det-descricao").textContent = p.descricao || "—";
@@ -237,9 +239,37 @@ document.addEventListener("DOMContentLoaded", function () {
     /* ---------------------------------------------------
        Formulário (adicionar / editar)
     --------------------------------------------------- */
+    // Busca de aluno: esconde as opções que não combinam com o texto.
+    const buscaAluno = $("alunoBusca");
+    const selectAluno = $("alunoConsulta");
+    const semAcento = (t) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+
+    function filtrarAlunos() {
+        const termo = semAcento(buscaAluno.value.trim());
+        let primeiraVisivel = null;
+        Array.from(selectAluno.options).forEach((op) => {
+            if (!op.value) return;
+            const mostra = termo === "" || semAcento(op.textContent).includes(termo);
+            op.hidden = !mostra;
+            if (mostra && !primeiraVisivel) primeiraVisivel = op;
+        });
+        const atual = selectAluno.selectedOptions[0];
+        if (termo !== "" && (!atual || atual.hidden || !atual.value) && primeiraVisivel) {
+            selectAluno.value = primeiraVisivel.value;
+        }
+    }
+
+    if (buscaAluno && selectAluno) {
+        buscaAluno.addEventListener("input", filtrarAlunos);
+    }
+
     function abrirFormulario(ev, dataSugerida) {
         form.reset();
         erroBox.hidden = true;
+        if (buscaAluno) {
+            buscaAluno.value = "";
+            filtrarAlunos();
+        }
 
         const editando = !!ev;
         $("modalConsultaLabel").textContent = editando ? "Editar Consulta" : "Adicionar Consulta";
@@ -250,6 +280,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const p = ev.extendedProps;
             $("dataConsulta").value = dataISO(ev.start);
             $("horaConsulta").value = horaHM(ev.start);
+            $("alunoConsulta").value = p.alunoId ? String(p.alunoId) : "";
             $("tipoConsulta").value = p.tipo;
             $("responsavelConsulta").value = p.responsavel || "";
             $("descricaoConsulta").value = p.descricao || "";

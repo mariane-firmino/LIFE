@@ -29,23 +29,74 @@ class Consulta
     ];
 
     private $db;
+    private static $colunaAlunoVerificada = false;
 
     public function __construct()
     {
         $this->db = new Database;
+        $this->garantirColunaAluno();
     }
 
-    /** Todas as consultas, em ordem cronológica. */
+    /**
+     * A consulta passou a ter um aluno (opcional). Se o banco ainda
+     * não tiver a coluna alun_id, ela é criada aqui (mesmo script do
+     * arquivo consulta_aluno.sql na raiz do projeto).
+     */
+    private function garantirColunaAluno(): void
+    {
+        if (self::$colunaAlunoVerificada) {
+            return;
+        }
+
+        $this->db->query("SHOW COLUMNS FROM consulta LIKE 'alun_id'");
+        if (!$this->db->resultado()) {
+            $this->db->query('ALTER TABLE consulta ADD COLUMN alun_id INT NULL DEFAULT NULL AFTER cons_id, ADD KEY ix_consulta_aluno (alun_id)');
+            $this->db->executa();
+
+            try {
+                $this->db->query('ALTER TABLE consulta ADD CONSTRAINT fk_consulta_aluno FOREIGN KEY (alun_id) REFERENCES aluno (alun_id) ON DELETE SET NULL');
+                $this->db->executa();
+            } catch (Throwable $e) {
+                // Sem a chave estrangeira o sistema funciona do mesmo jeito.
+            }
+        }
+
+        self::$colunaAlunoVerificada = true;
+    }
+
+    /** Todas as consultas, em ordem cronológica (com o nome do aluno). */
     public function listarConsultas()
     {
         $this->db->query(
-            'SELECT cons_id, cons_data, cons_horario, cons_tipo,
-                    cons_responsavel, cons_descricao, cons_observacao
-               FROM consulta
-           ORDER BY cons_data ASC, cons_horario ASC'
+            'SELECT c.cons_id, c.cons_data, c.cons_horario, c.cons_tipo,
+                    c.cons_responsavel, c.cons_descricao, c.cons_observacao,
+                    c.alun_id, a.alun_nome, a.alun_matricula
+               FROM consulta c
+          LEFT JOIN aluno a ON a.alun_id = c.alun_id
+           ORDER BY c.cons_data ASC, c.cons_horario ASC'
         );
 
         return $this->db->resultados();
+    }
+
+    /** Lista de alunos para o campo "Aluno" do formulário. */
+    public function listarAlunos()
+    {
+        $this->db->query(
+            'SELECT alun_id, alun_nome, alun_matricula
+               FROM aluno
+           ORDER BY alun_nome ASC'
+        );
+
+        return $this->db->resultados();
+    }
+
+    public function alunoExiste(int $id): bool
+    {
+        $this->db->query('SELECT alun_id FROM aluno WHERE alun_id = :id');
+        $this->db->bind(':id', $id);
+
+        return (bool) $this->db->resultado();
     }
 
     public function buscarPorId(int $id)
@@ -56,16 +107,16 @@ class Consulta
         return $this->db->resultado();
     }
 
-    /** Espera as chaves: cons_data, cons_horario, cons_tipo,
+    /** Espera as chaves: alun_id, cons_data, cons_horario, cons_tipo,
      *  cons_responsavel, cons_descricao, cons_observacao */
     public function cadastrar(array $d): bool
     {
         $this->db->query(
             'INSERT INTO consulta
-                (cons_data, cons_horario, cons_tipo, cons_responsavel,
+                (alun_id, cons_data, cons_horario, cons_tipo, cons_responsavel,
                  cons_descricao, cons_observacao)
              VALUES
-                (:cons_data, :cons_horario, :cons_tipo, :cons_responsavel,
+                (:alun_id, :cons_data, :cons_horario, :cons_tipo, :cons_responsavel,
                  :cons_descricao, :cons_observacao)'
         );
 
@@ -81,6 +132,7 @@ class Consulta
     {
         $this->db->query(
             'UPDATE consulta SET
+                alun_id          = :alun_id,
                 cons_data        = :cons_data,
                 cons_horario     = :cons_horario,
                 cons_tipo        = :cons_tipo,

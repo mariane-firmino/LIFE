@@ -11,7 +11,7 @@
 
 // Só usuários logados acessam esta página.
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ' . URL . '/login');
+    header('Location: ' . URL . '/usuarios/login');
     exit;
 }
 

@@ -136,10 +136,16 @@ class Alunos extends Controller
 
     public function aluno()
     {
-        $dados = [
+        if (!isset($_SESSION['usuario_id'])) {
+            URL::redirecionar('usuarios/login');
+            exit;
+        }
+
+        // Números dos cards (total, meninos, meninas, com doença).
+        $dados = array_merge([
             'titulo' => 'Página de alunos',
             'descricao' => 'pagina alunos'
-        ];
+        ], $this->alunoModel->resumo());
 
         $this->view('alunos/aluno', $dados);
     }
@@ -209,6 +215,7 @@ class Alunos extends Controller
                 $dados[$campo] = trim($formulario[$campo] ?? '');
                 $dados[$campo . '_erro'] = '';
             }
+            $this->limparDependentes($dados);
             $dados['foto_erro'] = '';
             $fotoValida = $this->validarFotoCadastro($_FILES['foto'] ?? null, $dados['foto_erro']);
 
@@ -246,6 +253,15 @@ class Alunos extends Controller
                 // Opções mantidas pelo administrador.
                 elseif ($this->validarOpcoes($dados)) :
                 // Mensagens de erro já definidas em $dados.
+
+                // Data de nascimento válida e não futura
+                // (o trigger trg_aluno_antes_inserir também barra no banco).
+                elseif (
+                    !($nasc = DateTime::createFromFormat('Y-m-d', $dados['data_nascimento']))
+                    || $nasc->format('Y-m-d') !== $dados['data_nascimento']
+                    || $nasc > new DateTime('today')
+                ) :
+                    $dados['data_nascimento_erro'] = 'Data de nascimento inválida';
 
                 // Verifica o nome do aluno.
                 elseif (Checa::checarNome($dados['nome'])) :
@@ -396,6 +412,60 @@ class Alunos extends Controller
 
 
     // =========================================================
+    // IMPRIMIR FICHA DO ESTUDANTE
+    // Abre uma versão da ficha pronta para impressão (ou para
+    // salvar em PDF pelo navegador), sem o menu do sistema.
+    // =========================================================
+
+    public function imprimirFicha($id = null)
+    {
+        if (!isset($_SESSION['usuario_id'])) {
+            URL::redirecionar('usuarios/login');
+            exit;
+        }
+
+        if (empty($id) || !ctype_digit((string) $id)) {
+            URL::redirecionar('alunos/consulta');
+            exit;
+        }
+
+        $aluno = $this->alunoModel->buscarPorId((int) $id);
+        if (!$aluno) {
+            URL::redirecionar('alunos/consulta');
+            exit;
+        }
+
+        $idade = null;
+        if (!empty($aluno->data_nascimento)) {
+            try {
+                $idade = (new DateTime($aluno->data_nascimento))->diff(new DateTime('today'))->y;
+            } catch (Exception $e) {
+                $idade = null;
+            }
+        }
+
+        $saude = $this->alunoModel->buscarSaude($aluno->id);
+        $imc = $this->calcularImc($aluno->altura, $aluno->peso, $idade);
+        $condicoes = $this->listarCondicoes($saude);
+
+        $dados = [
+            'titulo' => 'Ficha do Estudante',
+            'aluno' => $aluno,
+            'idade' => $idade,
+            'saude' => $saude,
+            'imc' => $imc,
+            'condicoes' => $condicoes,
+            'atencao' => $this->calcularAtencao($saude, $imc, $condicoes),
+            'telefone_aluno' => $this->alunoModel->buscarTelefoneAluno($aluno->id),
+            'telefone_responsavel' => $this->alunoModel->buscarTelefoneResponsavel($aluno->responsavel_id),
+            'historico' => $this->alunoModel->buscarHistorico($aluno->id),
+        ];
+
+        $this->view('alunos/imprimirFicha', $dados);
+    }
+
+
+    // =========================================================
     // EDITAR PERFIL
     // Abre a página de edição do perfil do aluno e, quando o
     // formulário é enviado, valida e atualiza os dados.
@@ -448,6 +518,7 @@ class Alunos extends Controller
                 $dados[$campo] = trim((string) ($formulario[$campo] ?? ''));
                 $dados[$campo . '_erro'] = '';
             }
+            $this->limparDependentes($dados);
 
             $temErro = false;
 
@@ -834,6 +905,48 @@ class Alunos extends Controller
     // - Se "Outra" NÃO estiver marcada, a descrição é limpa.
     // Recebe $dados por referência. Retorna true se houver erro.
     // ---------------------------------------------------------------------
+    // ---------------------------------------------------------------------
+    // PERGUNTAS DE ACOMPANHAMENTO
+    // "Qual?", "Quantas vezes?"... só valem quando a resposta anterior
+    // pede por elas (ex.: alergia = "Não" -> alergia_qual fica vazio).
+    // Manter igual ao mapa REGRAS de Public/js/condicionais.js.
+    // ---------------------------------------------------------------------
+    private const DEPENDENCIAS = [
+        'quantas_vezes'        => [['ja_reprovou', ['Sim']]],
+        'quanto_tempo'         => [['estuda_fora', ['Sim']]],
+        'atendimento_porque'   => [['atendimento', ['Não']]],
+        'alergia_qual'         => [['alergia_alimentar', ['Sim']]],
+        'doenca_qual'          => [['doenca_cronica', ['Sim']]],
+        'medicacao_qual'       => [['medicacao_continua', ['Sim']]],
+        'internado_motivo'     => [['ja_internado', ['Sim']]],
+        'cirurgia_qual'        => [['ja_cirurgia', ['Sim']]],
+        'pais_sabem'           => [['fuma', ['Sim']], ['bebida_alcoolica', ['Sim']]],
+        'drogas_qual'          => [['drogas_ilicitas', ['Sim']]],
+        'frequencia_atividade' => [['atividade_fisica', ['Sim']]],
+    ];
+
+    private function limparDependentes(array &$dados)
+    {
+        foreach (self::DEPENDENCIAS as $campo => $condicoes) {
+            if (!array_key_exists($campo, $dados)) {
+                continue;
+            }
+
+            $vale = false;
+            foreach ($condicoes as [$controle, $aceitos]) {
+                $resposta = html_entity_decode((string) ($dados[$controle] ?? ''), ENT_QUOTES, 'UTF-8');
+                if (in_array($resposta, $aceitos, true)) {
+                    $vale = true;
+                    break;
+                }
+            }
+
+            if (!$vale) {
+                $dados[$campo] = '';
+            }
+        }
+    }
+
     private function validarCondicoes(array &$dados)
     {
         $marcadas = ($dados['condicoes'] ?? '') === '' ? [] : explode(';', $dados['condicoes']);

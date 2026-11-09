@@ -14,7 +14,7 @@ class Calendarios extends Controller
             if ($this->querJson()) {
                 $this->json(['ok' => false, 'erro' => 'Sessão expirada.'], 401);
             }
-            header('Location: ' . URL . '/login');
+            header('Location: ' . URL . '/usuarios/login');
             exit;
         }
 
@@ -32,6 +32,7 @@ class Calendarios extends Controller
             'descricao'    => 'Página de calendário',
             'tipos'        => Consulta::TIPOS,
             'responsaveis' => Consulta::RESPONSAVEIS,
+            'alunos'       => $this->consulta->listarAlunos(),
         ]);
     }
 
@@ -45,11 +46,13 @@ class Calendarios extends Controller
         foreach ($this->consulta->listarConsultas() as $c) {
             $eventos[] = [
                 'id'    => (int) $c->cons_id,
-                'title' => $c->cons_tipo,
+                'title' => $c->cons_tipo . (!empty($c->alun_nome) ? ' — ' . $c->alun_nome : ''),
                 'start' => $c->cons_data . 'T' . substr($c->cons_horario, 0, 5),
                 'color' => Consulta::TIPOS[trim($c->cons_tipo)] ?? '#6c757d',
                 'extendedProps' => [
                     'tipo'        => $c->cons_tipo,
+                    'alunoId'     => $c->alun_id !== null ? (int) $c->alun_id : null,
+                    'aluno'       => $c->alun_nome ?? '',
                     'responsavel' => $c->cons_responsavel ?? '',
                     'descricao'   => $c->cons_descricao ?? '',
                     'observacao'  => $c->cons_observacao ?? '',
@@ -69,7 +72,7 @@ class Calendarios extends Controller
         $dados = $this->lerFormulario();
 
         if (!$dados) {
-            $this->responder(false, 'Preencha data, hora, tipo e descrição corretamente.');
+            $this->responder(false, 'Preencha aluno, data, hora, tipo e descrição corretamente.');
         }
 
         $ok = $this->consulta->cadastrar($dados);
@@ -190,6 +193,7 @@ class Calendarios extends Controller
         $responsavel = trim($_POST['responsavelConsulta'] ?? '');
         $descricao   = trim($_POST['descricaoConsulta'] ?? '');
         $observacao  = trim($_POST['observacaoConsulta'] ?? '');
+        $alunoId     = trim($_POST['alunoConsulta'] ?? '');
 
         if (
             !$this->dataValida($data) || !$this->horaValida($hora) ||
@@ -202,8 +206,14 @@ class Calendarios extends Controller
             return null;
         }
 
+        // Aluno da consulta (obrigatório).
+        if (!ctype_digit($alunoId) || !$this->consulta->alunoExiste((int) $alunoId)) {
+            return null;
+        }
+
         // Os dados são gravados "crus"; o escape é feito na exibição.
         return [
+            'alun_id'          => (int) $alunoId,
             'cons_data'        => $data,
             'cons_horario'     => $hora,
             'cons_tipo'        => $tipo,

@@ -14,6 +14,24 @@ class TriagemPerguntas
         'fisica' => 'Triagem Física',
     ];
 
+    // Diz se a pergunta deve aparecer, conforme as respostas dadas.
+    // 'depende' => [número da pergunta anterior, [respostas que mostram]].
+    // Se a pergunta anterior também estiver escondida, esta fica escondida.
+    public static function visivel(array $perguntas, $numero, array $respostas)
+    {
+        $depende = $perguntas[$numero]['depende'] ?? null;
+        if (!$depende) {
+            return true;
+        }
+
+        [$anterior, $aceitos] = $depende;
+        if (!isset($perguntas[$anterior]) || !self::visivel($perguntas, $anterior, $respostas)) {
+            return false;
+        }
+
+        return in_array($respostas[$anterior] ?? '', $aceitos, true);
+    }
+
     public static function por($tipo)
     {
         return $tipo === 'masculina' ? self::masculina() : self::feminina();
@@ -84,35 +102,37 @@ class TriagemPerguntas
             5 => [
                 'pergunta' => 'Você possui algum objetivo de vida?',
                 'tipo' => 'select',
-                'opcoes' => ['Sim', 'Não', 'Nenhum / Nunca pensei nisso antes'],
+                'opcoes' => ['Sim', 'Não', 'Nenhum / nunca pensei nisso antes'],
                 'obrigatoria' => true,
             ],
             6 => [
                 'pergunta' => 'Geralmente, como são seus pensamentos?',
                 'tipo' => 'select',
-                'opcoes' => ['Bons / Motivadores / Esperançosos', 'Ruins / Desanimadores / Desesperançosos', 'Não sei'],
+                'opcoes' => ['Bons / motivadores / esperançosos', 'Ruins / desanimadores / desesperançosos', 'Não sei'],
                 'obrigatoria' => true,
             ],
             7 => [
-                'pergunta' => 'Você possui vida sexual ativa? ou (Já teve a primeira relação sexual?)',
+                'pergunta' => 'Você tem vida sexual ativa? (já teve a primeira relação sexual?)',
                 'tipo' => 'select',
                 'opcoes' => ['Sim', 'Não'],
                 'obrigatoria' => true,
             ],
             8 => [
-                'pergunta' => 'Quando você tem ralações sexuais, faz uso de preservativo?',
+                'pergunta' => 'Quando você tem relações sexuais, faz uso de preservativo?',
                 'tipo' => 'select',
                 'opcoes' => ['Sim', 'Não'],
                 'obrigatoria' => true,
+                'depende' => [7, ['Sim']],
             ],
             9 => [
-                'pergunta' => 'Por quê? (caso a responsta anterior seja NÃO)',
+                'pergunta' => 'Por que não usa preservativo?',
                 'tipo' => 'select',
-                'opcoes' => ['Não QUER usar', 'Não SABE usar', 'Sente vergonha'],
+                'opcoes' => ['Não quer usar', 'Não sabe usar', 'Sente vergonha'],
                 'obrigatoria' => false,
+                'depende' => [8, ['Não']],
             ],
             10 => [
-                'pergunta' => 'Você sabe o que é IST? (Infecção sexualmente transmissível)',
+                'pergunta' => 'Você sabe o que é IST? (infecção sexualmente transmissível)',
                 'tipo' => 'select',
                 'opcoes' => ['Sim', 'Não', 'Nunca ouvi falar', 'Já ouvi falar, mas não sei o que é'],
                 'obrigatoria' => true,
@@ -126,17 +146,17 @@ class TriagemPerguntas
             1 => [
                 'pergunta' => 'Quando você olha no espelho, você fica:',
                 'tipo' => 'select',
-                'opcoes' => ['Satisfeito', 'Insatisfeito', 'Indiferente'],
+                'opcoes' => ['Satisfeita', 'Insatisfeita', 'Indiferente'],
                 'obrigatoria' => true,
             ],
             2 => [
                 'pergunta' => 'Diariamente você se sente:',
                 'tipo' => 'select',
-                'opcoes' => ['Motivado', 'Desmotivado', 'Irritado', 'Calmo'],
+                'opcoes' => ['Motivada', 'Desmotivada', 'Irritada', 'Calma'],
                 'obrigatoria' => true,
             ],
             3 => [
-                'pergunta' => 'O que você mais gosta em si mesmo?',
+                'pergunta' => 'O que você mais gosta em si mesma?',
                 'tipo' => 'texto',
                 'opcoes' => [],
                 'obrigatoria' => true,
@@ -150,13 +170,13 @@ class TriagemPerguntas
             5 => [
                 'pergunta' => 'Você possui algum objetivo de vida?',
                 'tipo' => 'select',
-                'opcoes' => ['Sim', 'Não', 'Nenhum / Nunca pensei nisso antes'],
+                'opcoes' => ['Sim', 'Não', 'Nenhum / nunca pensei nisso antes'],
                 'obrigatoria' => true,
             ],
             6 => [
                 'pergunta' => 'Geralmente, como são seus pensamentos?',
                 'tipo' => 'select',
-                'opcoes' => ['Bons / Motivadores / Esperançosos', 'Ruins / Desanimadores / Desesperançosos', 'Não sei'],
+                'opcoes' => ['Bons / motivadores / esperançosos', 'Ruins / desanimadores / desesperançosos', 'Não sei'],
                 'obrigatoria' => true,
             ],
             7 => [
@@ -174,41 +194,46 @@ class TriagemPerguntas
             9 => [
                 'pergunta' => 'Qual a intensidade das cólicas?',
                 'tipo' => 'select',
-                'opcoes' => ['0 - Nenhuma', '1 - Leve', '2 -', '3 -', '4 -', '5 - Moderada', '6 -', '7 -', '8 -', '9 -', '10 - Muito Intensa'],
+                'opcoes' => ['0 - Nenhuma', '1 - Leve', '2 -', '3 -', '4 -', '5 - Moderada', '6 -', '7 -', '8 -', '9 -', '10 - Muito intensa'],
                 'obrigatoria' => false,
+                'depende' => [8, ['Sim']],
             ],
             10 => [
                 'pergunta' => 'Costuma tomar alguma medicação para cólicas?',
                 'tipo' => 'select',
                 'opcoes' => ['Sim', 'Não'],
                 'obrigatoria' => true,
+                'depende' => [8, ['Sim']],
             ],
             11 => [
-                'pergunta' => 'Qual medicação você toma, quando está com cólicas?',
+                'pergunta' => 'Qual medicação você toma quando está com cólicas?',
                 'tipo' => 'texto',
                 'opcoes' => [],
                 'obrigatoria' => false,
+                'depende' => [10, ['Sim']],
             ],
             12 => [
-                'pergunta' => 'Você possui vida sexual ativa? ou (Já teve a primeira relação sexual?)',
+                'pergunta' => 'Você tem vida sexual ativa? (já teve a primeira relação sexual?)',
                 'tipo' => 'select',
                 'opcoes' => ['Sim', 'Não'],
                 'obrigatoria' => false,
             ],
             13 => [
-                'pergunta' => 'Usa algum método contraceptivo? (caso a resposta anterior seja SIM)',
+                'pergunta' => 'Usa algum método contraceptivo?',
                 'tipo' => 'select',
                 'opcoes' => ['Nenhum', 'Preservativo', 'Pílula', 'Injetável', 'DIU', 'Outro'],
                 'obrigatoria' => false,
+                'depende' => [12, ['Sim']],
             ],
             14 => [
-                'pergunta' => 'Por quê? (caso a responsta anterior seja NÃO)',
+                'pergunta' => 'Por que não usa método contraceptivo?',
                 'tipo' => 'select',
-                'opcoes' => ['Não QUER usar', 'Não SABE usar', 'Sente vergonha'],
+                'opcoes' => ['Não quer usar', 'Não sabe usar', 'Sente vergonha'],
                 'obrigatoria' => false,
+                'depende' => [13, ['Nenhum']],
             ],
             15 => [
-                'pergunta' => 'Você já foi em alguma consulta Ginecológica?',
+                'pergunta' => 'Você já foi a alguma consulta ginecológica?',
                 'tipo' => 'select',
                 'opcoes' => ['Sim', 'Não'],
                 'obrigatoria' => true,

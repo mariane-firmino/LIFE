@@ -1,6 +1,6 @@
 <?php
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ' . URL . '/login');
+    header('Location: ' . URL . '/usuarios/login');
     exit;
 }
 
@@ -96,7 +96,7 @@ $cards = [
             </div>
 
             <p class="home-atencao-legenda">
-                Alunos com sinais de alerta na triagem mais recente (últimos 30 dias).
+                Alunos com alerta na ficha de saúde ou nas triagens dos últimos 30 dias.
             </p>
 
             <?php if (!$alunosAtencao): ?>
@@ -124,7 +124,9 @@ $cards = [
                                         <?php if ($aluno['turma'] !== ''): ?>
                                             <?= htmlspecialchars($aluno['turma']) ?> ·
                                         <?php endif; ?>
-                                        Triagem em <?= date('d/m/Y', strtotime($aluno['data'])) ?>
+                                        <?= !empty($aluno['data'])
+                                            ? 'Triagem em ' . date('d/m/Y', strtotime($aluno['data']))
+                                            : 'Ficha de saúde' ?>
                                     </span>
                                     <span class="home-atencao-motivos">
                                         <span class="visually-hidden">Motivos:</span>

@@ -20,6 +20,23 @@
 
                     <input type="hidden" name="cons_id" id="cons_id">
 
+                    <div class="mb-3">
+                        <label for="alunoConsulta" class="form-label fw-bold">Aluno</label>
+                        <input type="search" class="form-control form-control-sm mb-1" id="alunoBusca"
+                            placeholder="Buscar por nome ou matrícula..." autocomplete="off" aria-label="Buscar aluno">
+                        <select class="form-select" id="alunoConsulta" name="alunoConsulta" required>
+                            <option value="" selected disabled>Selecione o aluno</option>
+                            <?php foreach ($alunos as $a): ?>
+                                <option value="<?= (int) $a->alun_id ?>">
+                                    <?= htmlspecialchars($a->alun_nome) ?><?= !empty($a->alun_matricula) ? ' — ' . htmlspecialchars($a->alun_matricula) : '' ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <?php if (empty($alunos)): ?>
+                            <div class="form-text text-danger">Nenhum aluno cadastrado. Cadastre um aluno antes de agendar.</div>
+                        <?php endif; ?>
+                    </div>
+
                     <div class="row">
                         <div class="col-12 col-md-6 mb-3">
                             <label for="dataConsulta" class="form-label fw-bold">Data</label>

@@ -1,6 +1,6 @@
 <?php
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ' . URL . '/login');
+    header('Location: ' . URL . '/usuarios/login');
     exit;
 }
 
@@ -69,6 +69,15 @@ $outraParte = $parte === 'fisica' ? 'psicologica' : 'fisica';
                         <div class="row g-4 mt-3">
                     <?php endif; ?>
 
+                    <?php
+                    // Pergunta de acompanhamento: o JS (condicionais.js) só mostra
+                    // quando a resposta da pergunta anterior combina.
+                    $atributoDepende = '';
+                    if (!empty($pergunta['depende'])) {
+                        $atributoDepende = ' data-depende-de="pergunta' . (int) $pergunta['depende'][0] . '"'
+                            . ' data-depende-valores="' . htmlspecialchars(json_encode($pergunta['depende'][1], JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8') . '"';
+                    }
+                    ?>
                     <div class="col-12 col-md-6">
                         <label for="pergunta<?= (int) $numero ?>" class="form-label">
                             <?= htmlspecialchars($pergunta['pergunta'], ENT_QUOTES, 'UTF-8') ?>
@@ -77,7 +86,7 @@ $outraParte = $parte === 'fisica' ? 'psicologica' : 'fisica';
 
                         <?php if ($pergunta['tipo'] === 'select'): ?>
                             <select class="form-select" id="pergunta<?= (int) $numero ?>"
-                                name="pergunta<?= (int) $numero ?>" <?= $pergunta['obrigatoria'] ? 'required' : '' ?>>
+                                name="pergunta<?= (int) $numero ?>" <?= $pergunta['obrigatoria'] ? 'required' : '' ?><?= $atributoDepende ?>>
                                 <option value="" selected>Selecione uma opção</option>
                                 <?php foreach ($pergunta['opcoes'] as $opcao): ?>
                                     <option value="<?= htmlspecialchars($opcao, ENT_QUOTES, 'UTF-8') ?>">
@@ -88,7 +97,7 @@ $outraParte = $parte === 'fisica' ? 'psicologica' : 'fisica';
                         <?php else: ?>
                             <input type="text" class="form-control" id="pergunta<?= (int) $numero ?>"
                                 name="pergunta<?= (int) $numero ?>" maxlength="255"
-                                <?= $pergunta['obrigatoria'] ? 'required' : '' ?>>
+                                <?= $pergunta['obrigatoria'] ? 'required' : '' ?><?= $atributoDepende ?>>
                         <?php endif; ?>
                     </div>
 

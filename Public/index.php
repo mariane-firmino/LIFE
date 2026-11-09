@@ -33,6 +33,8 @@ ControleSessao::verificar();
     <?php include __DIR__ . '/../App/Views/vlibras.php'; ?>
 <!-- linkando js -->
 <script src="<?= URL ?>/js/bootstrap.bundle.min.js"></script>
+<script src="<?= URL ?>/js/datas.js"></script>
+<script src="<?= URL ?>/js/condicionais.js"></script>
 <script src="<?= URL ?>/js/formatacao.js"></script>
 <script src="<?= URL ?>/js/consulta.js"></script>
 <!-- calendario.js NÃO entra aqui: é carregado só pela view do calendário.

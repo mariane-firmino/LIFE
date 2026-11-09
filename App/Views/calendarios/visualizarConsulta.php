@@ -12,6 +12,10 @@
                 <span class="cal-badge" id="det-badge"></span>
 
                 <dl class="cal-details">
+                    <div class="full">
+                        <dt>Aluno</dt>
+                        <dd><i class="bi bi-person-fill text-success" aria-hidden="true"></i> <span id="det-aluno"></span></dd>
+                    </div>
                     <div>
                         <dt>Data</dt>
                         <dd><img src="<?= URL ?>/img/Calendariodois.png" width="18" alt=""> <span id="det-data"></span></dd>

@@ -311,10 +311,25 @@ class Triagens extends Controller
         // vêm da classe TriagemPerguntas.
         // -----------------------------------------------------
 
-        foreach (TriagemPerguntas::parte($tipo, $parte) as $numero => $pergunta) {
+        $perguntas = TriagemPerguntas::parte($tipo, $parte);
 
+        // Respostas enviadas, por número da pergunta.
+        $enviadas = [];
+        foreach ($perguntas as $numero => $pergunta) {
             $valor = $_POST['pergunta' . $numero] ?? '';
-            $valor = is_string($valor) ? trim($valor) : '';
+            $enviadas[$numero] = is_string($valor) ? trim($valor) : '';
+        }
+
+        foreach ($perguntas as $numero => $pergunta) {
+
+            // Pergunta de acompanhamento que não se aplica
+            // (ex.: "Por que não usa?" quando respondeu "Sim"):
+            // não é exigida e não é salva.
+            if (!TriagemPerguntas::visivel($perguntas, $numero, $enviadas)) {
+                continue;
+            }
+
+            $valor = $enviadas[$numero];
 
             // Resposta vazia: só é erro se a pergunta for obrigatória.
             if ($valor === '') {

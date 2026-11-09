@@ -449,13 +449,18 @@ class Usuarios extends Controller
                         );
 
                         if (!$enviado) {
-                            $dados['erro'] = 'Não foi possível enviar o e-mail.';
+                            $dados['erro'] = 'Não foi possível enviar o e-mail agora. Tente novamente em alguns minutos.';
                         }
+                    } else {
+                        $dados['erro'] = 'Não foi possível gerar o link de recuperação. Tente novamente.';
                     }
                 }
 
-                $dados['sucesso'] =
-                    'Se o e-mail estiver cadastrado, você receberá um link de recuperação.';
+                // Só mostra a mensagem de sucesso quando não houve erro.
+                if (empty($dados['erro'])) {
+                    $dados['sucesso'] =
+                        'Se o e-mail estiver cadastrado, você receberá um link de recuperação.';
+                }
             }
         }
 

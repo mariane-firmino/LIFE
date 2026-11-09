@@ -207,10 +207,69 @@ class Paginas extends Controller
 
     public function relatorio()
     {
+        if (!isset($_SESSION['usuario_id'])) {
+            URL::redirecionar('usuarios/login');
+            exit;
+        }
+
+        // Garante que a tabela consulta já tem a coluna do aluno.
+        $this->model('Consulta');
+        $relatorio = $this->model('Relatorio');
+
+        $fuso = new DateTimeZone('America/Porto_Velho');
+        $hoje = new DateTimeImmutable('today', $fuso);
+
+        // Filtros (GET). Padrão: mês atual.
+        $dataValida = function ($valor) {
+            $d = DateTime::createFromFormat('Y-m-d', (string) $valor);
+            return $d && $d->format('Y-m-d') === $valor;
+        };
+        $inicio = $_GET['inicio'] ?? '';
+        $fim = $_GET['fim'] ?? '';
+        if (!$dataValida($inicio)) {
+            $inicio = $hoje->modify('first day of this month')->format('Y-m-d');
+        }
+        if (!$dataValida($fim)) {
+            $fim = $hoje->modify('last day of this month')->format('Y-m-d');
+        }
+        if ($fim < $inicio) {
+            [$inicio, $fim] = [$fim, $inicio];
+        }
+
+        $tipo = $_GET['tipo'] ?? 'todos';
+        if (!array_key_exists($tipo, Relatorio::TIPOS)) {
+            $tipo = 'todos';
+        }
+        $turma = ctype_digit((string) ($_GET['turma'] ?? '')) ? (int) $_GET['turma'] : 0;
+
+        $atendimentos = $relatorio->atendimentos($inicio, $fim, $tipo, $turma);
+
+        // Números dos cards.
+        $agoraIso = (new DateTimeImmutable('now', $fuso))->format('Y-m-d H:i:s');
+        $totalConsultas = 0;
+        $consultasMarcadas = 0;
+        $alunosAtendidos = [];
+        foreach ($atendimentos as $a) {
+            $jaAconteceu = ($a->data . ' ' . ($a->hora ?: '00:00:00')) <= $agoraIso;
+            if ($a->origem === 'consulta') {
+                $jaAconteceu ? $totalConsultas++ : $consultasMarcadas++;
+            }
+            if ($jaAconteceu && !empty($a->alun_id)) {
+                $alunosAtendidos[(int) $a->alun_id] = true;
+            }
+        }
+
         // Dados enviados para a View.
         $dados = [
             'titulo' => 'Página de relatório',
-            'descricao' => 'pagina relatorio'
+            'descricao' => 'pagina relatorio',
+            'filtros' => ['inicio' => $inicio, 'fim' => $fim, 'tipo' => $tipo, 'turma' => $turma],
+            'tipos' => Relatorio::TIPOS,
+            'turmas' => $relatorio->listarTurmas(),
+            'atendimentos' => $atendimentos,
+            'total_consultas' => $totalConsultas,
+            'consultas_marcadas' => $consultasMarcadas,
+            'estudantes_atendidos' => count($alunosAtendidos),
         ];
 
         // Abre: App/Views/paginas/relatorio.php

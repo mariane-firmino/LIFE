@@ -1,6 +1,6 @@
 <?php
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ' . URL . '/login');
+    header('Location: ' . URL . '/usuarios/login');
     exit;
 }
 
@@ -82,6 +82,8 @@ $cards = [
 
 
     <main class="container-fluid enf-conteudo">
+
+        <?php Sessao::mensagem('alunos'); ?>
 
         <!-- RESUMO -->
         <h2 class="enf-secao-titulo">Resumo</h2>

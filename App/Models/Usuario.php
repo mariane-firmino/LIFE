@@ -434,14 +434,16 @@ class Usuario
             (
                 :serv_id,
                 :token,
-                :expira,
+                DATE_ADD(NOW(), INTERVAL 30 MINUTE),
                 0
             )
         ");
 
+        // A validade é calculada pelo próprio MySQL (mesmo relógio do
+        // NOW() usado na verificação). $expira é mantido só por
+        // compatibilidade com quem chama este método.
         $this->db->bind(':serv_id', $serv_id);
         $this->db->bind(':token', $token);
-        $this->db->bind(':expira', $expira);
 
         return $this->db->executa();
     }

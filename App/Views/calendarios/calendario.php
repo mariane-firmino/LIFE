@@ -4,7 +4,7 @@
  * Variáveis recebidas do Controller: $dados['tipos'], $dados['responsaveis']
  */
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ' . URL . '/login');
+    header('Location: ' . URL . '/usuarios/login');
     exit;
 }
 
@@ -12,6 +12,7 @@ include '../App/Views/menu.php';
 
 $tipos        = $dados['tipos'];
 $responsaveis = $dados['responsaveis'];
+$alunos       = $dados['alunos'] ?? [];
 ?>
 
 <!-- FullCalendar (sem Composer: carrega direto do CDN) -->

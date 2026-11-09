@@ -341,6 +341,28 @@ class Aluno
     // em ordem alfabética pelo nome.
     // ---------------------------------------------------------
 
+    // ---------------------------------------------------------
+    // RESUMO PARA A PÁGINA DE CADASTRO
+    // Total de alunos, meninos, meninas e alunos com doença
+    // crônica informada na anamnese.
+    // ---------------------------------------------------------
+
+    public function resumo()
+    {
+        // Procedure do banco (rotinas_banco.sql).
+        RotinasBanco::garantir($this->db);
+        $this->db->query('CALL sp_resumo_alunos()');
+        $linhas = $this->db->resultados();
+        $linha = $linhas[0] ?? null;
+
+        return [
+            'total'      => (int) ($linha->total ?? 0),
+            'meninos'    => (int) ($linha->meninos ?? 0),
+            'meninas'    => (int) ($linha->meninas ?? 0),
+            'com_doenca' => (int) ($linha->com_doenca ?? 0),
+        ];
+    }
+
     public function listarTodos()
     {
         $this->db->query("
