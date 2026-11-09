@@ -207,10 +207,85 @@ class Paginas extends Controller
 
     public function relatorio()
     {
+        if (!isset($_SESSION['usuario_id'])) {
+            URL::redirecionar('usuarios/login');
+            exit;
+        }
+
+        $relatorio = $this->model('Relatorio');
+
+        $fusoHorario = new DateTimeZone('America/Porto_Velho');
+        $agora = new DateTimeImmutable('now', $fusoHorario);
+
+        // ---- Filtros (validados contra as opções reais) ----
+        $periodos = Relatorio::opcoesPeriodo($agora);
+        $periodo = (string) ($_GET['periodo'] ?? $agora->format('Y-m'));
+        if (!isset($periodos[$periodo])) {
+            $periodo = $agora->format('Y-m');
+        }
+
+        $tipo = (string) ($_GET['tipo'] ?? 'todos');
+        if (!isset(Relatorio::TIPOS[$tipo])) {
+            $tipo = 'todos';
+        }
+
+        $turmas = $relatorio->listarTurmas();
+        $turmaId = (int) ($_GET['turma'] ?? 0);
+        $turmasValidas = array_map(static fn($t) => (int) $t->turm_id, $turmas);
+        if (!in_array($turmaId, $turmasValidas, true)) {
+            $turmaId = 0;
+        }
+        $turmaFiltro = $turmaId > 0 ? $turmaId : null;
+
+        [$inicio, $fim] = Relatorio::intervalo($periodo);
+
+        // ---- Números dos cards ----
+        $totalConsultas = $relatorio->totalConsultas($inicio, $fim);
+        $consultasMarcadas = $relatorio->consultasMarcadas($inicio, $fim, $agora->format('Y-m-d H:i:s'));
+        $totalEstudantes = $relatorio->totalEstudantesAtendidos($inicio, $fim, $turmaFiltro);
+        $totalTriagens = $relatorio->totalTriagens($inicio, $fim, $turmaFiltro);
+
+        // ---- Detalhes ----
+        // Tipo específico: carrega só a lista escolhida.
+        // Tipo "todos": carrega as três (a tela só mostra o resumo, mas a
+        // versão impressa traz a relação completa de cada relatório).
+        $agoraTexto = $agora->format('Y-m-d H:i:s');
+        $tiposParaCarregar = $tipo === 'todos'
+            ? ['consultas', 'estudantes', 'triagens']
+            : [$tipo];
+
+        $listas = [];
+        foreach ($tiposParaCarregar as $t) {
+            if ($t === 'consultas') {
+                $listas[$t] = $relatorio->listarConsultas($inicio, $fim, $agoraTexto);
+            } elseif ($t === 'estudantes') {
+                $listas[$t] = $relatorio->listarEstudantesAtendidos($inicio, $fim, $turmaFiltro);
+            } elseif ($t === 'triagens') {
+                $listas[$t] = $relatorio->listarTriagens($inicio, $fim, $turmaFiltro);
+            }
+        }
+        $detalhes = $listas[$tipo] ?? [];
+
         // Dados enviados para a View.
         $dados = [
             'titulo' => 'Página de relatório',
-            'descricao' => 'pagina relatorio'
+            'descricao' => 'pagina relatorio',
+            'periodos' => $periodos,
+            'periodo' => $periodo,
+            'tipos' => Relatorio::TIPOS,
+            'tipo' => $tipo,
+            'turmas' => $turmas,
+            'turma' => $turmaId,
+            'total_consultas' => $totalConsultas,
+            'consultas_marcadas' => $consultasMarcadas,
+            'total_estudantes' => $totalEstudantes,
+            'total_triagens' => $totalTriagens,
+            'detalhes' => $detalhes,
+            'listas' => $listas,
+            'limite_detalhes' => Relatorio::LIMITE_DETALHES,
+            'gerado_em' => $agora->format('d/m/Y H:i'),
+            // 1 = abre só o documento de impressão (página aberta pelo botão Imprimir)
+            'imprimir' => (($_GET['imprimir'] ?? '') === '1'),
         ];
 
         // Abre: App/Views/paginas/relatorio.php
@@ -325,9 +400,11 @@ class Paginas extends Controller
         }
 
         $token = $_POST['csrf'] ?? '';
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST'
+        if (
+            $_SERVER['REQUEST_METHOD'] !== 'POST'
             || empty($_SESSION['csrf_dispositivos'])
-            || !hash_equals($_SESSION['csrf_dispositivos'], $token)) {
+            || !hash_equals($_SESSION['csrf_dispositivos'], $token)
+        ) {
             Sessao::mensagem('dispositivos', 'Requisição inválida. Tente novamente.', 'alert alert-danger');
             URL::redirecionar('paginas/gerenciarDispositivos');
             exit;
