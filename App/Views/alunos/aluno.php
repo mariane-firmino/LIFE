@@ -5,6 +5,7 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 include '../App/Views/menu.php';
+echo '<link rel="stylesheet" href="' . URL . '/css/alunos/aluno.css">';
 
 /*
  * Números dos cards.
@@ -55,9 +56,6 @@ $cards = [
 ];
 ?>
 
-<!-- Bootstrap Icons (remova esta linha se já estiver carregado no menu.php ou no <head>) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
 <div class="layout">
 
     <!-- CABEÇALHO -->
@@ -81,7 +79,7 @@ $cards = [
     </div>
 
 
-    <main class="container-fluid enf-conteudo">
+    <main class="container-fluid enf-conteudo" id="conteudo-principal" tabindex="-1">
 
         <!-- RESUMO -->
         <h2 class="enf-secao-titulo">Resumo</h2>

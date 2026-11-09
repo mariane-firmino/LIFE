@@ -138,8 +138,8 @@ class Alunos extends Controller
     {
         $dados = [
             'titulo' => 'Página de alunos',
-            'descricao' => 'pagina alunos'
-        ];
+            'descricao' => 'pagina alunos',
+        ] + $this->alunoModel->obterResumo();
 
         $this->view('alunos/aluno', $dados);
     }
