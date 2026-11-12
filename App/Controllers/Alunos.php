@@ -254,6 +254,10 @@ class Alunos extends Controller
                 elseif ($this->validarOpcoes($dados)) :
                 // Mensagens de erro já definidas em $dados.
 
+                // Sexo, matrícula, telefones e notas.
+                elseif ($this->validarCamposExtras($dados)) :
+                // Mensagens de erro já definidas em $dados.
+
                 // Data de nascimento válida e não futura
                 // (o trigger trg_aluno_antes_inserir também barra no banco).
                 elseif (
@@ -404,6 +408,7 @@ class Alunos extends Controller
             'telefone_responsavel' => $this->alunoModel->buscarTelefoneResponsavel($aluno->responsavel_id),
             'historico' => $this->alunoModel->buscarHistorico($aluno->id),
             'triagens_rapidas' => $this->model('TriagemRapida')->listarPorAluno($aluno->id),
+            'triagens_psico' => $this->model('TriagemPsicologica')->listarPorAluno($aluno->id),
             'triagens' => $this->model('Triagem')->listarPorAluno($aluno->id),
         ];
 
@@ -564,11 +569,9 @@ class Alunos extends Controller
                     $temErro = true;
                 endif;
 
-                // Série da turma: 1º, 2º, 3º...
-                if (!preg_match('/^[1-9]º$/u', $dados['ano_turma'])) :
-                    $dados['ano_turma_erro'] = 'Selecione a série da turma (ex: 1º)';
-                    $temErro = true;
-                endif;
+                // Ano da turma: validado mais abaixo pela lista configurável
+                // (validarOpcoes, grupo "ano_turma", ex.: 24, 25, 26).
+                // A regra antiga exigia "1º/2º..." e recusava toda edição.
 
                 // Matrícula: tamanho máximo e verificação de duplicidade
                 // (ignorando o próprio aluno).
@@ -580,10 +583,17 @@ class Alunos extends Controller
                     $temErro = true;
                 endif;
 
-                // RG (opcional): tamanho máximo e verificação de duplicidade.
-                if ($dados['rg'] !== '') :
-                    if (mb_strlen($dados['rg']) > 6) :
-                        $dados['rg_erro'] = 'O RG deve ter no máximo 6 caracteres';
+                // RG (opcional): só números (o último pode ser X), até 14
+                // caracteres, e verificação de duplicidade.
+                // (Antes o limite era 6 e RGs comuns, de 7 a 9 dígitos, eram cortados.)
+                // Aceita a pontuação comum (12.345.678-X); outros caracteres são erro
+                // (antes eram removidos e um RG "ABC" virava vazio sem aviso).
+                $rgDigitado = $dados['rg'];
+                $dados['rg'] = strtoupper(preg_replace('/[^0-9Xx]/', '', $dados['rg']));
+                if ($rgDigitado !== '') :
+                    if (!preg_match('/^[0-9.\-\s]*[0-9Xx]$/', $rgDigitado) || !preg_match('/^[0-9]{1,13}[0-9X]$/', $dados['rg'])) :
+                        $dados['rg'] = $rgDigitado;
+                        $dados['rg_erro'] = 'Informe o RG só com números (até 14; o último pode ser X)';
                         $temErro = true;
                     elseif ($this->alunoModel->checarRgOutroAluno($dados['rg'], $aluno->id)) :
                         $dados['rg_erro'] = 'Este RG já está cadastrado para outro aluno';
@@ -612,6 +622,11 @@ class Alunos extends Controller
                     $atuais[$campo] = $saudeAtual->$campo ?? '';
                 }
                 if ($this->validarOpcoes($dados, $atuais)) :
+                    $temErro = true;
+                endif;
+
+                // Telefones com DDD e notas de 0 a 10 (mesma regra do cadastro).
+                if ($this->validarCamposExtras($dados)) :
                     $temErro = true;
                 endif;
 
@@ -695,7 +710,7 @@ class Alunos extends Controller
     {
         // Só usuários logados podem alterar a foto.
         if (!isset($_SESSION['usuario_id'])) {
-            URL::redirecionar('login');
+            URL::redirecionar('usuarios/login');
             exit;
         }
 
@@ -924,6 +939,45 @@ class Alunos extends Controller
         'drogas_qual'          => [['drogas_ilicitas', ['Sim']]],
         'frequencia_atividade' => [['atividade_fisica', ['Sim']]],
     ];
+
+    // =========================================================
+    // VALIDAR CAMPOS EXTRAS (cadastro e edição)
+    // Regras que a tela já aplica, repetidas no servidor:
+    // sexo, matrícula (até 13), telefones e notas de 0 a 10.
+    // Devolve true se encontrou erro (mensagens em $dados[campo_erro]).
+    // =========================================================
+    private function validarCamposExtras(array &$dados)
+    {
+        $erro = false;
+
+        if (!in_array($dados['sexo'] ?? '', ['Masculino', 'Feminino', 'Outro'], true)) {
+            $dados['sexo_erro'] = 'Selecione uma opção válida';
+            $erro = true;
+        }
+
+        if (mb_strlen($dados['matricula'] ?? '') > 13) {
+            $dados['matricula_erro'] = 'A matrícula deve ter no máximo 13 caracteres';
+            $erro = true;
+        }
+
+        foreach (['telefone_aluno', 'telefone_responsavel'] as $campo) {
+            $valor = $dados[$campo] ?? '';
+            if ($valor !== '' && !in_array(strlen(preg_replace('/\D/', '', $valor)), [10, 11], true)) {
+                $dados[$campo . '_erro'] = 'Informe o telefone com DDD, ex.: (69) 99999-9999';
+                $erro = true;
+            }
+        }
+
+        foreach (['nota_curso', 'nota_motivacao'] as $campo) {
+            $valor = $dados[$campo] ?? '';
+            if ($valor !== '' && (!ctype_digit((string) $valor) || (int) $valor > 10)) {
+                $dados[$campo . '_erro'] = 'Escolha uma nota de 0 a 10';
+                $erro = true;
+            }
+        }
+
+        return $erro;
+    }
 
     private function limparDependentes(array &$dados)
     {

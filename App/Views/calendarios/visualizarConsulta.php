@@ -18,19 +18,19 @@
                     </div>
                     <div>
                         <dt>Data</dt>
-                        <dd><img src="<?= URL ?>/img/Calendariodois.png" width="18" alt=""> <span id="det-data"></span></dd>
+                        <dd><i class="bi bi-calendar-event text-success" aria-hidden="true"></i> <span id="det-data"></span></dd>
                     </div>
                     <div>
                         <dt>Horário</dt>
-                        <dd><img src="<?= URL ?>/img/relogio.png" width="18" alt=""> <span id="det-hora"></span></dd>
+                        <dd><i class="bi bi-clock text-success" aria-hidden="true"></i> <span id="det-hora"></span></dd>
                     </div>
                     <div>
                         <dt>Tipo</dt>
-                        <dd><img src="<?= URL ?>/img/Checklist.png" width="18" alt=""> <span id="det-tipo"></span></dd>
+                        <dd><i class="bi bi-clipboard-check text-success" aria-hidden="true"></i> <span id="det-tipo"></span></dd>
                     </div>
                     <div>
                         <dt>Responsável</dt>
-                        <dd><img src="<?= URL ?>/img/Checklist.png" width="18" alt=""> <span id="det-responsavel"></span></dd>
+                        <dd><i class="bi bi-person-badge text-success" aria-hidden="true"></i> <span id="det-responsavel"></span></dd>
                     </div>
                     <div class="full">
                         <dt>Descrição</dt>

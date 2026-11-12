@@ -69,7 +69,9 @@ if (!function_exists('ep_nota')) {
             echo '<div class="col-auto form-check"><input class="form-check-input" type="radio" name="' . $campo . '" id="' . $campo . $i . '" value="' . $i . '"' . $checked . '>';
             echo '<label class="form-check-label" for="' . $campo . $i . '">' . $i . '</label></div>';
         }
-        echo '</div></div>';
+        echo '</div>';
+        ep_erro($dados, $campo);
+        echo '</div>';
     }
 }
 
@@ -151,7 +153,7 @@ $id = (int) $dados['aluno_id'];
                                 ep_input($dados, 'data_nascimento', 'Data de nascimento', 'col-md-6', '', 'date');
                                 ep_select($dados, 'sexo', 'Sexo biológico', ['Masculino', 'Feminino', 'Outro']);
                                 ep_input($dados, 'matricula', 'Matrícula', 'col-md-6', 'maxlength="13"');
-                                ep_input($dados, 'rg', 'RG', 'col-md-6', 'maxlength="6" inputmode="numeric" data-mascara="rg"');
+                                ep_input($dados, 'rg', 'RG', 'col-md-6', 'maxlength="14" data-mascara="rg"');
                                 ep_select($dados, 'curso', 'Curso', $dados['listas']['curso'] ?? []);
                                 ep_select($dados, 'turno', 'Turno', $dados['listas']['turno'] ?? [], 'col-md-6');
                                 ep_select($dados, 'ano_turma', 'Ano da turma', $dados['listas']['ano_turma'] ?? [], 'col-md-6');

@@ -55,6 +55,24 @@ function perfilValor($valor)
     <!-- CARD DO PERFIL -->
     <div class="container pb-5">
 
+        <?php
+        // Mensagens enviadas pelo controller ("Perfil atualizado", "Senha alterada"...).
+        // Antes eram gravadas na sessão mas nunca apareciam na tela.
+        $mensagemSucesso = $_SESSION['sucesso'] ?? '';
+        $mensagemErro = $_SESSION['erro'] ?? '';
+        unset($_SESSION['sucesso'], $_SESSION['erro']);
+        ?>
+        <?php if ($mensagemSucesso !== ''): ?>
+            <div class="alert alert-success" role="alert">
+                <?= htmlspecialchars($mensagemSucesso, ENT_QUOTES, 'UTF-8') ?>
+            </div>
+        <?php endif; ?>
+        <?php if ($mensagemErro !== ''): ?>
+            <div class="alert alert-danger" role="alert">
+                <?= htmlspecialchars($mensagemErro, ENT_QUOTES, 'UTF-8') ?>
+            </div>
+        <?php endif; ?>
+
         <div class="perfil-card">
 
             <!-- PAINEL LATERAL -->

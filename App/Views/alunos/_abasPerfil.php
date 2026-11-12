@@ -21,7 +21,8 @@ $notasRapidas = $dados['notas_rapidas'] ?? [];
 $notasPsico   = $dados['notas_psico'] ?? [];
 $rapidas      = $dados['triagens_rapidas'] ?? [];
 $triagens     = $dados['triagens'] ?? [];
-$podePsico    = !empty($dados['pode_psico']);
+$triagensPsico = $dados['triagens_psico'] ?? [];
+$podePsico   = !empty($dados['pode_psico']);
 $usuarioId    = (int) ($_SESSION['usuario_id'] ?? 0);
 $alunoId      = (int) $aluno->id;
 
@@ -281,9 +282,53 @@ $infoExtras = trim((string) ($complemento->info_extras ?? ''));
                 . '</div>'
             ); ?>
 
-            <?php if (!$triagens): ?>
+            <?php if ($triagensPsico):
+                // Triagens psicológicas rápidas (motivo, gravidade, sintomas, observações).
+                $corGravidadePsico = ['Leve' => 'text-bg-success', 'Média' => 'text-bg-warning', 'Grave' => 'text-bg-danger'];
+                ?>
+                <h3 class="h6 fw-bold mb-3">
+                    <i class="bi bi-chat-heart-fill me-1" aria-hidden="true"></i> Triagens psicológicas
+                </h3>
+                <div class="d-flex flex-column gap-3 mb-4">
+                    <?php foreach ($triagensPsico as $tp): ?>
+                        <div class="pa-nota pa-nota--psico pa-rapida pa-rapida--<?= $tp->gravidade === 'Grave' ? 'grave' : ($tp->gravidade === 'Média' ? 'media' : 'leve') ?>">
+                            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                                <div class="d-flex flex-wrap align-items-center gap-2">
+                                    <b class="fs-6"><?= vp($tp->motivo) ?></b>
+                                    <span class="badge <?= $corGravidadePsico[$tp->gravidade] ?? 'text-bg-secondary' ?>"><?= vp($tp->gravidade) ?></span>
+                                </div>
+                                <small class="text-muted">
+                                    <?= date('d/m/Y H:i', strtotime($tp->criado_em)) ?>
+                                    &bull; <b><?= vp($tp->serv_nome, 'Autor removido') ?></b>
+                                    <?= !empty($tp->func_nome) ? ' (' . vp($tp->func_nome) . ')' : '' ?>
+                                </small>
+                            </div>
+
+                            <?php if ($tp->sintomas): ?>
+                                <div class="mb-2">
+                                    <small class="text-muted d-block">Sintomas</small>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        <?php foreach ($tp->sintomas as $sintoma): ?>
+                                            <span class="badge rounded-pill text-bg-light border"><?= vp($sintoma) ?></span>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if (trim((string) $tp->observacoes) !== ''): ?>
+                                <div class="mb-0">
+                                    <small class="text-muted">Observações</small>
+                                    <div class="text-break"><?= nl2br(htmlspecialchars($tp->observacoes, ENT_QUOTES, 'UTF-8')) ?></div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!$triagens && !$triagensPsico): ?>
                 <p class="text-muted mb-0">Nenhuma triagem registrada.</p>
-            <?php else: ?>
+            <?php elseif ($triagens): ?>
                 <div class="d-flex flex-column gap-4">
                     <?php foreach ($triagens as $tri): ?>
                         <div class="border rounded bg-body p-3">

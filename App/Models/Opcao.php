@@ -35,10 +35,12 @@ class Opcao
         'ano_turma' => [
             'rotulo' => 'Anos das turmas',
             'singular' => 'Ano da turma',
-            'ajuda' => 'Use a série com º. Ex.: 1º, 2º, 3º',
+            // As turmas são guardadas pelo ano de entrada com 2 dígitos (24, 25, 26),
+            // igual aos dados do banco; a regra antiga ("1º, 2º") recusava esses valores.
+            'ajuda' => 'Use o ano da turma com 2 dígitos. Ex.: 24, 25, 26',
             'icone' => 'bi-calendar-event-fill',
             'max' => 2,
-            'padrao' => '/^[1-9]º$/u',
+            'padrao' => '/^[0-9]{2}$/',
             'tabela' => 'turma',
             'coluna' => 'turm_ano',
             'uso_from' => 'aluno a JOIN turma t ON a.turm_id = t.turm_id',
@@ -124,6 +126,12 @@ class Opcao
             'icone' => 'bi-chat-heart-fill',
             'max' => 100,
             'padrao' => null,
+            // Renomear atualiza as triagens já gravadas; em uso, não pode ser excluído.
+            'tabela' => 'triagem_psicologica',
+            'coluna' => 'trps_motivo',
+            'uso_from' => 'triagem_psicologica',
+            'uso_coluna' => 'trps_motivo',
+            'unidade' => ['triagem', 'triagens'],
         ],
         'sintoma_triagem_psicologica' => [
             'rotulo' => 'Sintomas da triagem psicológica',
@@ -132,6 +140,11 @@ class Opcao
             'icone' => 'bi-heart-pulse-fill',
             'max' => 100,
             'padrao' => null,
+            // Os sintomas ficam numa lista (JSON) em cada triagem: o renomear
+            // troca o nome dentro dessas listas (ver renomearEmListaJson).
+            'tabela_json' => 'triagem_psicologica',
+            'coluna_json' => 'trps_sintomas',
+            'chave_json' => 'trps_id',
         ],
     ];
 
@@ -332,6 +345,11 @@ class Opcao
                 $this->db->executa();
             }
 
+            // 3) Grupos guardados como lista JSON (ex.: sintomas da triagem psicológica).
+            if (isset($cfg['tabela_json'], $cfg['coluna_json'], $cfg['chave_json'])) {
+                $this->renomearEmListaJson($cfg, $opcao->valor, $novoValor);
+            }
+
             $this->db->commit();
 
             return true;
@@ -340,6 +358,32 @@ class Opcao
             $this->db->rollBack();
 
             return false;
+        }
+    }
+
+    // Troca $antigo por $novo dentro das listas JSON de uma coluna
+    // (ex.: ["Tontura","Tremores"]). Nomes de tabela/coluna vêm de GRUPOS.
+    private function renomearEmListaJson(array $cfg, $antigo, $novo)
+    {
+        $tabela = $cfg['tabela_json'];
+        $coluna = $cfg['coluna_json'];
+        $chave = $cfg['chave_json'];
+
+        $this->db->query("SELECT {$chave} AS id, {$coluna} AS lista FROM {$tabela} WHERE {$coluna} IS NOT NULL");
+        foreach ($this->db->resultados() as $linha) {
+            $lista = json_decode((string) $linha->lista, true);
+            if (!is_array($lista) || !in_array($antigo, $lista, true)) {
+                continue;
+            }
+
+            $lista = array_values(array_unique(array_map(function ($item) use ($antigo, $novo) {
+                return $item === $antigo ? $novo : $item;
+            }, $lista)));
+
+            $this->db->query("UPDATE {$tabela} SET {$coluna} = :lista WHERE {$chave} = :id");
+            $this->db->bind(':lista', json_encode($lista, JSON_UNESCAPED_UNICODE));
+            $this->db->bind(':id', (int) $linha->id);
+            $this->db->executa();
         }
     }
 

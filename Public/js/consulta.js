@@ -1,3 +1,7 @@
+// Barra de rolagem da tabela da página "Consulta de alunos".
+// Este arquivo é carregado em todas as páginas (Public/index.php), então
+// só roda quando a tabela existe; antes dava erro de "null" nas outras.
+(function () {
 
 const tabela = document.getElementById(
     "consultaAlunoTabelaScroll"
@@ -18,6 +22,11 @@ const esquerda = document.getElementById(
 const direita = document.getElementById(
     "consultaAlunoScrollDireita"
 );
+
+// Página sem a tabela de consulta: não há nada para controlar.
+if (!tabela || !trilho || !indicador || !esquerda || !direita) {
+    return;
+}
 
 
 /* =====================================================
@@ -215,3 +224,4 @@ direita.addEventListener(
 
 atualizarBarra();
 
+})();

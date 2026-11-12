@@ -46,6 +46,34 @@ class Relatorio
         // Garante a coluna consulta.alun_id (aluno da consulta).
         require_once __DIR__ . '/Consulta.php';
         new Consulta();
+
+        // Garante a tabela triagem_psicologica (usada nos atendimentos).
+        require_once __DIR__ . '/TriagemPsicologica.php';
+        new TriagemPsicologica();
+    }
+
+    /**
+     * Todos os atendimentos de triagem, um por linha:
+     *  - triagem completa (tabela triagem: várias respostas = 1 atendimento),
+     *  - triagem rápida e triagem psicológica.
+     * Antes o relatório contava só a triagem completa e deixava de fora
+     * os atendimentos rápidos do dia a dia.
+     * Colunas: alun_id, data, serv_id, tipo, respostas.
+     */
+    private function atendimentosSql(): string
+    {
+        return "(
+                SELECT t.alun_id, t.tria_data AS data, t.serv_id,
+                       'Triagem completa' AS tipo, COUNT(*) AS respostas
+                  FROM triagem t
+              GROUP BY t.alun_id, t.tria_data, t.serv_id
+             UNION ALL
+                SELECT r.alun_id, r.trap_criado_em, r.serv_id, 'Triagem rápida', NULL
+                  FROM triagem_rapida r
+             UNION ALL
+                SELECT p.alun_id, p.trps_criado_em, p.serv_id, 'Triagem psicológica', NULL
+                  FROM triagem_psicologica p
+            )";
     }
 
     // =========================================================
@@ -166,15 +194,15 @@ class Relatorio
         return (int) ($this->db->resultado()->total ?? 0);
     }
 
-    /** Alunos distintos que tiveram triagem no período. */
+    /** Alunos distintos que tiveram algum atendimento de triagem no período. */
     public function totalEstudantesAtendidos(string $inicio, string $fim, ?int $turmaId): int
     {
         $this->db->query(
             'SELECT COUNT(DISTINCT t.alun_id) AS total
-               FROM triagem t
+               FROM ' . $this->atendimentosSql() . ' t
          INNER JOIN aluno a ON a.alun_id = t.alun_id
-              WHERE t.tria_data >= :inicio
-                AND t.tria_data < :fim'
+              WHERE t.data >= :inicio
+                AND t.data < :fim'
             . $this->filtroTurma($turmaId)
         );
         $this->db->bind(':inicio', $inicio);
@@ -184,20 +212,16 @@ class Relatorio
         return (int) ($this->db->resultado()->total ?? 0);
     }
 
-    /** Triagens do período (cada par aluno + data/hora conta uma vez). */
+    /** Triagens do período (completas, rápidas e psicológicas). */
     public function totalTriagens(string $inicio, string $fim, ?int $turmaId): int
     {
         $this->db->query(
             'SELECT COUNT(*) AS total
-               FROM (
-                    SELECT t.alun_id, t.tria_data
-                      FROM triagem t
-                INNER JOIN aluno a ON a.alun_id = t.alun_id
-                     WHERE t.tria_data >= :inicio
-                       AND t.tria_data < :fim'
-            . $this->filtroTurma($turmaId) . '
-                  GROUP BY t.alun_id, t.tria_data
-               ) AS triagens'
+               FROM ' . $this->atendimentosSql() . ' t
+         INNER JOIN aluno a ON a.alun_id = t.alun_id
+              WHERE t.data >= :inicio
+                AND t.data < :fim'
+            . $this->filtroTurma($turmaId)
         );
         $this->db->bind(':inicio', $inicio);
         $this->db->bind(':fim', $fim);
@@ -242,13 +266,13 @@ class Relatorio
         $this->db->query(
             'SELECT a.alun_id, a.alun_nome, a.alun_matricula,
                     tu.turm_curso, tu.turm_ano, tu.turm_turno,
-                    COUNT(DISTINCT t.tria_data) AS atendimentos,
-                    MAX(t.tria_data) AS ultimo_atendimento
-               FROM triagem t
+                    COUNT(*) AS atendimentos,
+                    MAX(t.data) AS ultimo_atendimento
+               FROM ' . $this->atendimentosSql() . ' t
          INNER JOIN aluno a  ON a.alun_id  = t.alun_id
          INNER JOIN turma tu ON tu.turm_id = a.turm_id
-              WHERE t.tria_data >= :inicio
-                AND t.tria_data < :fim'
+              WHERE t.data >= :inicio
+                AND t.data < :fim'
             . $this->filtroTurma($turmaId) . '
            GROUP BY a.alun_id, a.alun_nome, a.alun_matricula,
                     tu.turm_curso, tu.turm_ano, tu.turm_turno
@@ -273,20 +297,17 @@ class Relatorio
             'SELECT a.alun_id, a.alun_nome,
                     tu.turm_curso, tu.turm_ano, tu.turm_turno,
                     s.serv_nome,
-                    t.tria_data,
-                    COUNT(*) AS respostas
-               FROM triagem t
-         INNER JOIN aluno a    ON a.alun_id  = t.alun_id
-         INNER JOIN turma tu   ON tu.turm_id = a.turm_id
-         INNER JOIN servidor s ON s.serv_id  = t.serv_id
-              WHERE t.tria_data >= :inicio
-                AND t.tria_data < :fim'
+                    t.data AS tria_data,
+                    t.tipo,
+                    t.respostas
+               FROM ' . $this->atendimentosSql() . ' t
+         INNER JOIN aluno a     ON a.alun_id  = t.alun_id
+         INNER JOIN turma tu    ON tu.turm_id = a.turm_id
+          LEFT JOIN servidor s  ON s.serv_id  = t.serv_id
+              WHERE t.data >= :inicio
+                AND t.data < :fim'
             . $this->filtroTurma($turmaId) . '
-           GROUP BY t.alun_id, t.tria_data, t.serv_id,
-                    a.alun_id, a.alun_nome,
-                    tu.turm_curso, tu.turm_ano, tu.turm_turno,
-                    s.serv_nome
-           ORDER BY t.tria_data DESC
+           ORDER BY t.data DESC
               LIMIT ' . self::LIMITE_DETALHES
         );
         $this->db->bind(':inicio', $inicio);

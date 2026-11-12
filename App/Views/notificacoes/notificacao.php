@@ -160,12 +160,14 @@ include '../App/Views/menu.php';
 
                                 </li>
 
+                                <?php if ($notificacao->noti_status !== 'Lida'): ?>
                                 <li>
                                     <form method="post" action="<?= URL ?>/notificacoes/marcarComoLida/<?= $notificacao->noti_id ?>">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($dados['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
                                         <button type="submit" class="dropdown-item">Marcar como lida</button>
                                     </form>
                                 </li>
+                                <?php endif; ?>
 
                                 <li>
                                     <a class="dropdown-item"

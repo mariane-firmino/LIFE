@@ -2,13 +2,13 @@
 class Controller { // aqui é possível controlar para qual página você quer ir de forma mais simples
     public function model($model)
     {
-        require_once '../app/Models/' . $model . '.php';
+        require_once dirname(__DIR__) . '/Models/' . $model . '.php';
         return new $model;
     } // fim da função model
 
     public function library($library)
     {
-        require_once '../app/Libraries/' . $library . '.php';
+        require_once __DIR__ . '/' . $library . '.php';
         return new $library;
     } // fim da função library
 
@@ -31,7 +31,7 @@ class Controller { // aqui é possível controlar para qual página você quer i
             ];
         }
         
-        $arquivo = '../app/Views/' . $view . '.php';
+        $arquivo = dirname(__DIR__) . '/Views/' . $view . '.php';
 
         if (file_exists($arquivo)) {
             require_once $arquivo;

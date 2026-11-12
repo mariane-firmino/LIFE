@@ -4,7 +4,7 @@
 // Para usar num campo, basta colocar no <input>:
 //   data-mascara="cpf"       ->  000.000.000-00
 //   data-mascara="telefone"  ->  (00) 00000-0000  ou  (00) 0000-0000
-//   data-mascara="rg"        ->  só números (até 6)
+//   data-mascara="rg"        ->  só números, o último pode ser X (até 14)
 // =====================================================================
 
 const mascaras = {
@@ -38,8 +38,12 @@ const mascaras = {
     },
 
     rg: function (valor) {
-        // O banco guarda no máximo 6 caracteres
-        return valor.replace(/\D/g, "").substring(0, 6);
+        // Números, até 14 caracteres; o dígito final pode ser X.
+        // (Antes cortava em 6 e RGs comuns, de 7 a 9 dígitos, perdiam números.)
+        const limpo = valor.toUpperCase().replace(/[^0-9X]/g, "");
+        const numeros = limpo.replace(/X/g, "");
+        const terminaComX = /X$/.test(limpo) && numeros.length > 0;
+        return numeros.substring(0, terminaComX ? 13 : 14) + (terminaComX ? "X" : "");
     }
 };
 

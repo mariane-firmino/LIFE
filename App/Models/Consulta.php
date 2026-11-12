@@ -166,9 +166,15 @@ class Consulta
 
     public function excluir(int $id): bool
     {
-        $this->db->query('DELETE FROM consulta WHERE cons_id = :id');
-        $this->db->bind(':id', $id);
+        try {
+            $this->db->query('DELETE FROM consulta WHERE cons_id = :id');
+            $this->db->bind(':id', $id);
 
-        return (bool) $this->db->executa();
+            return (bool) $this->db->executa();
+        } catch (PDOException $e) {
+            // Ex.: registro ligado à consulta impedindo a exclusão.
+            error_log('Erro ao excluir consulta: ' . $e->getMessage());
+            return false;
+        }
     }
 }

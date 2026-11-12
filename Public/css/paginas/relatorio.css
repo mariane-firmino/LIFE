@@ -296,3 +296,8 @@
         print-color-adjust: exact;
     }
 }
+/* Celular: o texto oculto "Ações" (position:absolute) escapava da área com
+   rolagem da tabela e criava rolagem lateral na página inteira. */
+.relatorio-tela .table-responsive {
+    position: relative;
+}

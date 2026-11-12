@@ -40,4 +40,3 @@ class checa
         endif;
     } // fim da funçao dataBr
 } // fim da classe
-?> <!--fechamento da tag php-->

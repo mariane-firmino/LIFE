@@ -92,7 +92,7 @@ if (!function_exists('trErro')) {
             <div class="alert alert-danger" role="alert">Confira os campos marcados em vermelho.</div>
         <?php endif; ?>
 
-        <form action="<?= URL ?>/triagens/psicologica/<?= $id ?>" method="POST" class="tr-psico__form shadow p-3 p-lg-4">
+        <form action="<?= URL ?>/triagens/psicologico_rapido/<?= $id ?>" method="POST" class="tr-psico__form shadow p-3 p-lg-4">
             <div class="row g-4">
 
                 <!-- Motivo -->

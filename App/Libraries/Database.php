@@ -4,31 +4,32 @@ class Database
     // dados padrão para acessar o banco de dados
     private $host = "127.0.0.1";
     private $usuario = "root";
-    private $senha = "Mariane@2026";
+    private $senha = "";
     private $banco = "bd_life";
-    private $porta = "3306"; //verificar a porta do seu banco
+    private $porta = "3307"; // porta do MariaDB do XAMPP (o MySQL 8 do Windows ocupa a 3306)
+    private $charset = "utf8mb4";
     private $dbh;
     private $stmt;
 
     public function __construct()
     {
-        //fonte de dados ou DNS  que contém as informações para conectar ao banco de dados.
-        $dns = 'mysql:host=' . $this->host . ';port=' . $this->porta . ';dbname=' . $this->banco;
+        // fonte de dados (DSN) com as informações para conectar ao banco de dados.
+        $dsn = 'mysql:host=' . $this->host . ';port=' . $this->porta . ';dbname=' . $this->banco . ';charset=' . $this->charset;
 
         $opcoes = [
-            //armanezar em cache a conexão para ser reutilizada, evitando sobrecarga de uma nova conexão.
+            // armazena em cache a conexão para ser reutilizada, evitando sobrecarga de uma nova conexão.
             PDO::ATTR_PERSISTENT => true,
-            //lança um PDOException se ocorrer um erro
+            // lança um PDOException se ocorrer um erro
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         ];
         try {
-            //cria a instacia do PDO
-            $this->dbh = new PDO($dns, $this->usuario, $this->senha, $opcoes);
+            // cria a instância do PDO
+            $this->dbh = new PDO($dsn, $this->usuario, $this->senha, $opcoes);
         } catch (PDOException $error) {
-            print "Error!";
-            $error->getMessage() . "<br/>";
+            error_log('Erro ao conectar ao banco: ' . $error->getMessage());
+            http_response_code(500);
+            print 'Erro ao conectar ao banco de dados: ' . htmlspecialchars($error->getMessage(), ENT_QUOTES, 'UTF-8');
             die();
-            //fala
         } //fim do catch
     } //fim do método construtor
 

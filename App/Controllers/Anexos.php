@@ -60,7 +60,7 @@ class Anexos extends Controller
     public function __construct()
     {
         if (!isset($_SESSION['usuario_id'])) {
-            URL::redirecionar('login');
+            URL::redirecionar('usuarios/login');
             exit;
         }
 
@@ -139,7 +139,9 @@ class Anexos extends Controller
             $this->voltar($aluno->id, $aba, 'Não foi possível salvar o arquivo. Tente novamente.', true);
         }
 
-        $this->voltar($aluno->id, $aba, $cfg['rotulo'] . ' enviado com sucesso.');
+        // Concordância: "Foto ... enviada" / "Laudo ... enviado".
+        $enviado = $tipo === 'laudo' ? 'enviado' : 'enviada';
+        $this->voltar($aluno->id, $aba, $cfg['rotulo'] . ' ' . $enviado . ' com sucesso.');
     }
 
 

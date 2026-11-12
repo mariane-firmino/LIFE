@@ -251,6 +251,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                             <div class="col-md-6">
                                 <label for="inputtelefonealuno" class="form-label">Telefone do aluno (WhatsApp)</label>
                                 <input type="text" class="form-control" maxlength="15" inputmode="tel" data-mascara="telefone" placeholder="(69) 99999-9999" id="inputtelefonealuno" name="telefone_aluno" value="<?= valor($dados, 'telefone_aluno') ?>">
+                                <?php erro($dados, 'telefone_aluno'); ?>
                             </div>
                             <div class="col-md-4">
                                 <label for="inputtiposanguineo" class="form-label">Tipo sanguíneo</label>
@@ -343,6 +344,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                                         </div>
                                     <?php endfor; ?>
                                 </div>
+                                <?php erro($dados, 'nota_curso'); ?>
                             </div>
                             <div class="col-12 col-lg-6">
                                 <label class="form-label">Em uma escala (0-10)<br>O quanto você sente-se motivado para estudar?</label>
@@ -354,6 +356,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                                         </div>
                                     <?php endfor; ?>
                                 </div>
+                                <?php erro($dados, 'nota_motivacao'); ?>
                             </div>
 
                             <div class="col-md-6">

@@ -37,7 +37,7 @@ class Admin extends Controller
     {
         // 1) Precisa estar logado.
         if (!isset($_SESSION['usuario_id'])) {
-            URL::redirecionar('login');
+            URL::redirecionar('usuarios/login');
             exit;
         }
 
@@ -236,15 +236,21 @@ class Admin extends Controller
             $temErro = true;
         }
 
-        // ----- Telefone (opcional): máximo 15 caracteres -----
-        if ($form['telefone'] !== '' && mb_strlen($form['telefone']) > 15) {
-            $form['telefone_erro'] = 'Telefone muito longo (máx. 15 caracteres)';
+        // ----- Telefone (opcional): com DDD, 10 ou 11 números -----
+        // (antes só limitava o tamanho e aceitava, por exemplo, "12").
+        if ($form['telefone'] !== '' && !in_array(strlen(preg_replace('/\D/', '', $form['telefone'])), [10, 11], true)) {
+            $form['telefone_erro'] = 'Informe o telefone com DDD, ex.: (69) 99999-9999';
             $temErro = true;
         }
 
-        // ----- Senha: mínimo 8 caracteres e confirmação igual -----
-        if (mb_strlen($form['senha']) < 8) {
-            $form['senha_erro'] = 'A senha deve ter pelo menos 8 caracteres';
+        // ----- Senha forte (mesma regra do cadastro e da troca de senha) e confirmação igual -----
+        $senhaForte = strlen($form['senha']) >= 8
+            && preg_match('/[A-Z]/', $form['senha'])
+            && preg_match('/[a-z]/', $form['senha'])
+            && preg_match('/[0-9]/', $form['senha'])
+            && preg_match('/[^A-Za-z0-9\s]/', $form['senha']);
+        if (!$senhaForte) {
+            $form['senha_erro'] = 'A senha deve ter pelo menos 8 caracteres, com maiúscula, minúscula, número e caractere especial';
             $temErro = true;
         } elseif ($form['senha'] !== $form['confirmar_senha']) {
             $form['confirmar_senha_erro'] = 'As senhas não conferem';

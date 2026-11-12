@@ -1,3 +1,6 @@
+# Não lista o conteúdo das pastas (ex.: /uploads/alunos/ mostrava todas as fotos).
+Options -Indexes
+
 <IfModule mod_rewrite.c>
   Options -Multiviews
   RewriteEngine On

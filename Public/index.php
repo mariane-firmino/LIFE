@@ -1,4 +1,19 @@
 <?php
+// Guarda a saída em buffer: assim redirecionamentos, respostas JSON e downloads
+// funcionam mesmo depois do HTML do cabeçalho, em qualquer servidor
+// (antes dependia do output_buffering do php.ini do XAMPP).
+ob_start();
+
+// Cookie de sessão: inacessível ao JavaScript (HttpOnly) e não enviado em
+// formulários vindos de outros sites (SameSite=Lax), o que protege contra CSRF
+// nos formulários que não têm token próprio.
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'httponly' => true,
+    'samesite' => 'Lax',
+    'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+]);
 session_start();
 include "./../App/configuracao.php";
 include "./../App/autoload.php";

@@ -101,13 +101,13 @@ $tabelaDetalhes = static function (string $tipo, array $linhas, bool $impressao)
     $colunas = [
         'consultas' => ['Data', 'Horário', 'Aluno', 'Tipo', 'Responsável', 'Descrição', 'Situação'],
         'estudantes' => ['Estudante', 'Matrícula', 'Turma', 'Atendimentos', 'Último atendimento'],
-        'triagens' => ['Data', 'Estudante', 'Turma', 'Atendido por', 'Perguntas respondidas'],
+        'triagens' => ['Data', 'Estudante', 'Turma', 'Tipo', 'Atendido por'],
     ];
     // Colunas numéricas ficam centralizadas.
     $centro = [
         'consultas' => ['Situação'],
         'estudantes' => ['Atendimentos'],
-        'triagens' => ['Perguntas respondidas'],
+        'triagens' => [],
     ];
 
     $classeTabela = $impressao ? 'tabela-impressao' : 'table table-hover align-middle';
@@ -142,8 +142,10 @@ $tabelaDetalhes = static function (string $tipo, array $linhas, bool $impressao)
             echo '<td>' . $e($dataBr($item->tria_data, true)) . '</td>';
             echo '<td>' . $e($item->alun_nome) . '</td>';
             echo '<td>' . $e($rotuloTurma($item->turm_curso, $item->turm_ano, $item->turm_turno)) . '</td>';
-            echo '<td>' . $e($item->serv_nome) . '</td>';
-            echo '<td class="text-center">' . (int) $item->respostas . '</td>';
+            // Triagem completa mostra quantas perguntas foram respondidas.
+            $tipoTriagem = $item->tipo . ($item->respostas !== null ? ' (' . (int) $item->respostas . ' perguntas)' : '');
+            echo '<td>' . $e($tipoTriagem) . '</td>';
+            echo '<td>' . $e($item->serv_nome ?: 'Autor removido') . '</td>';
         }
         echo '</tr>';
     }

@@ -35,6 +35,24 @@ class Usuarios extends Controller
     // - Pelo menos um número
     // - Pelo menos um caractere especial
     // =========================================================
+    // Data no formato AAAA-MM-DD, existente e não futura.
+    private function dataNascimentoValida(string $data): bool
+    {
+        $nasc = DateTime::createFromFormat('Y-m-d', $data);
+        return $nasc && $nasc->format('Y-m-d') === $data && $nasc <= new DateTime('today');
+    }
+
+    // A função escolhida existe na tabela funcao?
+    private function funcaoExiste($funcao): bool
+    {
+        foreach ($this->usuarioModel->listarFuncoes() as $f) {
+            if ((string) $f->func_id === (string) $funcao) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private function senhaForte(string $senha): bool
     {
         return strlen($senha) >= 8
@@ -140,6 +158,23 @@ class Usuarios extends Controller
                 elseif (Checa::checarCpf($formulario['cpf'])):
                     $dados['cpf_erro'] = 'O CPF informado é invalido';
 
+                // Data de nascimento: válida e não pode ser no futuro
+                // (antes uma data como 2040 era aceita).
+                elseif (!$this->dataNascimentoValida($dados['data_nascimento'])):
+                    $dados['data_nascimento_erro'] = 'Informe uma data de nascimento válida';
+
+                // Telefone: com DDD, 10 ou 11 números.
+                elseif (!in_array(strlen(preg_replace('/\D/', '', $dados['telefone'])), [10, 11], true)):
+                    $dados['telefone_erro'] = 'Informe o telefone com DDD, ex.: (69) 99999-9999';
+
+                // SIAPE: só números, de 6 a 8 (mesma regra do cadastro pelo admin).
+                elseif (!preg_match('/^\d{6,8}$/', $dados['siape'])):
+                    $dados['siape_erro'] = 'Informe o SIAPE só com números (6 a 8)';
+
+                // Função: precisa ser uma das funções cadastradas.
+                elseif (!$this->funcaoExiste($dados['funcao'])):
+                    $dados['funcao_erro'] = 'Selecione uma função válida';
+
                 // Verifica se o CPF já está cadastrado.
                 elseif ($this->usuarioModel->checarCpf($formulario['cpf'])):
                     $dados['cpf_erro'] = 'O CPF informado já está cadastrado';
@@ -182,14 +217,16 @@ class Usuarios extends Controller
                             'admin/perfis'
                         );
 
-                        // Mostra mensagem de sucesso.
+                        // Mostra mensagem de sucesso na tela de login
+                        // (a tela de login exibe a chave 'usuario').
                         Sessao::mensagem(
-                            'usuarios',
-                            'Cadastro realizado com sucesso'
+                            'usuario',
+                            'Cadastro realizado com sucesso! Aguarde a aprovação do administrador para entrar.',
+                            'alert alert-success'
                         );
 
-                        // Depois do cadastro, vai para a página inicial.
-                        URL::redirecionar('paginas/index');
+                        // Depois do cadastro, vai para o login.
+                        URL::redirecionar('usuarios/login');
 
                     else:
 
@@ -787,6 +824,23 @@ class Usuarios extends Controller
 
             if (Checa::checarEmail($email)) {
                 $_SESSION['erro'] = 'O e-mail informado é inválido.';
+                URL::redirecionar('usuarios/editarPerfil');
+                exit;
+            }
+
+            // Data de nascimento: obrigatória, válida e não pode ser no futuro
+            // (vazia, o banco gravava "0000-00-00").
+            $nasc = DateTime::createFromFormat('Y-m-d', $dataNascimento);
+            if (!$nasc || $nasc->format('Y-m-d') !== $dataNascimento || $nasc > new DateTime('today')) {
+                $_SESSION['erro'] = 'Informe uma data de nascimento válida.';
+                URL::redirecionar('usuarios/editarPerfil');
+                exit;
+            }
+
+            // Telefone (opcional): (00) 0000-0000 ou (00) 00000-0000.
+            $digitosTelefone = preg_replace('/\D/', '', $telefone);
+            if ($telefone !== '' && !in_array(strlen($digitosTelefone), [10, 11], true)) {
+                $_SESSION['erro'] = 'Informe o telefone com DDD, ex.: (69) 99999-9999.';
                 URL::redirecionar('usuarios/editarPerfil');
                 exit;
             }

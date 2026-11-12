@@ -62,28 +62,98 @@ class Triagens extends Controller
         exit;
     }
 
+    // GET  triagens/psicologico_rapido/5  -> abre o formulário
+    // POST triagens/psicologico_rapido/5  -> valida e salva
     public function psicologico_rapido($alunoId = null)
     {
         $aluno = $this->alunoOuRedireciona($alunoId);
+
+        // Carrega o model antes das opções: na primeira vez ele cria a
+        // tabela e os motivos/sintomas iniciais.
+        $triagemPsicologicaModel = $this->model('TriagemPsicologica');
+
         $motivos = $this->opcaoModel->valoresAtivos('motivo_triagem_psicologica');
         $sintomas = $this->opcaoModel->valoresAtivos('sintoma_triagem_psicologica');
+
+        // Valores do formulário (vazios ao abrir; preenchidos se voltar com erro).
+        $form = [
+            'motivo' => '',
+            'gravidade' => '',
+            'sintomas' => [],
+            'observacoes' => '',
+        ];
+        $erros = [];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            foreach (['motivo', 'gravidade', 'observacoes'] as $campo) {
+                $valor = $_POST[$campo] ?? '';
+                $form[$campo] = is_string($valor) ? trim($valor) : '';
+            }
+
+            $marcados = $_POST['sintomas'] ?? [];
+            $marcados = is_array($marcados) ? $marcados : [];
+            $form['sintomas'] = array_values(array_unique(array_filter($marcados, 'is_string')));
+
+            // Motivo: precisa ser uma das opções ativas do menu.
+            if (!in_array($form['motivo'], $motivos, true)) {
+                $erros['motivo'] = 'Escolha o motivo do atendimento.';
+            }
+
+            // Gravidade: Leve, Média ou Grave.
+            if (!in_array($form['gravidade'], TriagemPsicologica::GRAVIDADES, true)) {
+                $erros['gravidade'] = 'Escolha a gravidade.';
+            }
+
+            // Sintomas (opcionais): só os da lista configurada.
+            if (array_diff($form['sintomas'], $sintomas)) {
+                $erros['sintomas'] = 'Marque apenas sintomas da lista.';
+            }
+
+            // Limite da caixa de texto.
+            if (mb_strlen($form['observacoes']) > self::MAX_TEXTO_RAPIDA) {
+                $erros['observacoes'] = 'Use no máximo ' . self::MAX_TEXTO_RAPIDA . ' caracteres.';
+            }
+
+            if (!$erros) {
+                try {
+                    $salvou = $triagemPsicologicaModel->salvar($form + [
+                        'aluno_id' => (int) $aluno->id,
+                        'serv_id' => (int) $_SESSION['usuario_id'],
+                    ]);
+                } catch (PDOException $e) {
+                    error_log('Erro ao salvar triagem psicológica: ' . $e->getMessage());
+                    $salvou = false;
+                }
+
+                if ($salvou) {
+                    $this->notificationService->avisarUsuariosAtivos(
+                        'triagem',
+                        'Nova triagem psicológica registrada',
+                        'Uma triagem psicológica foi registrada. Acesse o sistema para consultar as informações autorizadas.',
+                        'alunos/consulta',
+                        (int) $_SESSION['usuario_id']
+                    );
+
+                    // Volta ao perfil já na aba das triagens.
+                    Sessao::mensagem('alunos', 'Triagem psicológica salva com sucesso');
+                    URL::redirecionar('alunos/visualizarPerfil/' . (int) $aluno->id . '#aba-triagens');
+                }
+
+                Sessao::mensagem('triagens', 'Não foi possível salvar a triagem. Tente novamente.', 'alert alert-danger');
+            }
+        }
 
         $dados = [
             'titulo' => 'Triagem Psicológica',
             'descricao' => 'Formulário de triagem psicológica rápida',
             'aluno_id' => (int) $aluno->id,
             'aluno_nome' => $aluno->nome,
-            'motivos' => array_combine($motivos, $motivos),
-            'sintomas' => array_combine($sintomas, $sintomas),
-            'gravidades' => TriagemRapida::GRAVIDADES,
+            'motivos' => $motivos ? array_combine($motivos, $motivos) : [],
+            'sintomas' => $sintomas ? array_combine($sintomas, $sintomas) : [],
+            'gravidades' => TriagemPsicologica::GRAVIDADES,
             'max_texto' => self::MAX_TEXTO_RAPIDA,
-            'form' => [
-                'motivo' => '',
-                'gravidade' => '',
-                'sintomas' => [],
-                'observacoes' => '',
-            ],
-            'erros' => [],
+            'form' => $form,
+            'erros' => $erros,
         ];
 
         $this->view('triagens/psicologica_rapida', $dados);
@@ -232,7 +302,7 @@ class Triagens extends Controller
     {
         // Só usuários logados podem fazer triagem.
         if (!isset($_SESSION['usuario_id'])) {
-            URL::redirecionar('login');
+            URL::redirecionar('usuarios/login');
             exit;
         }
 

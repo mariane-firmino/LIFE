@@ -31,6 +31,24 @@ class ControleSessao
 
         $modelo = new Dispositivo();
 
+        // Conta desativada (ou apagada) pelo administrador: perde o acesso na hora.
+        // Antes a pessoa continuava usando o sistema até a sessão expirar.
+        if (!$modelo->servidorAtivo($_SESSION['usuario_id'])) {
+            if (!empty($_SESSION['sessao_token'])) {
+                $modelo->encerrarPorToken($_SESSION['sessao_token']);
+            }
+            $_SESSION = [];
+            session_destroy();
+            session_start();
+            Sessao::mensagem(
+                'usuario',
+                'Seu acesso foi desativado pelo administrador.',
+                'alert alert-warning'
+            );
+            Url::redirecionar('usuarios/login');
+            exit;
+        }
+
         // Sessão iniciada antes deste recurso existir: registra agora.
         if (empty($_SESSION['sessao_token'])) {
             $_SESSION['sessao_token'] = $modelo->registrar($_SESSION['usuario_id']);

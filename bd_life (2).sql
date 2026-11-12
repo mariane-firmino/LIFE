@@ -7,7 +7,7 @@
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -30,7 +30,7 @@ CREATE TABLE `alternativa` (
   KEY `fk_alternativa_pergunta1_idx` (`perg_id`),
   KEY `ix_alternativa_descricao` (`alte_descricao`(100)),
   CONSTRAINT `fk_alternativa_pergunta1` FOREIGN KEY (`perg_id`) REFERENCES `pergunta` (`perg_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=170 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=170 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -56,7 +56,7 @@ CREATE TABLE `aluno` (
   `alun_dt_nascimento` date NOT NULL,
   `alun_sexo` varchar(25) NOT NULL,
   `alun_matricula` varchar(15) NOT NULL,
-  `alun_rg` varchar(6) DEFAULT NULL,
+  `alun_rg` varchar(14) DEFAULT NULL,
   `alun_cartao_sus` varchar(15) DEFAULT NULL,
   `alun_foto` blob,
   `alun_tipo_sanguineo` varchar(3) DEFAULT NULL,
@@ -76,7 +76,7 @@ CREATE TABLE `aluno` (
   KEY `ix_aluno_nome` (`alun_nome`),
   CONSTRAINT `fk_aluno_responsavel1` FOREIGN KEY (`resp_id`) REFERENCES `responsavel` (`resp_id`),
   CONSTRAINT `fk_aluno_turma1` FOREIGN KEY (`turm_id`) REFERENCES `turma` (`turm_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -238,7 +238,7 @@ CREATE TABLE `consulta` (
   PRIMARY KEY (`cons_id`),
   KEY `ix_consulta_data` (`cons_data`),
   KEY `ix_consulta_hora` (`cons_horario`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -262,7 +262,7 @@ CREATE TABLE `funcao` (
   `func_id` int NOT NULL AUTO_INCREMENT,
   `func_nome` varchar(100) NOT NULL,
   PRIMARY KEY (`func_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -285,7 +285,7 @@ DROP TABLE IF EXISTS `notificacao`;
 CREATE TABLE `notificacao` (
   `noti_id` int NOT NULL AUTO_INCREMENT,
   `noti_titulo` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `noti_data` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `noti_data` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `noti_descricao` text COLLATE utf8mb4_general_ci,
   `serv_id` int DEFAULT NULL,
   `noti_status` varchar(20) COLLATE utf8mb4_general_ci DEFAULT 'Não lido',
@@ -330,7 +330,7 @@ CREATE TABLE `opcao_sistema` (
 
 LOCK TABLES `opcao_sistema` WRITE;
 /*!40000 ALTER TABLE `opcao_sistema` DISABLE KEYS */;
-INSERT INTO `opcao_sistema` VALUES (1,'ano_turma','24',1,1),(2,'ano_turma','25',2,1),(3,'ano_turma','26',3,1),(4,'curso','Técnico em informática',1,1),(5,'curso','Manutenção e Suporte em Informática',2,1),(6,'curso','Biotecnologia',3,1),(7,'curso','Enfermagem',4,1),(8,'curso','Licenciatura em Ciências',5,1),(9,'curso','Licenciatura em Biologia',6,1),(10,'turno','Matutino',1,1),(11,'turno','Vespertino',2,1),(12,'turno','Noturno',3,1),(13,'tipo_escola','Escola pública',1,1),(14,'tipo_escola','Escola privada',2,1),(15,'tipo_escola','Escola estadual',3,1),(16,'motivo_ifro','Qualidade do ensino',1,1),(17,'motivo_ifro','Proximidade da escola',2,1),(18,'motivo_ifro','Programa de bolsas',3,1),(19,'motivo_ifro','Recomendação de outros',4,1),(20,'acesso_saude','SUS',1,1),(21,'acesso_saude','Privado',2,1),(22,'acesso_saude','Convênio',3,1),(23,'queixa','Dor de cabeça',1,1),(24,'queixa','Cólica',2,1),(25,'queixa','Febre',3,1),(26,'queixa','Dor de barriga',4,1),(27,'queixa','Enjoo / vômito',5,1),(28,'queixa','Tontura / mal-estar',6,1),(29,'queixa','Dor de garganta',7,1),(30,'queixa','Gripe / resfriado',8,1),(31,'queixa','Machucado / ferimento',9,1),(32,'queixa','Alergia',10,1),(33,'queixa','Crise de ansiedade',11,1),(34,'queixa','Pressão alta / baixa',12,1),(35,'queixa','Outro',13,1);
+INSERT INTO `opcao_sistema` VALUES (1,'ano_turma','24',1,1),(2,'ano_turma','25',2,1),(3,'ano_turma','26',3,1),(4,'curso','Técnico em informática',1,1),(5,'curso','Manutenção e Suporte em Informática',2,1),(6,'curso','Biotecnologia',3,1),(7,'curso','Enfermagem',4,1),(8,'curso','Licenciatura em Ciências',5,1),(9,'curso','Licenciatura em Biologia',6,1),(10,'turno','Matutino',1,1),(11,'turno','Vespertino',2,1),(12,'turno','Noturno',3,1),(13,'tipo_escola','Escola pública',1,1),(14,'tipo_escola','Escola privada',2,1),(15,'tipo_escola','Escola estadual',3,1),(16,'motivo_ifro','Qualidade do ensino',1,1),(17,'motivo_ifro','Proximidade da escola',2,1),(18,'motivo_ifro','Programa de bolsas',3,1),(19,'motivo_ifro','Recomendação de outros',4,1),(20,'acesso_saude','SUS',1,1),(21,'acesso_saude','Privado',2,1),(22,'acesso_saude','Convênio',3,1),(23,'queixa','Dor de cabeça',1,1),(24,'queixa','Cólica',2,1),(25,'queixa','Febre',3,1),(26,'queixa','Dor de barriga',4,1),(27,'queixa','Enjoo / vômito',5,1),(28,'queixa','Tontura / mal-estar',6,1),(29,'queixa','Dor de garganta',7,1),(30,'queixa','Gripe / resfriado',8,1),(31,'queixa','Machucado / ferimento',9,1),(32,'queixa','Alergia',10,1),(33,'queixa','Crise de ansiedade',11,1),(34,'queixa','Pressão alta / baixa',12,1),(35,'queixa','Outro',13,1),(36,'motivo_triagem_psicologica','Crise de ansiedade',1,1),(37,'motivo_triagem_psicologica','Ataque de pânico',2,1),(38,'motivo_triagem_psicologica','Choro intenso',3,1),(39,'motivo_triagem_psicologica','Nervosismo',4,1),(40,'motivo_triagem_psicologica','Outro',5,1),(41,'sintoma_triagem_psicologica','Falta de ar',1,1),(42,'sintoma_triagem_psicologica','Tontura',2,1),(43,'sintoma_triagem_psicologica','Tremores',3,1),(44,'sintoma_triagem_psicologica','Taquicardia',4,1),(45,'sintoma_triagem_psicologica','Choro intenso',5,1),(46,'sintoma_triagem_psicologica','Aperto no peito',6,1);
 /*!40000 ALTER TABLE `opcao_sistema` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -346,7 +346,7 @@ CREATE TABLE `pergunta` (
   `perg_descricao` text NOT NULL,
   PRIMARY KEY (`perg_id`),
   KEY `ix_pergunta_descricao` (`perg_descricao`(100))
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -428,7 +428,7 @@ CREATE TABLE `responsavel` (
   `resp_nome` varchar(100) NOT NULL,
   PRIMARY KEY (`resp_id`),
   KEY `ix_responsavel_nome` (`resp_nome`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -469,7 +469,7 @@ CREATE TABLE `servidor` (
   KEY `ix_servidor_email` (`serv_email`),
   KEY `fk_servidor_funcao` (`func_id`),
   CONSTRAINT `fk_servidor_funcao` FOREIGN KEY (`func_id`) REFERENCES `funcao` (`func_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -504,7 +504,7 @@ CREATE TABLE `sessao_dispositivo` (
   UNIQUE KEY `uk_sessao_token` (`sess_token`),
   KEY `ix_sessao_servidor` (`serv_id`,`sess_ativa`),
   CONSTRAINT `fk_sessao_servidor` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -538,7 +538,7 @@ CREATE TABLE `telefone` (
   CONSTRAINT `fk_telefone_aluno1` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`),
   CONSTRAINT `fk_telefone_responsavel1` FOREIGN KEY (`resp_id`) REFERENCES `responsavel` (`resp_id`),
   CONSTRAINT `fk_telefone_servidor` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -581,9 +581,9 @@ CREATE TABLE `triagem` (
   KEY `fk_triagem_alternativa1_idx` (`alte_id`),
   CONSTRAINT `fk_triagem_alternativa1` FOREIGN KEY (`alte_id`) REFERENCES `alternativa` (`alte_id`),
   CONSTRAINT `fk_triagem_aluno1` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`),
-  CONSTRAINT `fk_triagem_consulta1` FOREIGN KEY (`cons_id`) REFERENCES `consulta` (`cons_id`),
+  CONSTRAINT `fk_triagem_consulta1` FOREIGN KEY (`cons_id`) REFERENCES `consulta` (`cons_id`) ON DELETE SET NULL,
   CONSTRAINT `fk_triagem_servidor1` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -595,6 +595,30 @@ LOCK TABLES `triagem` WRITE;
 INSERT INTO `triagem` VALUES (2,NULL,9,2,NULL,'Satisfeito','Quando você olha no espelho, você fica:',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(3,NULL,9,2,NULL,'Motivado','Diariamente você se sente:',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(4,NULL,9,2,NULL,'tudo','O que você mais gosta em si mesmo?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(5,NULL,9,2,NULL,'ler','Qual é o seu hobby? (O que você mais gosta de fazer?)',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(6,NULL,9,2,NULL,'Sim','Você possui algum objetivo de vida?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(7,NULL,9,2,NULL,'Bons / Motivadores / Esperançosos','Geralmente, como são seus pensamentos?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(8,NULL,9,2,NULL,'Sim','Você já teve a sua primeira menstruação?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(9,NULL,9,2,NULL,'Não','Durante seu período menstrual, você sente cólicas?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(10,NULL,9,2,NULL,'2 -','Qual a intensidade das cólicas?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(11,NULL,9,2,NULL,'Não','Costuma tomar alguma medicação para cólicas?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(12,NULL,9,2,NULL,'Não','Você já foi em alguma consulta Ginecológica?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37');
 /*!40000 ALTER TABLE `triagem` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `triagem_psicologica`
+--
+
+DROP TABLE IF EXISTS `triagem_psicologica`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `triagem_psicologica` (
+  `trps_id` int(11) NOT NULL AUTO_INCREMENT,
+  `alun_id` int(11) NOT NULL,
+  `serv_id` int(11) DEFAULT NULL,
+  `trps_motivo` varchar(100) NOT NULL,
+  `trps_gravidade` enum('Leve','Média','Grave') NOT NULL,
+  `trps_sintomas` text DEFAULT NULL,
+  `trps_observacoes` text DEFAULT NULL,
+  `trps_criado_em` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`trps_id`),
+  KEY `ix_triagem_psicologica_aluno` (`alun_id`,`trps_criado_em`),
+  KEY `fk_triagem_psicologica_servidor_idx` (`serv_id`),
+  CONSTRAINT `fk_triagem_psicologica_aluno` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_triagem_psicologica_servidor` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `triagem_rapida`
@@ -644,7 +668,7 @@ CREATE TABLE `turma` (
   `turm_ano` varchar(2) NOT NULL,
   `turm_turno` varchar(25) NOT NULL,
   PRIMARY KEY (`turm_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

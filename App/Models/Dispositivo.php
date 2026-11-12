@@ -72,6 +72,15 @@ class Dispositivo
     }
 
     // Verifica se a sessão ainda é válida (não foi encerrada remotamente).
+    // O servidor ainda existe e está ativo? (desativado pelo admin = sem acesso)
+    public function servidorAtivo($servId)
+    {
+        $this->db->query("SELECT 1 AS ok FROM servidor WHERE serv_id = :serv AND serv_status = 'ativo' LIMIT 1");
+        $this->db->bind(':serv', (int) $servId);
+
+        return (bool) $this->db->resultado();
+    }
+
     public function sessaoAtiva($servId, $token)
     {
         $this->db->query("
