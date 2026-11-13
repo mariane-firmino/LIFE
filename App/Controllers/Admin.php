@@ -60,6 +60,13 @@ class Admin extends Controller
     // Totais de servidores e alunos.
     // =========================================================
 
+    // Endereço sem método (ex.: /controlador): leva à página principal desta área.
+    public function index()
+    {
+        URL::redirecionar('admin/home');
+        exit;
+    }
+
     public function home()
     {
         $dados = [
@@ -223,6 +230,10 @@ class Admin extends Controller
         $nasc = DateTime::createFromFormat('Y-m-d', $form['data_nascimento']);
         if (!$nasc || $nasc->format('Y-m-d') !== $form['data_nascimento'] || $nasc > new DateTime('today')) {
             $form['data_nascimento_erro'] = 'Data de nascimento inválida';
+            $temErro = true;
+        } elseif ($nasc > (new DateTime('today'))->modify('-18 years')) {
+            // Servidor precisa ter 18 anos ou mais.
+            $form['data_nascimento_erro'] = 'O servidor precisa ter 18 anos ou mais';
             $temErro = true;
         }
 

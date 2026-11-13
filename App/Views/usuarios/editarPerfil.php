@@ -154,6 +154,8 @@ $fotoPerfil = !empty($usuario->serv_foto)
                             type="date"
                             name="data_nascimento"
                             id="data_nascimento"
+                            max="<?= date('Y-m-d', strtotime('-18 years')) ?>"
+                            title="O servidor precisa ter 18 anos ou mais"
                             class="form-control"
                             value="<?= htmlspecialchars($usuario->serv_dt_nascimento ?? '') ?>">
                     </div>

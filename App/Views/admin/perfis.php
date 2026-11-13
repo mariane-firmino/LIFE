@@ -305,7 +305,7 @@ $formComErro = $abaAtiva === 'aba-adicionar' && !empty($form);
 
                     <div class="col-md-4">
                         <label for="admNasc" class="form-label">Data de nascimento <span class="text-danger">*</span></label>
-                        <input type="date" id="admNasc" name="data_nascimento" max="<?= date('Y-m-d') ?>" required
+                        <input type="date" id="admNasc" name="data_nascimento" max="<?= date('Y-m-d', strtotime('-18 years')) ?>" title="O servidor precisa ter 18 anos ou mais" required
                             class="form-control<?= admInvalido($form, 'data_nascimento') ?>"
                             value="<?= admValor($form, 'data_nascimento') ?>">
                         <?php admErro($form, 'data_nascimento'); ?>

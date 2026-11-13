@@ -385,15 +385,50 @@ class Usuario
             return false;
         }
 
-        // Atualiza o telefone.
-        $this->db->query("
-            UPDATE telefone
-            SET tele_numero = :telefone
-            WHERE serv_id = :id
-        ");
+        return $this->salvarTelefone($id, $telefone);
+    }
+
+
+    // ---------------------------------------------------------
+    // SALVAR TELEFONE DO SERVIDOR
+    // Antes era só um UPDATE: quem não tinha telefone cadastrado
+    // "salvava" o número, ele aparecia (vinha da sessão), mas nada
+    // ia para o banco; ao editar o perfil de novo o campo vinha
+    // vazio e o número sumia. Agora cria a linha se ela não existir
+    // e apaga quando o campo é deixado em branco.
+    // ---------------------------------------------------------
+
+    private function salvarTelefone($id, $telefone)
+    {
+        $telefone = trim((string) $telefone);
+
+        // Campo vazio: remove o telefone (a coluna não aceita vazio/NULL).
+        if ($telefone === '') {
+            $this->db->query("DELETE FROM telefone WHERE serv_id = :id");
+            $this->db->bind(':id', $id);
+            return $this->db->executa();
+        }
+
+        $this->db->query("SELECT tele_id FROM telefone WHERE serv_id = :id ORDER BY tele_id LIMIT 1");
+        $this->db->bind(':id', $id);
+        $existente = $this->db->resultado();
+
+        if ($existente) {
+            $this->db->query("
+                UPDATE telefone
+                SET tele_numero = :telefone
+                WHERE tele_id = :tele_id
+            ");
+            $this->db->bind(':tele_id', (int) $existente->tele_id);
+        } else {
+            $this->db->query("
+                INSERT INTO telefone (tele_numero, serv_id)
+                VALUES (:telefone, :id)
+            ");
+            $this->db->bind(':id', $id);
+        }
 
         $this->db->bind(':telefone', $telefone);
-        $this->db->bind(':id', $id);
 
         return $this->db->executa();
     }

@@ -25,6 +25,13 @@ class Calendarios extends Controller
     // ---------------------------------------------------------
     // Página principal
     // ---------------------------------------------------------
+    // Endereço sem método (ex.: /controlador): leva à página principal desta área.
+    public function index()
+    {
+        URL::redirecionar('calendarios/calendario');
+        exit;
+    }
+
     public function calendario()
     {
         $this->view('calendarios/calendario', [

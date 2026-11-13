@@ -77,6 +77,13 @@ class Anexos extends Controller
     // ENVIAR DOCUMENTO
     // Valida os campos, salva o arquivo e registra no banco.
     // ---------------------------------------------------------
+    // Endereço sem método (ex.: /controlador): leva à página principal desta área.
+    public function index()
+    {
+        URL::redirecionar('alunos/consulta');
+        exit;
+    }
+
     public function enviarDocumento($id = null, $tipo = null)
     {
         $aluno = $this->carregarAluno($id);

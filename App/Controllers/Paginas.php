@@ -38,7 +38,9 @@ class Paginas extends Controller
 
     public function index()
     {
-        URL::redirecionar('usuarios/login');
+        // Já logado: vai direto para a home (o admin é levado à home dele).
+        URL::redirecionar(isset($_SESSION['usuario_id']) ? 'paginas/home' : 'usuarios/login');
+        exit;
     }
 
 

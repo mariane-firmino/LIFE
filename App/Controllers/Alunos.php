@@ -121,6 +121,13 @@ class Alunos extends Controller
     // acessar as informações dos alunos no banco de dados.
     // =========================================================
 
+    // Endereço sem método (ex.: /controlador): leva à página principal desta área.
+    public function index()
+    {
+        URL::redirecionar('alunos/consulta');
+        exit;
+    }
+
     public function __construct()
     {
         $this->alunoModel = $this->model('Aluno');
@@ -266,6 +273,10 @@ class Alunos extends Controller
                     || $nasc > new DateTime('today')
                 ) :
                     $dados['data_nascimento_erro'] = 'Data de nascimento inválida';
+
+                // Aluno precisa ter 13 anos ou mais.
+                elseif ($nasc > (new DateTime('today'))->modify('-13 years')) :
+                    $dados['data_nascimento_erro'] = 'O aluno precisa ter 13 anos ou mais';
 
                 // Verifica o nome do aluno.
                 elseif (Checa::checarNome($dados['nome'])) :
@@ -560,6 +571,10 @@ class Alunos extends Controller
                 $nasc = DateTime::createFromFormat('Y-m-d', $dados['data_nascimento']);
                 if (!$nasc || $nasc->format('Y-m-d') !== $dados['data_nascimento'] || $nasc > new DateTime('today')) :
                     $dados['data_nascimento_erro'] = 'Data de nascimento inválida';
+                    $temErro = true;
+                elseif ($nasc > (new DateTime('today'))->modify('-13 years')) :
+                    // Aluno precisa ter 13 anos ou mais.
+                    $dados['data_nascimento_erro'] = 'O aluno precisa ter 13 anos ou mais';
                     $temErro = true;
                 endif;
 
@@ -870,20 +885,20 @@ class Alunos extends Controller
             $erro = true;
         }
 
-        // Altura: aceita vírgula ou ponto, entre 0,5 m e 2,5 m.
+        // Altura: aceita vírgula ou ponto, maior que 0 e até 3 m.
         if (($dados['altura'] ?? '') !== '') {
             $alt = str_replace(',', '.', $dados['altura']);
-            if (!preg_match('/^\d(\.\d{1,2})?$/', $alt) || (float) $alt < 0.5 || (float) $alt > 2.5) {
-                $dados['altura_erro'] = 'Altura inválida (ex: 1,70)';
+            if (!preg_match('/^\d(\.\d{1,2})?$/', $alt) || (float) $alt <= 0 || (float) $alt > 3) {
+                $dados['altura_erro'] = 'Altura fora do normal: informe até 3 m (ex: 1,70)';
                 $erro = true;
             }
         }
 
-        // Peso: aceita vírgula ou ponto, entre 10 kg e 300 kg.
+        // Peso: aceita vírgula ou ponto, maior que 0 e até 300 kg.
         if (($dados['peso'] ?? '') !== '') {
             $pes = str_replace(',', '.', $dados['peso']);
-            if (!preg_match('/^\d{1,3}(\.\d{1,2})?$/', $pes) || (float) $pes < 10 || (float) $pes > 300) {
-                $dados['peso_erro'] = 'Peso inválido (ex: 65,5)';
+            if (!preg_match('/^\d{1,3}(\.\d{1,2})?$/', $pes) || (float) $pes <= 0 || (float) $pes > 300) {
+                $dados['peso_erro'] = 'Peso fora do normal: informe até 300 kg (ex: 65,5)';
                 $erro = true;
             }
         }

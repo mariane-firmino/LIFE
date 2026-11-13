@@ -203,12 +203,12 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
 
                             <div class="col-md-6">
                                 <label for="inputnomealuno" class="form-label">Nome aluno <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="inputnomealuno" name="nome" maxlength="225" required value="<?= valor($dados, 'nome') ?>">
+                                <input type="text" class="form-control" id="inputnomealuno" name="nome" maxlength="225" data-mascara="nome" autocomplete="off" required value="<?= valor($dados, 'nome') ?>">
                                 <?php erro($dados, 'nome'); ?>
                             </div>
                             <div class="col-md-6">
                                 <label for="inputdatadenascimento" class="form-label">Data de nascimento <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" id="inputdatadenascimento" name="data_nascimento" required value="<?= valor($dados, 'data_nascimento') ?>">
+                                <input type="date" class="form-control" id="inputdatadenascimento" name="data_nascimento" max="<?= date('Y-m-d', strtotime('-13 years')) ?>" title="O aluno precisa ter 13 anos ou mais" required value="<?= valor($dados, 'data_nascimento') ?>">
                                 <?php erro($dados, 'data_nascimento'); ?>
                             </div>
                             <div class="col-md-6">
@@ -263,12 +263,12 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
                             </div>
                             <div class="col-md-4">
                                 <label for="inputaltura" class="form-label">Altura (m)</label>
-                                <input type="text" class="form-control" maxlength="4" inputmode="numeric" placeholder="Ex: 1,70" id="inputaltura" name="altura" value="<?= valor($dados, 'altura') ?>">
+                                <input type="text" class="form-control" maxlength="4" inputmode="numeric" data-mascara="altura" placeholder="Ex: 1,70" id="inputaltura" name="altura" value="<?= valor($dados, 'altura') ?>">
                                 <?php erro($dados, 'altura'); ?>
                             </div>
                             <div class="col-md-4">
                                 <label for="inputpeso" class="form-label">Peso (kg)</label>
-                                <input type="text" class="form-control" maxlength="6" inputmode="decimal" placeholder="Ex: 65,5" id="inputpeso" name="peso" value="<?= valor($dados, 'peso') ?>">
+                                <input type="text" class="form-control" maxlength="6" inputmode="decimal" data-mascara="peso" placeholder="Ex: 65,5" id="inputpeso" name="peso" value="<?= valor($dados, 'peso') ?>">
                                 <?php erro($dados, 'peso'); ?>
                             </div>
 
@@ -281,7 +281,7 @@ $condicoesMarcadas = ($dados['condicoes'] ?? '') === ''
 
                             <div class="col-md-6">
                                 <label for="inputnomeresponsavel" class="form-label">Nome do responsável <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="inputnomeresponsavel" name="nome_responsavel" maxlength="100" required value="<?= valor($dados, 'nome_responsavel') ?>">
+                                <input type="text" class="form-control" id="inputnomeresponsavel" name="nome_responsavel" maxlength="100" data-mascara="nome" required value="<?= valor($dados, 'nome_responsavel') ?>">
                                 <?php erro($dados, 'nome_responsavel'); ?>
                             </div>
                             <div class="col-md-6">

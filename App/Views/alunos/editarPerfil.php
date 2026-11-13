@@ -149,8 +149,8 @@ $id = (int) $dados['aluno_id'];
                             </h5>
                             <div class="row g-3">
                                 <?php
-                                ep_input($dados, 'nome', 'Nome completo', 'col-md-6', 'maxlength="225"');
-                                ep_input($dados, 'data_nascimento', 'Data de nascimento', 'col-md-6', '', 'date');
+                                ep_input($dados, 'nome', 'Nome completo', 'col-md-6', 'maxlength="225" data-mascara="nome" autocomplete="off"');
+                                ep_input($dados, 'data_nascimento', 'Data de nascimento', 'col-md-6', 'max="' . date('Y-m-d', strtotime('-13 years')) . '" title="O aluno precisa ter 13 anos ou mais"', 'date');
                                 ep_select($dados, 'sexo', 'Sexo biológico', ['Masculino', 'Feminino', 'Outro']);
                                 ep_input($dados, 'matricula', 'Matrícula', 'col-md-6', 'maxlength="13"');
                                 ep_input($dados, 'rg', 'RG', 'col-md-6', 'maxlength="14" data-mascara="rg"');
@@ -158,8 +158,8 @@ $id = (int) $dados['aluno_id'];
                                 ep_select($dados, 'turno', 'Turno', $dados['listas']['turno'] ?? [], 'col-md-6');
                                 ep_select($dados, 'ano_turma', 'Ano da turma', $dados['listas']['ano_turma'] ?? [], 'col-md-6');
                                 ep_select($dados, 'tipo_sanguineo', 'Tipo sanguíneo', ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], 'col-md-4');
-                                ep_input($dados, 'altura', 'Altura (m)', 'col-md-4', 'maxlength="4" inputmode="numeric" placeholder="Ex: 1,70"');
-                                ep_input($dados, 'peso', 'Peso (kg)', 'col-md-4', 'maxlength="6" inputmode="decimal" placeholder="Ex: 65,5"');
+                                ep_input($dados, 'altura', 'Altura (m)', 'col-md-4', 'maxlength="4" inputmode="numeric" data-mascara="altura" placeholder="Ex: 1,70"');
+                                ep_input($dados, 'peso', 'Peso (kg)', 'col-md-4', 'maxlength="6" inputmode="decimal" data-mascara="peso" placeholder="Ex: 65,5"');
                                 ?>
                             </div>
                         </div>
@@ -175,7 +175,7 @@ $id = (int) $dados['aluno_id'];
                             <div class="row g-3">
                                 <?php
                                 ep_input($dados, 'telefone_aluno', 'Telefone do aluno (WhatsApp)', 'col-12', 'maxlength="15" inputmode="tel" data-mascara="telefone" placeholder="(69) 99999-9999"');
-                                ep_input($dados, 'nome_responsavel', 'Nome do responsável', 'col-12', 'maxlength="100"');
+                                ep_input($dados, 'nome_responsavel', 'Nome do responsável', 'col-12', 'maxlength="100" data-mascara="nome"');
                                 ep_input($dados, 'telefone_responsavel', 'Telefone do responsável (WhatsApp)', 'col-12', 'maxlength="15" inputmode="tel" data-mascara="telefone" placeholder="(69) 99999-9999"');
                                 ?>
                             </div>

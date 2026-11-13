@@ -42,7 +42,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Data de Nascimento</label>
-                        <input type="date" name="data_nascimento" class="form-control <?= !empty($dados['data_nascimento_erro']) ? 'is-invalid' : '' ?>" placeholder="Selecione a data de nascimento" value="<?= isset($dados['data_nascimento']) ? $dados['data_nascimento'] : '' ?>">
+                        <input type="date" name="data_nascimento" max="<?= date('Y-m-d', strtotime('-18 years')) ?>" title="O servidor precisa ter 18 anos ou mais" class="form-control <?= !empty($dados['data_nascimento_erro']) ? 'is-invalid' : '' ?>" placeholder="Selecione a data de nascimento" value="<?= isset($dados['data_nascimento']) ? $dados['data_nascimento'] : '' ?>">
                         <?php if (!empty($dados['data_nascimento_erro'])) : ?>
                             <div class="invalid-feedback">
                                 <?= $dados['data_nascimento_erro'] ?>

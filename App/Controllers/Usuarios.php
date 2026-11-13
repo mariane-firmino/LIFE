@@ -35,11 +35,17 @@ class Usuarios extends Controller
     // - Pelo menos um número
     // - Pelo menos um caractere especial
     // =========================================================
-    // Data no formato AAAA-MM-DD, existente e não futura.
+    // Data no formato AAAA-MM-DD e existente.
     private function dataNascimentoValida(string $data): bool
     {
         $nasc = DateTime::createFromFormat('Y-m-d', $data);
-        return $nasc && $nasc->format('Y-m-d') === $data && $nasc <= new DateTime('today');
+        return $nasc && $nasc->format('Y-m-d') === $data;
+    }
+
+    // Servidor precisa ter 18 anos ou mais.
+    private function maiorDeIdade(string $data): bool
+    {
+        return new DateTime($data) <= (new DateTime('today'))->modify('-18 years');
     }
 
     // A função escolhida existe na tabela funcao?
@@ -162,6 +168,9 @@ class Usuarios extends Controller
                 // (antes uma data como 2040 era aceita).
                 elseif (!$this->dataNascimentoValida($dados['data_nascimento'])):
                     $dados['data_nascimento_erro'] = 'Informe uma data de nascimento válida';
+
+                elseif (!$this->maiorDeIdade($dados['data_nascimento'])):
+                    $dados['data_nascimento_erro'] = 'O servidor precisa ter 18 anos ou mais';
 
                 // Telefone: com DDD, 10 ou 11 números.
                 elseif (!in_array(strlen(preg_replace('/\D/', '', $dados['telefone'])), [10, 11], true)):
@@ -290,6 +299,12 @@ class Usuarios extends Controller
 
     public function login()
     {
+        // Quem já está logado não precisa ver a tela de login de novo.
+        if (isset($_SESSION['usuario_id']) && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+            URL::redirecionar($_SESSION['usuario_perfil'] === 'admin' ? 'admin/home' : 'paginas/home');
+            exit;
+        }
+
         // Recebe os dados do formulário de login (já sanitizados).
         $formulario = filter_input_array(
             INPUT_POST,
@@ -390,6 +405,14 @@ class Usuarios extends Controller
         $_SESSION['sessao_token'] = ControleSessao::modelo()->registrar($usuario->serv_id);
 
         URL::redirecionar($_SESSION['usuario_perfil'] === 'admin' ? 'admin/home' : 'paginas/home');
+    }
+
+
+    // /usuarios: logado vai para o perfil; senão, para o login.
+    public function index()
+    {
+        URL::redirecionar(isset($_SESSION['usuario_id']) ? 'paginas/perfil' : 'usuarios/login');
+        exit;
     }
 
 
@@ -837,12 +860,26 @@ class Usuarios extends Controller
                 exit;
             }
 
+            if (!$this->maiorDeIdade($dataNascimento)) {
+                $_SESSION['erro'] = 'O servidor precisa ter 18 anos ou mais.';
+                URL::redirecionar('usuarios/editarPerfil');
+                exit;
+            }
+
             // Telefone (opcional): (00) 0000-0000 ou (00) 00000-0000.
             $digitosTelefone = preg_replace('/\D/', '', $telefone);
             if ($telefone !== '' && !in_array(strlen($digitosTelefone), [10, 11], true)) {
                 $_SESSION['erro'] = 'Informe o telefone com DDD, ex.: (69) 99999-9999.';
                 URL::redirecionar('usuarios/editarPerfil');
                 exit;
+            }
+
+            // Grava sempre no mesmo formato, montado só com os dígitos
+            // (cabe na coluna tele_numero, varchar(15)).
+            if ($telefone !== '') {
+                $telefone = strlen($digitosTelefone) === 11
+                    ? preg_replace('/^(\d{2})(\d{5})(\d{4})$/', '($1) $2-$3', $digitosTelefone)
+                    : preg_replace('/^(\d{2})(\d{4})(\d{4})$/', '($1) $2-$3', $digitosTelefone);
             }
 
             // Impede usar um e-mail que já pertence a outro servidor
