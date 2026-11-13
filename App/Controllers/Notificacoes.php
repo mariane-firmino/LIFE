@@ -62,15 +62,19 @@ class Notificacoes extends Controller
         // /notificacoes/notificacao?pesquisa=consulta
         // =====================================================
 
-        $pesquisa = isset($_GET['pesquisa'])
-            ? trim($_GET['pesquisa'])
+        // Só aceita texto (um "?pesquisa[]=x" derrubava a página),
+        // datas no formato do campo (AAAA-MM-DD) e os status conhecidos.
+        $pesquisa = is_string($_GET['pesquisa'] ?? null)
+            ? mb_substr(trim($_GET['pesquisa']), 0, 100)
             : '';
 
-        $data = isset($_GET['data'])
-            ? $_GET['data']
-            : '';
+        $data = is_string($_GET['data'] ?? null) ? $_GET['data'] : '';
+        $dataValida = DateTime::createFromFormat('Y-m-d', $data);
+        if (!$dataValida || $dataValida->format('Y-m-d') !== $data) {
+            $data = '';
+        }
 
-        $status = isset($_GET['status'])
+        $status = in_array($_GET['status'] ?? '', ['nao_lidas', 'lidas'], true)
             ? $_GET['status']
             : '';
 
@@ -124,8 +128,10 @@ class Notificacoes extends Controller
     // Recebe o ID da notificação pela URL e busca seus dados.
     // =========================================================
 
-    public function detalhe($id)
+    public function detalhe($id = null)
     {
+        $this->exigirId($id);
+
         $notificacao = $this->notificacaoModel->buscarPorId(
             (int) $id,
             (int) $_SESSION['usuario_id']
@@ -174,9 +180,10 @@ class Notificacoes extends Controller
     // Recebe o ID da notificação e remove ela do banco.
     // =========================================================
 
-    public function excluir($id)
+    public function excluir($id = null)
     {
         $this->validarPostComToken();
+        $this->exigirId($id);
 
         // Carrega o Model de notificações.
         $notificacaoModel =
@@ -242,9 +249,10 @@ class Notificacoes extends Controller
     // já foi visualizada pelo usuário.
     // =========================================================
 
-    public function marcarComoLida($id)
+    public function marcarComoLida($id = null)
     {
         $this->validarPostComToken();
+        $this->exigirId($id);
 
         $this->notificacaoModel->marcarComoLida(
             (int) $id,
@@ -263,6 +271,22 @@ class Notificacoes extends Controller
         );
 
         exit;
+    }
+
+    // /notificacoes sem o nome da página: abre a lista
+    // (antes respondia "Página não encontrada").
+    public function index()
+    {
+        URL::redirecionar('notificacoes/notificacao');
+    }
+
+    // ID ausente ou não numérico (ex.: /notificacoes/detalhe):
+    // volta para a lista em vez de dar erro fatal.
+    private function exigirId($id): void
+    {
+        if (!ctype_digit((string) $id)) {
+            URL::redirecionar('notificacoes/notificacao');
+        }
     }
 
     private function validarPostComToken(): void

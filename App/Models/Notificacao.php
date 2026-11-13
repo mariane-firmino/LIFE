@@ -159,10 +159,12 @@ class Notificacao
             WHERE serv_id = :id";
 
         // Pesquisa por título ou descrição
-        if (!empty($pesquisa)) {
+        // Dois parâmetros separados: o mesmo nome repetido só funciona
+        // com prepares emulados do PDO.
+        if ($pesquisa !== '') {
             $sql .= " AND (
-                    noti_titulo LIKE :pesquisa 
-                    OR noti_descricao LIKE :pesquisa
+                    noti_titulo LIKE :pesquisa_titulo
+                    OR noti_descricao LIKE :pesquisa_descricao
                   )";
         }
 
@@ -186,8 +188,9 @@ class Notificacao
 
         $this->db->bind('id', $id);
 
-        if (!empty($pesquisa)) {
-            $this->db->bind('pesquisa', '%' . $pesquisa . '%');
+        if ($pesquisa !== '') {
+            $this->db->bind('pesquisa_titulo', '%' . $pesquisa . '%');
+            $this->db->bind('pesquisa_descricao', '%' . $pesquisa . '%');
         }
 
         if (!empty($data)) {

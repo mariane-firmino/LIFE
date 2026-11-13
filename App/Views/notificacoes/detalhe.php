@@ -43,7 +43,7 @@ include '../App/Views/menu.php';
     <div class="container-fluid px-3 px-md-4">
         <div class="mt-4">
             <h3>
-            <?= htmlspecialchars($dados['notificacao']->noti_titulo); ?>
+            <?= htmlspecialchars((string) ($dados['notificacao']->noti_titulo ?? ''), ENT_QUOTES, 'UTF-8'); ?>
         </h3>
         <small class="text-muted">
             Data:
@@ -57,15 +57,27 @@ include '../App/Views/menu.php';
 
             <p class="mb-0">
                 <?= nl2br(
-                    htmlspecialchars($dados['notificacao']->noti_descricao)
+                    htmlspecialchars((string) ($dados['notificacao']->noti_descricao ?? ''), ENT_QUOTES, 'UTF-8')
                 ); ?>
             </p>
 
         </div>
-            <form method="post" action="<?= URL ?>/notificacoes/marcarComoLida/<?= (int) $dados['notificacao']->noti_id ?>">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($dados['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
-                <button type="submit" class="btn btn-success">Marcar como lida</button>
-            </form>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                <a href="<?= URL ?>/notificacoes/notificacao" class="btn btn-outline-success">
+                    <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Voltar
+                </a>
+
+                <?php if (($dados['notificacao']->noti_status ?? '') !== 'Lida'): ?>
+                    <form method="post" class="m-0" action="<?= URL ?>/notificacoes/marcarComoLida/<?= (int) $dados['notificacao']->noti_id ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($dados['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
+                        <button type="submit" class="btn btn-success">Marcar como lida</button>
+                    </form>
+                <?php else: ?>
+                    <span class="btn btn-light disabled border-0 text-success">
+                        <i class="bi bi-check2-all me-1" aria-hidden="true"></i> Lida
+                    </span>
+                <?php endif; ?>
+            </div>
         </div>
 
     </div>

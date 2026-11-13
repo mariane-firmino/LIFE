@@ -330,7 +330,7 @@ CREATE TABLE `opcao_sistema` (
 
 LOCK TABLES `opcao_sistema` WRITE;
 /*!40000 ALTER TABLE `opcao_sistema` DISABLE KEYS */;
-INSERT INTO `opcao_sistema` VALUES (1,'ano_turma','24',1,1),(2,'ano_turma','25',2,1),(3,'ano_turma','26',3,1),(4,'curso','Técnico em informática',1,1),(5,'curso','Manutenção e Suporte em Informática',2,1),(6,'curso','Biotecnologia',3,1),(7,'curso','Enfermagem',4,1),(8,'curso','Licenciatura em Ciências',5,1),(9,'curso','Licenciatura em Biologia',6,1),(10,'turno','Matutino',1,1),(11,'turno','Vespertino',2,1),(12,'turno','Noturno',3,1),(13,'tipo_escola','Escola pública',1,1),(14,'tipo_escola','Escola privada',2,1),(15,'tipo_escola','Escola estadual',3,1),(16,'motivo_ifro','Qualidade do ensino',1,1),(17,'motivo_ifro','Proximidade da escola',2,1),(18,'motivo_ifro','Programa de bolsas',3,1),(19,'motivo_ifro','Recomendação de outros',4,1),(20,'acesso_saude','SUS',1,1),(21,'acesso_saude','Privado',2,1),(22,'acesso_saude','Convênio',3,1),(23,'queixa','Dor de cabeça',1,1),(24,'queixa','Cólica',2,1),(25,'queixa','Febre',3,1),(26,'queixa','Dor de barriga',4,1),(27,'queixa','Enjoo / vômito',5,1),(28,'queixa','Tontura / mal-estar',6,1),(29,'queixa','Dor de garganta',7,1),(30,'queixa','Gripe / resfriado',8,1),(31,'queixa','Machucado / ferimento',9,1),(32,'queixa','Alergia',10,1),(33,'queixa','Crise de ansiedade',11,1),(34,'queixa','Pressão alta / baixa',12,1),(35,'queixa','Outro',13,1),(36,'motivo_triagem_psicologica','Crise de ansiedade',1,1),(37,'motivo_triagem_psicologica','Ataque de pânico',2,1),(38,'motivo_triagem_psicologica','Choro intenso',3,1),(39,'motivo_triagem_psicologica','Nervosismo',4,1),(40,'motivo_triagem_psicologica','Outro',5,1),(41,'sintoma_triagem_psicologica','Falta de ar',1,1),(42,'sintoma_triagem_psicologica','Tontura',2,1),(43,'sintoma_triagem_psicologica','Tremores',3,1),(44,'sintoma_triagem_psicologica','Taquicardia',4,1),(45,'sintoma_triagem_psicologica','Choro intenso',5,1),(46,'sintoma_triagem_psicologica','Aperto no peito',6,1);
+INSERT INTO `opcao_sistema` VALUES (1,'ano_turma','3º ano',3,1),(2,'ano_turma','2º ano',2,1),(3,'ano_turma','1º ano',1,1),(4,'curso','Técnico em informática',1,1),(5,'curso','Manutenção e Suporte em Informática',2,1),(6,'curso','Biotecnologia',3,1),(7,'curso','Enfermagem',4,1),(8,'curso','Licenciatura em Ciências',5,1),(9,'curso','Licenciatura em Biologia',6,1),(10,'turno','Matutino',1,1),(11,'turno','Vespertino',2,1),(12,'turno','Noturno',3,1),(13,'tipo_escola','Escola pública',1,1),(14,'tipo_escola','Escola privada',2,1),(15,'tipo_escola','Escola estadual',3,1),(16,'motivo_ifro','Qualidade do ensino',1,1),(17,'motivo_ifro','Proximidade da escola',2,1),(18,'motivo_ifro','Programa de bolsas',3,1),(19,'motivo_ifro','Recomendação de outros',4,1),(20,'acesso_saude','SUS',1,1),(21,'acesso_saude','Privado',2,1),(22,'acesso_saude','Convênio',3,1),(23,'queixa','Dor de cabeça',1,1),(24,'queixa','Cólica',2,1),(25,'queixa','Febre',3,1),(26,'queixa','Dor de barriga',4,1),(27,'queixa','Enjoo / vômito',5,1),(28,'queixa','Tontura / mal-estar',6,1),(29,'queixa','Dor de garganta',7,1),(30,'queixa','Gripe / resfriado',8,1),(31,'queixa','Machucado / ferimento',9,1),(32,'queixa','Alergia',10,1),(33,'queixa','Crise de ansiedade',11,1),(34,'queixa','Pressão alta / baixa',12,1),(35,'queixa','Outro',13,1),(36,'motivo_triagem_psicologica','Crise de ansiedade',1,1),(37,'motivo_triagem_psicologica','Ataque de pânico',2,1),(38,'motivo_triagem_psicologica','Choro intenso',3,1),(39,'motivo_triagem_psicologica','Nervosismo',4,1),(40,'motivo_triagem_psicologica','Outro',5,1),(41,'sintoma_triagem_psicologica','Falta de ar',1,1),(42,'sintoma_triagem_psicologica','Tontura',2,1),(43,'sintoma_triagem_psicologica','Tremores',3,1),(44,'sintoma_triagem_psicologica','Taquicardia',4,1),(45,'sintoma_triagem_psicologica','Choro intenso',5,1),(46,'sintoma_triagem_psicologica','Aperto no peito',6,1);
 /*!40000 ALTER TABLE `opcao_sistema` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -665,7 +665,7 @@ DROP TABLE IF EXISTS `turma`;
 CREATE TABLE `turma` (
   `turm_id` int NOT NULL AUTO_INCREMENT,
   `turm_curso` varchar(50) NOT NULL,
-  `turm_ano` varchar(2) NOT NULL,
+  `turm_ano` varchar(10) NOT NULL,
   `turm_turno` varchar(25) NOT NULL,
   PRIMARY KEY (`turm_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -677,7 +677,7 @@ CREATE TABLE `turma` (
 
 LOCK TABLES `turma` WRITE;
 /*!40000 ALTER TABLE `turma` DISABLE KEYS */;
-INSERT INTO `turma` VALUES (1,'Manutenção e Suporte em Informática','26','Matutino'),(2,'Licenciatura em Ciências','26','Vespertino'),(3,'Técnico em informática','24','Vespertino');
+INSERT INTO `turma` VALUES (1,'Manutenção e Suporte em Informática','1º ano','Matutino'),(2,'Licenciatura em Ciências','1º ano','Vespertino'),(3,'Técnico em informática','3º ano','Vespertino');
 /*!40000 ALTER TABLE `turma` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

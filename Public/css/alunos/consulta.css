@@ -27,7 +27,8 @@
 
 .consultaAlunoFiltros {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 190px 160px auto;
+    /* busca | curso | turma | doença | limpar */
+    grid-template-columns: minmax(0, 1fr) 190px 160px 190px auto;
     gap: 10px;
     width: 100%;
 }

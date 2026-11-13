@@ -22,9 +22,16 @@ include '../App/Views/menu.php';
         </div>
     </div>
 
-    <div class="container text-center">
-        <div class="row align-items-center g-3 noti-responsive">
+<?php
+// Texto seguro para o HTML (título/descrição podem vir NULL do banco).
+$notiH = static fn($texto) => htmlspecialchars((string) ($texto ?? ''), ENT_QUOTES, 'UTF-8');
+$statusAtual = (string) ($dados['status'] ?? '');
+?>
 <form action="<?= URL ?>/notificacoes/notificacao" method="GET">
+
+    <!-- Botão padrão do formulário: Enter na pesquisa mantém o status
+         escolhido (antes o Enter "clicava" em "Todas" e limpava o filtro). -->
+    <button type="submit" name="status" value="<?= $notiH($statusAtual) ?>" hidden tabindex="-1" aria-hidden="true"></button>
 
     <div class="container text-center">
         <div class="row align-items-center g-3 noti-responsive">
@@ -93,17 +100,15 @@ include '../App/Views/menu.php';
         class="form-control" 
         id="data" 
         name="data"
-        value="<?= $dados['data'] ?? '' ?>"
-        onchange="this.form.submit()">
+        value="<?= $notiH($dados['data'] ?? '') ?>"
+        aria-label="Filtrar por data"
+        onchange="this.form.requestSubmit ? this.form.requestSubmit() : this.form.submit()">
             </div>
 
         </div>
     </div>
 
 </form>
-
-        </div>
-    </div>
 
     <?php if (!empty($dados['notificacoes'])): ?>
 
@@ -120,12 +125,12 @@ include '../App/Views/menu.php';
 
                         <h6 class="mb-1">
                             <strong>
-                                <?= htmlspecialchars($notificacao->noti_titulo); ?>
+                                <?= $notiH($notificacao->noti_titulo); ?>
                             </strong>
                         </h6>
 
                         <small>
-                            <?= htmlspecialchars($notificacao->noti_descricao); ?>
+                            <?= $notiH($notificacao->noti_descricao); ?>
                         </small>
 
                     </div>
@@ -144,7 +149,7 @@ include '../App/Views/menu.php';
 
                         <div class="dropdown">
 
-                            <button class="btn p-0 border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn p-0 border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Opções da notificação">
 
                                 <b class="tres-pontos">...</b>
 
@@ -162,7 +167,7 @@ include '../App/Views/menu.php';
 
                                 <?php if ($notificacao->noti_status !== 'Lida'): ?>
                                 <li>
-                                    <form method="post" action="<?= URL ?>/notificacoes/marcarComoLida/<?= $notificacao->noti_id ?>">
+                                    <form method="post" class="m-0" action="<?= URL ?>/notificacoes/marcarComoLida/<?= (int) $notificacao->noti_id ?>">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($dados['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
                                         <button type="submit" class="dropdown-item">Marcar como lida</button>
                                     </form>
@@ -216,7 +221,7 @@ include '../App/Views/menu.php';
                                 Cancelar
                             </button>
 
-                            <form method="post" action="<?= URL ?>/notificacoes/excluir/<?= $notificacao->noti_id; ?>">
+                            <form method="post" class="d-inline m-0" action="<?= URL ?>/notificacoes/excluir/<?= (int) $notificacao->noti_id; ?>">
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($dados['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
                                 <button type="submit" class="btn btn-danger">Confirmar</button>
                             </form>
@@ -239,6 +244,5 @@ include '../App/Views/menu.php';
 
     <?php endif; ?>
 
-</div>
 </div>
 <?php include '../App/Views/footer.php' ?>

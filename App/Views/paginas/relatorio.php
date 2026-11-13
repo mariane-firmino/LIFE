@@ -36,7 +36,7 @@ $dataBr = static function ($valor, bool $comHora = false): string {
     return $tempo ? date($comHora ? 'd/m/Y H:i' : 'd/m/Y', $tempo) : '-';
 };
 
-// Texto da turma: "Curso - 26 - Matutino".
+// Texto da turma: "Curso - 1º ano - Matutino".
 $rotuloTurma = static fn($curso, $ano, $turno) => trim($curso . ' - ' . $ano . ' - ' . $turno);
 
 $tipoAtual = $dados['tipo'];

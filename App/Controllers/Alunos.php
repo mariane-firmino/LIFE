@@ -570,8 +570,7 @@ class Alunos extends Controller
                 endif;
 
                 // Ano da turma: validado mais abaixo pela lista configurável
-                // (validarOpcoes, grupo "ano_turma", ex.: 24, 25, 26).
-                // A regra antiga exigia "1º/2º..." e recusava toda edição.
+                // (validarOpcoes, grupo "ano_turma", ex.: 1º ano, 2º ano, 3º ano).
 
                 // Matrícula: tamanho máximo e verificação de duplicidade
                 // (ignorando o próprio aluno).

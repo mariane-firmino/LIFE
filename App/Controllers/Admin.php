@@ -457,11 +457,13 @@ class Admin extends Controller
     // VALIDAR VALOR DE OPÇÃO
     // Devolve a mensagem de erro, ou '' se estiver tudo certo.
     // ---------------------------------------------------------
+    // Série da turma: "1", "1º", "1°", "1o", "1 ano" ou "1º Ano" viram
+    // "1º ano" (o símbolo º é difícil de digitar em alguns teclados).
     public static function normalizarSerie($valor)
     {
         $valor = trim((string) $valor);
-        if (preg_match('/^([1-9])\s*(º|°|o|ª)?$/iu', $valor, $m)) {
-            return $m[1] . 'º';
+        if (preg_match('/^([1-9])\s*(º|°|o|ª)?\s*(ano)?$/iu', $valor, $m)) {
+            return $m[1] . 'º ano';
         }
         return $valor;
     }
@@ -470,8 +472,7 @@ class Admin extends Controller
     {
         $cfg = Opcao::GRUPOS[$grupo];
 
-        // Série da turma: "1", "1°" ou "1o" viram "1º" automaticamente
-        // (o símbolo º é difícil de digitar em alguns teclados).
+        // Série da turma: normaliza para "1º ano" antes de validar.
         if ($grupo === 'ano_turma') {
             $valor = self::normalizarSerie($valor);
         }

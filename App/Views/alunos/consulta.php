@@ -12,6 +12,32 @@ $total  = count($alunos);
 // Opções dos filtros, montadas a partir dos próprios alunos
 $cursos = [];
 $turmas = [];
+$doencas = [];        // chave em minúsculas => nome exibido
+$doencasPorAluno = []; // id do aluno => [chaves das doenças]
+
+// Doenças e condições que foram registradas na ficha de saúde do aluno:
+// condições marcadas (TEA, TDAH...), a "Outra" descrita e a doença crônica.
+function consultaAlunoDoencas($aluno)
+{
+    $lista = [];
+
+    foreach (explode(';', (string) ($aluno->condicoes ?? '')) as $condicao) {
+        $condicao = trim($condicao);
+        if ($condicao !== '' && $condicao !== 'Outra') {
+            $lista[] = $condicao;
+        }
+    }
+
+    if (trim((string) ($aluno->condicao_outra ?? '')) !== '') {
+        $lista[] = trim($aluno->condicao_outra);
+    }
+
+    if (($aluno->doenca_cronica ?? '') === 'Sim' && trim((string) ($aluno->doenca_qual ?? '')) !== '') {
+        $lista[] = trim($aluno->doenca_qual);
+    }
+
+    return $lista;
+}
 
 foreach ($alunos as $aluno) {
     if (!empty($aluno->curso)) {
@@ -20,12 +46,20 @@ foreach ($alunos as $aluno) {
     if (!empty($aluno->ano_turma)) {
         $turmas[(string) $aluno->ano_turma] = true;
     }
+
+    $doencasPorAluno[(int) $aluno->id] = [];
+    foreach (consultaAlunoDoencas($aluno) as $doenca) {
+        $chave = mb_strtolower($doenca);
+        $doencas[$chave] = $doencas[$chave] ?? $doenca;
+        $doencasPorAluno[(int) $aluno->id][] = $chave;
+    }
 }
 
 $cursos = array_keys($cursos);
 $turmas = array_keys($turmas);
 sort($cursos);
 sort($turmas);
+uasort($doencas, 'strcasecmp');
 
 // Classe de cor do turno
 function consultaAlunoClasseTurno($turno)
@@ -98,6 +132,15 @@ function consultaAlunoClasseTurno($turno)
                 <?php endforeach; ?>
             </select>
 
+            <select id="consultaAlunoFiltroDoenca" class="consultaAlunoSelect" aria-label="Filtrar por doença ou condição">
+                <option value="">Todas as doenças</option>
+                <?php foreach ($doencas as $chave => $doenca): ?>
+                    <option value="<?= htmlspecialchars($chave) ?>">
+                        <?= htmlspecialchars($doenca) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
             <button type="button" id="consultaAlunoLimpar" class="consultaAlunoLimpar" hidden>
                 <i class="bi bi-x-circle"></i> Limpar
             </button>
@@ -161,7 +204,8 @@ function consultaAlunoClasseTurno($turno)
                                 class="consultaAlunoLinha"
                                 data-nome="<?= htmlspecialchars(mb_strtolower($nome)) ?>"
                                 data-curso="<?= htmlspecialchars(mb_strtolower($curso)) ?>"
-                                data-turma="<?= htmlspecialchars($turma) ?>">
+                                data-turma="<?= htmlspecialchars($turma) ?>"
+                                data-doencas="<?= htmlspecialchars(json_encode($doencasPorAluno[(int) $aluno->id] ?? [], JSON_UNESCAPED_UNICODE)) ?>">
 
                                 <!-- NOME -->
                                 <td class="consultaAlunoCelula consultaAlunoCelulaNome" data-label="Aluno">
@@ -250,6 +294,7 @@ function consultaAlunoClasseTurno($turno)
         const busca = document.getElementById('consultaAlunoBusca');
         const filtroCurso = document.getElementById('consultaAlunoFiltroCurso');
         const filtroTurma = document.getElementById('consultaAlunoFiltroTurma');
+        const filtroDoenca = document.getElementById('consultaAlunoFiltroDoenca');
         const botaoLimpar = document.getElementById('consultaAlunoLimpar');
         const contador = document.getElementById('consultaAlunoContador');
         const vazio = document.getElementById('consultaAlunoVazio');
@@ -269,13 +314,22 @@ function consultaAlunoClasseTurno($turno)
             const termo = normalizar(busca.value);
             const curso = filtroCurso.value;
             const turma = filtroTurma.value;
+            const doenca = filtroDoenca.value;
             let visiveis = 0;
 
             linhas.forEach(function (linha) {
+                let doencasAluno = [];
+                try {
+                    doencasAluno = JSON.parse(linha.dataset.doencas || '[]');
+                } catch (e) {
+                    doencasAluno = [];
+                }
+
                 const combina =
                     normalizar(linha.dataset.nome).indexOf(termo) !== -1 &&
                     (curso === '' || linha.dataset.curso === curso) &&
-                    (turma === '' || linha.dataset.turma === turma);
+                    (turma === '' || linha.dataset.turma === turma) &&
+                    (doenca === '' || doencasAluno.indexOf(doenca) !== -1);
 
                 linha.hidden = !combina;
 
@@ -291,17 +345,19 @@ function consultaAlunoClasseTurno($turno)
                 vazioTexto.textContent = 'Nenhum aluno encontrado com esses filtros.';
             }
 
-            botaoLimpar.hidden = !(termo || curso || turma);
+            botaoLimpar.hidden = !(termo || curso || turma || doenca);
         }
 
         busca.addEventListener('input', filtrar);
         filtroCurso.addEventListener('change', filtrar);
         filtroTurma.addEventListener('change', filtrar);
+        filtroDoenca.addEventListener('change', filtrar);
 
         botaoLimpar.addEventListener('click', function () {
             busca.value = '';
             filtroCurso.value = '';
             filtroTurma.value = '';
+            filtroDoenca.value = '';
             filtrar();
             busca.focus();
         });

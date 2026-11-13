@@ -90,7 +90,11 @@
 
 }
 
-form{
+/* Só os formulários das telas de login/recuperação. Antes era "form" puro e,
+   como este arquivo entra em todas as páginas (geral.css), esticava qualquer
+   formulário (ex.: o botão "Confirmar" do modal de excluir notificação). */
+.right_esqueci_minha_seha form,
+.lado-form form{
 
     width:100%;
 

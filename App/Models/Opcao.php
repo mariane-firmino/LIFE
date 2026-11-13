@@ -35,12 +35,13 @@ class Opcao
         'ano_turma' => [
             'rotulo' => 'Anos das turmas',
             'singular' => 'Ano da turma',
-            // As turmas são guardadas pelo ano de entrada com 2 dígitos (24, 25, 26),
-            // igual aos dados do banco; a regra antiga ("1º, 2º") recusava esses valores.
-            'ajuda' => 'Use o ano da turma com 2 dígitos. Ex.: 24, 25, 26',
+            // As turmas são guardadas pela série ("1º ano", "2º ano", "3º ano").
+            // O Admin converte "1", "1º", "1o" ou "1 ano" em "1º ano" antes de
+            // validar (Admin::normalizarSerie).
+            'ajuda' => 'Use a série da turma. Ex.: 1º ano, 2º ano, 3º ano',
             'icone' => 'bi-calendar-event-fill',
-            'max' => 2,
-            'padrao' => '/^[0-9]{2}$/',
+            'max' => 10,
+            'padrao' => '/^[1-9]º ano$/u',
             'tabela' => 'turma',
             'coluna' => 'turm_ano',
             'uso_from' => 'aluno a JOIN turma t ON a.turm_id = t.turm_id',

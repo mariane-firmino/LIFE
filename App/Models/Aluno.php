@@ -406,7 +406,13 @@ class Aluno
                 t.turm_ano AS ano_turma,
 
                 r.resp_id AS responsavel_id,
-                r.resp_nome AS responsavel
+                r.resp_nome AS responsavel,
+
+                -- Doenças/condições da ficha de saúde (filtro da consulta).
+                n.anam_doenca_cronica AS doenca_cronica,
+                n.anam_doenca_qual AS doenca_qual,
+                n.anam_condicoes AS condicoes,
+                n.anam_condicao_outra AS condicao_outra
 
             FROM aluno a
 
@@ -415,6 +421,12 @@ class Aluno
 
             LEFT JOIN responsavel r
                 ON a.resp_id = r.resp_id
+
+            -- Ficha de saúde mais recente do aluno (no máximo uma por aluno).
+            LEFT JOIN anamnese n
+                ON n.anamn_id = (
+                    SELECT MAX(n2.anamn_id) FROM anamnese n2 WHERE n2.alun_id = a.alun_id
+                )
 
             ORDER BY a.alun_nome ASC
         ");
