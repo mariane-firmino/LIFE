@@ -76,7 +76,7 @@ CREATE TABLE `aluno` (
   KEY `ix_aluno_nome` (`alun_nome`),
   CONSTRAINT `fk_aluno_responsavel1` FOREIGN KEY (`resp_id`) REFERENCES `responsavel` (`resp_id`),
   CONSTRAINT `fk_aluno_turma1` FOREIGN KEY (`turm_id`) REFERENCES `turma` (`turm_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -85,7 +85,7 @@ CREATE TABLE `aluno` (
 
 LOCK TABLES `aluno` WRITE;
 /*!40000 ALTER TABLE `aluno` DISABLE KEYS */;
-INSERT INTO `aluno` VALUES (1,'Teste De Aluno','2010-02-01','Feminino','1234563256145',NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,1,'2026-10-01 17:31:18','2026-11-13 13:26:27',NULL),(2,'Lua Azul','2012-12-22','Feminino','2024109100015','1805782',NULL,'af98f2c56a4327f940e22c731b3d7d05.jpg','A+',1.80,150.00,NULL,2,2,'2026-10-24 11:20:52','2026-11-13 14:07:45',NULL),(3,'teste de aluno','2026-11-28','Masculino','0516146850161',NULL,NULL,NULL,'A-',1.55,50.00,NULL,3,3,'2026-11-04 10:51:30',NULL,NULL);
+INSERT INTO `aluno` VALUES (1,'Ana Beatriz Souza Lima','2011-03-14','Feminino','2026109100012','1928374','898001234567812',NULL,'O+',1.62,54.20,NULL,1,1,'2026-02-09 08:15:00',NULL,NULL),(5,'Gabriela Martins Ribeiro','2010-05-18','Feminino','2025109100051','1899240','700308912345678',NULL,'A-',1.65,57.30,NULL,5,2,'2025-02-12 09:10:00',NULL,NULL),(8,'Matheus Silva Carvalho','2010-04-11','Masculino','2025109100082','1895543','702409876543210',NULL,'A+',1.72,82.60,NULL,8,7,'2025-02-13 08:20:00',NULL,NULL),(9,'Larissa Fernandes Moura','2009-06-05','Feminino','2024109100090','1871236','898002345678901',NULL,'O+',1.67,58.90,NULL,9,3,'2024-02-15 08:05:00',NULL,NULL),(12,'Guilherme Castro Monteiro','2008-12-02','Masculino','2024109100120','1866652','898009012345671',NULL,'O+',1.76,69.80,NULL,12,6,'2024-02-16 13:50:00',NULL,NULL);
 /*!40000 ALTER TABLE `aluno` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,7 +108,7 @@ CREATE TABLE `aluno_anotacao` (
   KEY `fk_anotacao_servidor_idx` (`serv_id`),
   CONSTRAINT `fk_anotacao_aluno` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`) ON DELETE CASCADE,
   CONSTRAINT `fk_anotacao_servidor` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -117,6 +117,7 @@ CREATE TABLE `aluno_anotacao` (
 
 LOCK TABLES `aluno_anotacao` WRITE;
 /*!40000 ALTER TABLE `aluno_anotacao` DISABLE KEYS */;
+INSERT INTO `aluno_anotacao` VALUES (1,8,'rapida','Guarda o glicosímetro e a insulina na mochila. Professores avisados sobre sinais de hipoglicemia.',9,'2026-10-21 12:00:00'),(2,12,'rapida','Família enviou o protocolo do neurologista para crises.',9,'2026-11-11 09:10:00');
 /*!40000 ALTER TABLE `aluno_anotacao` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -145,7 +146,7 @@ CREATE TABLE `aluno_documento` (
   KEY `fk_documento_servidor_idx` (`serv_id`),
   CONSTRAINT `fk_documento_aluno` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`) ON DELETE CASCADE,
   CONSTRAINT `fk_documento_servidor` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -154,7 +155,6 @@ CREATE TABLE `aluno_documento` (
 
 LOCK TABLES `aluno_documento` WRITE;
 /*!40000 ALTER TABLE `aluno_documento` DISABLE KEYS */;
-INSERT INTO `aluno_documento` VALUES (1,3,'vacina',NULL,'teste',NULL,'b17466fef3355e2ea703f76fcaeab1a0.webp','Bingo-palavras-simples-imprimir-colorido-2.webp','image/webp',19908,9,'2026-11-04 10:52:13');
 /*!40000 ALTER TABLE `aluno_documento` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -207,7 +207,7 @@ CREATE TABLE `anamnese` (
   PRIMARY KEY (`anamn_id`),
   KEY `fk_anamnese_aluno` (`alun_id`),
   CONSTRAINT `fk_anamnese_aluno` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -216,7 +216,7 @@ CREATE TABLE `anamnese` (
 
 LOCK TABLES `anamnese` WRITE;
 /*!40000 ALTER TABLE `anamnese` DISABLE KEYS */;
-INSERT INTO `anamnese` VALUES (1,1,'Escola pública','Qualidade do ensino','Não',NULL,'Sim','5',10,8,'Sim',NULL,'Privado','Não',NULL,'Não',NULL,'Não',NULL,'Não','Sim','Não',NULL,'Sim','Alguma aí','Restaurador','3','arroz, carne e tals','Não','Não',NULL,'Não',NULL,'Sim','3x por semana','3 por dia','Deficiência visual',NULL),(2,2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'TDAH',NULL),(3,3,'Escola pública','Qualidade do ensino','Não','0','Sim','5',8,8,'Não','teste','Privado','Não','sf','Não','fs','Não','erfw','Não','Não','Sim','sfd','Sim','sdf','Não restaurador','3','agua','Não','Não','Não','Não',NULL,'Não','3x por semana','2 por dia',NULL,NULL);
+INSERT INTO `anamnese` VALUES (4,1,'Escola pública','Qualidade do ensino','Não',NULL,'Não',NULL,9,8,'Não',NULL,'SUS','Sim','Amendoim','Sim','Asma','Sim','Salbutamol (bombinha) quando tem crise','Não','Sim','Sim','Crise de asma aos 10 anos','Não',NULL,'Restaurador','3','Arroz, feijão, frango e salada; lanche na escola.','Não','Não',NULL,'Não',NULL,'Sim','(-) de 3x por semana','2 por dia',NULL,NULL),(8,5,'Escola estadual','Recomendação de outros','Não',NULL,'Não',NULL,8,7,'Sim','Acompanhamento com psicóloga','SUS','Não',NULL,'Não',NULL,'Sim','Metilfenidato 10 mg pela manhã','Sim','Sim','Não',NULL,'Não',NULL,'Não restaurador','3','Pouco apetite no almoço por causa da medicação.','Não','Não',NULL,'Não',NULL,'Não',NULL,'2 por dia','TDAH',NULL),(11,8,'Escola pública','Proximidade da escola','Não',NULL,'Não',NULL,7,7,'Sim','Acompanhamento endocrinológico','SUS','Não',NULL,'Sim','Diabetes tipo 1','Sim','Insulina NPH e regular','Não','Sim','Sim','Cetoacidose diabética (2021)','Não',NULL,'Restaurador','Mais que 3','Controla carboidratos; leva lanche para a escola.','Não','Não',NULL,'Não',NULL,'Não',NULL,'2 por dia',NULL,NULL),(12,9,'Escola estadual','Qualidade do ensino','Não',NULL,'Sim','3 anos',9,7,'Sim','Ansiedade em época de provas','SUS','Não',NULL,'Não',NULL,'Não',NULL,'Sim','Sim','Não',NULL,'Não',NULL,'Insônia (perde o sono e não consegue voltar a dormir)','3','Come pouco em semanas de prova.','Não','Não',NULL,'Não',NULL,'Sim','(-) de 3x por semana','2 por dia',NULL,NULL),(15,12,'Escola estadual','Recomendação de outros','Não',NULL,'Sim','1 ano',8,7,'Sim','Neurologista','SUS','Não',NULL,'Sim','Epilepsia','Sim','Ácido valproico 500 mg','Não','Sim','Sim','Crise convulsiva (2023)','Não',NULL,'Restaurador','3','Sem restrições.','Não','Não',NULL,'Não',NULL,'Não',NULL,'2 por dia','Epilepsia',NULL);
 /*!40000 ALTER TABLE `anamnese` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -241,7 +241,7 @@ CREATE TABLE `consulta` (
   KEY `ix_consulta_hora` (`cons_horario`),
   KEY `ix_consulta_aluno` (`alun_id`),
   CONSTRAINT `fk_consulta_aluno` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -250,7 +250,7 @@ CREATE TABLE `consulta` (
 
 LOCK TABLES `consulta` WRITE;
 /*!40000 ALTER TABLE `consulta` DISABLE KEYS */;
-INSERT INTO `consulta` VALUES (1,NULL,'2026-09-22','14:00:00','Consulta - Periódica',NULL,'çkjdjfnkladnfga','wefWGFerg'),(2,NULL,'2026-10-30','14:52:00','Consulta - Periódica','Enfermeira','testee','Teste'),(3,NULL,'2026-10-30','14:52:00','Consulta - Periódica','Enfermeira','testee','Teste'),(4,NULL,'2026-10-18','15:23:00','Consulta - Periódica','Enfermeira','teste notificacao','oiiii'),(5,NULL,'2026-10-18','15:23:00','Consulta - Periódica','Enfermeira','teste notificacao','oiiii'),(6,NULL,'2026-10-27','20:19:00','Avaliação','Enfermeira','dfg hf','WED FSDGFASDR'),(7,NULL,'2026-10-27','20:19:00','Avaliação','Enfermeira','dfg hf','WED FSDGFASDR'),(8,NULL,'2026-11-04','12:46:00','Consulta - Periódica','Enfermeira','testee','testee');
+INSERT INTO `consulta` VALUES (9,1,'2026-10-20','09:00:00','Retorno','Enfermeira','Retorno após crise de asma.','Trazer a bombinha nas aulas de educação física.'),(10,8,'2026-10-29','10:30:00','Avaliação','Enfermeira','Avaliação do controle da glicemia na escola.','Combinar com a família um kit de lanche de emergência.'),(11,9,'2026-11-05','14:00:00','Psicóloga','Psicóloga','Acompanhamento após crise de ansiedade.',NULL),(12,12,'2026-11-11','08:30:00','Consulta - Emergencial','Enfermeira','Conversa com a família após a crise convulsiva.','Pedir relatório do neurologista.'),(13,5,'2026-11-17','15:00:00','Consulta - Periódica','Enfermeira','Acompanhamento do uso de medicação para TDAH.',NULL);
 /*!40000 ALTER TABLE `consulta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -296,7 +296,7 @@ CREATE TABLE `notificacao` (
   PRIMARY KEY (`noti_id`),
   KEY `fk_notificacao` (`serv_id`),
   CONSTRAINT `fk_notificacao` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -305,7 +305,7 @@ CREATE TABLE `notificacao` (
 
 LOCK TABLES `notificacao` WRITE;
 /*!40000 ALTER TABLE `notificacao` DISABLE KEYS */;
-INSERT INTO `notificacao` VALUES (70,'Nova consulta na agenda','2026-11-04 14:45:10','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',14,'Pendente','consulta'),(71,'Nova triagem rápida registrada','2026-11-04 14:56:14','Uma triagem rápida foi registrada. Acesse o sistema para consultar as informações autorizadas.',14,'Pendente','triagem'),(72,'Nova triagem rápida registrada','2026-11-04 14:57:16','Uma triagem rápida foi registrada. Acesse o sistema para consultar as informações autorizadas.',14,'Pendente','triagem'),(74,'Nova triagem psicológica registrada','2026-11-13 11:56:07','Uma triagem psicológica foi registrada. Acesse o sistema para consultar as informações autorizadas.',14,'Pendente','triagem'),(75,'Nova triagem registrada','2026-11-13 11:57:18','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',14,'Pendente','triagem');
+INSERT INTO `notificacao` VALUES (70,'Nova consulta na agenda','2026-11-04 14:45:10','Uma consulta foi adicionada à agenda. Acesse o calendário para ver os detalhes.',14,'Pendente','consulta'),(71,'Nova triagem rápida registrada','2026-11-04 14:56:14','Uma triagem rápida foi registrada. Acesse o sistema para consultar as informações autorizadas.',14,'Pendente','triagem'),(72,'Nova triagem rápida registrada','2026-11-04 14:57:16','Uma triagem rápida foi registrada. Acesse o sistema para consultar as informações autorizadas.',14,'Pendente','triagem'),(74,'Nova triagem psicológica registrada','2026-11-13 11:56:07','Uma triagem psicológica foi registrada. Acesse o sistema para consultar as informações autorizadas.',14,'Pendente','triagem'),(75,'Nova triagem registrada','2026-11-13 11:57:18','Uma nova triagem foi registrada. Acesse o sistema para consultar as informações autorizadas.',14,'Pendente','triagem'),(78,'Novo cadastro aguardando aprovação','2026-11-13 14:14:00','Há um cadastro de servidor aguardando análise.',14,'Pendente','conta');
 /*!40000 ALTER TABLE `notificacao` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -431,7 +431,7 @@ CREATE TABLE `responsavel` (
   `resp_nome` varchar(100) NOT NULL,
   PRIMARY KEY (`resp_id`),
   KEY `ix_responsavel_nome` (`resp_nome`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -440,7 +440,7 @@ CREATE TABLE `responsavel` (
 
 LOCK TABLES `responsavel` WRITE;
 /*!40000 ALTER TABLE `responsavel` DISABLE KEYS */;
-INSERT INTO `responsavel` VALUES (2,'Lua Cheia'),(1,'Resp Legal do Aluno'),(3,'Resp Legal do Aluno');
+INSERT INTO `responsavel` VALUES (1,'Cláudia Souza Lima'),(8,'Eduardo Silva Carvalho'),(9,'Juliana Fernandes Moura'),(5,'Rogério Martins Ribeiro'),(12,'Sandra Castro Monteiro');
 /*!40000 ALTER TABLE `responsavel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -472,7 +472,7 @@ CREATE TABLE `servidor` (
   KEY `ix_servidor_email` (`serv_email`),
   KEY `fk_servidor_funcao` (`func_id`),
   CONSTRAINT `fk_servidor_funcao` FOREIGN KEY (`func_id`) REFERENCES `funcao` (`func_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -507,7 +507,7 @@ CREATE TABLE `sessao_dispositivo` (
   UNIQUE KEY `uk_sessao_token` (`sess_token`),
   KEY `ix_sessao_servidor` (`serv_id`,`sess_ativa`),
   CONSTRAINT `fk_sessao_servidor` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -540,7 +540,7 @@ CREATE TABLE `telefone` (
   CONSTRAINT `fk_telefone_aluno1` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`),
   CONSTRAINT `fk_telefone_responsavel1` FOREIGN KEY (`resp_id`) REFERENCES `responsavel` (`resp_id`),
   CONSTRAINT `fk_telefone_servidor` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -549,7 +549,7 @@ CREATE TABLE `telefone` (
 
 LOCK TABLES `telefone` WRITE;
 /*!40000 ALTER TABLE `telefone` DISABLE KEYS */;
-INSERT INTO `telefone` VALUES (14,'(25) 64561-2031',14,NULL,NULL),(20,'(04) 08650-1465',NULL,3,NULL),(21,'(59) 68541-3436',NULL,NULL,3),(23,'(69) 99248-2689',9,NULL,NULL);
+INSERT INTO `telefone` VALUES (14,'(25) 64561-2031',14,NULL,NULL),(23,'(69) 99248-2689',9,NULL,NULL),(25,'(69) 99231-4587',NULL,1,NULL),(26,'(69) 99814-2210',NULL,NULL,1),(33,'(69) 99602-8815',NULL,5,NULL),(34,'(69) 98365-4402',NULL,NULL,5),(39,'(69) 99167-4428',NULL,8,NULL),(40,'(69) 99538-1265',NULL,NULL,8),(41,'(69) 99824-7351',NULL,9,NULL),(42,'(69) 98471-2280',NULL,NULL,9),(47,'(69) 99741-2083',NULL,12,NULL),(48,'(69) 98603-7719',NULL,NULL,12);
 /*!40000 ALTER TABLE `telefone` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -585,7 +585,7 @@ CREATE TABLE `triagem` (
   CONSTRAINT `fk_triagem_aluno1` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`),
   CONSTRAINT `fk_triagem_consulta1` FOREIGN KEY (`cons_id`) REFERENCES `consulta` (`cons_id`) ON DELETE SET NULL,
   CONSTRAINT `fk_triagem_servidor1` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -594,7 +594,6 @@ CREATE TABLE `triagem` (
 
 LOCK TABLES `triagem` WRITE;
 /*!40000 ALTER TABLE `triagem` DISABLE KEYS */;
-INSERT INTO `triagem` VALUES (2,NULL,9,2,NULL,'Satisfeito','Quando você olha no espelho, você fica:',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(3,NULL,9,2,NULL,'Motivado','Diariamente você se sente:',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(4,NULL,9,2,NULL,'tudo','O que você mais gosta em si mesmo?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(5,NULL,9,2,NULL,'ler','Qual é o seu hobby? (O que você mais gosta de fazer?)',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(6,NULL,9,2,NULL,'Sim','Você possui algum objetivo de vida?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(7,NULL,9,2,NULL,'Bons / Motivadores / Esperançosos','Geralmente, como são seus pensamentos?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(8,NULL,9,2,NULL,'Sim','Você já teve a sua primeira menstruação?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(9,NULL,9,2,NULL,'Não','Durante seu período menstrual, você sente cólicas?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(10,NULL,9,2,NULL,'2 -','Qual a intensidade das cólicas?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(11,NULL,9,2,NULL,'Não','Costuma tomar alguma medicação para cólicas?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(12,NULL,9,2,NULL,'Não','Você já foi em alguma consulta Ginecológica?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-10-25 02:40:37'),(13,NULL,9,2,NULL,'Não','Você já teve a sua primeira menstruação?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-11-13 07:57:18'),(14,NULL,9,2,NULL,'Não','Durante seu período menstrual, você sente cólicas?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-11-13 07:57:18'),(15,NULL,9,2,NULL,'Sim','Você tem vida sexual ativa? (já teve a primeira relação sexual?)',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-11-13 07:57:18'),(16,NULL,9,2,NULL,'Preservativo','Usa algum método contraceptivo?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-11-13 07:57:18'),(17,NULL,9,2,NULL,'Sim','Você já foi a alguma consulta ginecológica?',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-11-13 07:57:18');
 /*!40000 ALTER TABLE `triagem` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -619,7 +618,7 @@ CREATE TABLE `triagem_psicologica` (
   KEY `fk_triagem_psicologica_servidor_idx` (`serv_id`),
   CONSTRAINT `fk_triagem_psicologica_aluno` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`) ON DELETE CASCADE,
   CONSTRAINT `fk_triagem_psicologica_servidor` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -628,7 +627,7 @@ CREATE TABLE `triagem_psicologica` (
 
 LOCK TABLES `triagem_psicologica` WRITE;
 /*!40000 ALTER TABLE `triagem_psicologica` DISABLE KEYS */;
-INSERT INTO `triagem_psicologica` VALUES (1,2,9,'Crise de ansiedade','Grave','[\"Falta de ar\",\"Tontura\",\"Choro intenso\"]','mdandjnww','2026-11-13 08:56:07');
+INSERT INTO `triagem_psicologica` VALUES (1,9,9,'Crise de ansiedade','Média','[\"Falta de ar\",\"Taquicardia\",\"Tremores\"]','Começou antes da prova de matemática. Acalmou com exercícios de respiração.','2026-10-30 09:20:00');
 /*!40000 ALTER TABLE `triagem_psicologica` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -663,7 +662,7 @@ CREATE TABLE `triagem_psicologica_historico` (
   CONSTRAINT `fk_trph_aluno` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`) ON DELETE CASCADE,
   CONSTRAINT `fk_trph_servidor` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`) ON DELETE SET NULL,
   CONSTRAINT `fk_trph_triagem` FOREIGN KEY (`trps_id`) REFERENCES `triagem_psicologica` (`trps_id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -672,6 +671,7 @@ CREATE TABLE `triagem_psicologica_historico` (
 
 LOCK TABLES `triagem_psicologica_historico` WRITE;
 /*!40000 ALTER TABLE `triagem_psicologica_historico` DISABLE KEYS */;
+INSERT INTO `triagem_psicologica_historico` VALUES (1,9,1,9,'sim','Transtorno de ansiedade generalizada','nao',NULL,'psicologico','sim','[\"escola\"]','boa','sim','as_vezes','Mãe também tem ansiedade. Faz terapia quinzenal pelo SUS.','2026-10-30 09:35:00');
 /*!40000 ALTER TABLE `triagem_psicologica_historico` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -697,7 +697,7 @@ CREATE TABLE `triagem_rapida` (
   KEY `fk_triagem_rapida_servidor_idx` (`serv_id`),
   CONSTRAINT `fk_triagem_rapida_aluno` FOREIGN KEY (`alun_id`) REFERENCES `aluno` (`alun_id`) ON DELETE CASCADE,
   CONSTRAINT `fk_triagem_rapida_servidor` FOREIGN KEY (`serv_id`) REFERENCES `servidor` (`serv_id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -706,7 +706,7 @@ CREATE TABLE `triagem_rapida` (
 
 LOCK TABLES `triagem_rapida` WRITE;
 /*!40000 ALTER TABLE `triagem_rapida` DISABLE KEYS */;
-INSERT INTO `triagem_rapida` VALUES (1,3,9,'Gripe / resfriado','Média','Apareceu na caed com sintomas de gripe','Temperatura normal','Recomendei que ficasse descansando','2026-11-04 10:56:14'),(2,1,9,'Alergia','Grave','Alergia grave a suco','Dificuldade respiratória','Chamei o responsável e a equipe médica.','2026-11-04 10:57:16');
+INSERT INTO `triagem_rapida` VALUES (3,1,9,'Outro','Média','Falta de ar depois da aula de educação física.','Chiado no peito, saturação 95%.','Usou a bombinha que trouxe de casa; ficou em observação 30 min e melhorou.','2026-10-06 10:20:00'),(5,8,9,'Tontura / mal-estar','Grave','Tremor e suor frio antes do almoço.','Glicemia capilar 58 mg/dL.','Dei suco com açúcar, glicemia subiu para 102; responsável avisado.','2026-10-21 11:40:00'),(6,5,9,'Cólica','Média','Cólica forte desde o início da aula.','Dor 7 de 10.','Bolsa de água morna e repouso; responsável autorizou buscá-la.','2026-10-28 14:10:00'),(8,12,9,'Outro','Grave','Colegas relataram que ele ficou desorientado e com tremores.','Crise convulsiva de cerca de 1 minuto; consciente depois.','Posicionado de lado, SAMU acionado e responsável avisado.','2026-11-06 10:50:00');
 /*!40000 ALTER TABLE `triagem_rapida` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -723,7 +723,7 @@ CREATE TABLE `turma` (
   `turm_ano` varchar(10) NOT NULL,
   `turm_turno` varchar(25) NOT NULL,
   PRIMARY KEY (`turm_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -732,7 +732,7 @@ CREATE TABLE `turma` (
 
 LOCK TABLES `turma` WRITE;
 /*!40000 ALTER TABLE `turma` DISABLE KEYS */;
-INSERT INTO `turma` VALUES (1,'Manutenção e Suporte em Informática','1º ano','Matutino'),(2,'Licenciatura em Ciências','1º ano','Vespertino'),(3,'Técnico em informática','3º ano','Vespertino');
+INSERT INTO `turma` VALUES (1,'Técnico em informática','1º ano','Matutino'),(2,'Técnico em informática','2º ano','Matutino'),(3,'Técnico em informática','3º ano','Matutino'),(4,'Biotecnologia','1º ano','Vespertino'),(5,'Biotecnologia','2º ano','Vespertino'),(6,'Enfermagem','3º ano','Vespertino'),(7,'Manutenção e Suporte em Informática','2º ano','Matutino');
 /*!40000 ALTER TABLE `turma` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
