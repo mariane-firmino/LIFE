@@ -321,6 +321,52 @@ $infoExtras = trim((string) ($complemento->info_extras ?? ''));
                                     <div class="text-break"><?= nl2br(htmlspecialchars($tp->observacoes, ENT_QUOTES, 'UTF-8')) ?></div>
                                 </div>
                             <?php endif; ?>
+
+                            <?php if (!empty($tp->historico)):
+                                // Etapa 2: histórico pessoal.
+                                $hp = $tp->historico;
+                                $simQual = function ($resposta, $qual) {
+                                    return vp($resposta) . (trim((string) $qual) !== '' ? ' &mdash; ' . vp($qual) : '');
+                                };
+                                $itensHp = [
+                                    ['Diagnóstico de transtorno psicológico', $simQual($hp->diagnostico, $hp->transtorno)],
+                                    ['Uso de medicamento', $simQual($hp->medicamento, $hp->nome_medicamento)],
+                                    ['Acompanhamento', vp($hp->acompanhamento)],
+                                    ['Crises anteriores de ansiedade/pânico', vp($hp->crises)],
+                                    ['Gatilhos das crises', $hp->gatilhos ? vp(implode(', ', $hp->gatilhos)) : ''],
+                                    ['Relação com familiares', vp($hp->relacao_familiar)],
+                                    ['Histórico familiar de transtorno', vp($hp->historico_familiar)],
+                                    ['Dificuldades com alimentação', vp($hp->alimentacao)],
+                                ];
+                                ?>
+                                <div class="border-top pt-2 mt-2">
+                                    <small class="text-muted d-block fw-bold mb-2">Histórico pessoal</small>
+                                    <div class="row g-2">
+                                        <?php foreach ($itensHp as [$perguntaHp, $respostaHp]):
+                                            if ($respostaHp === '') {
+                                                continue;
+                                            } ?>
+                                            <div class="col-12 col-md-6">
+                                                <small class="text-muted"><?= $perguntaHp ?></small>
+                                                <div class="text-break"><b><?= $respostaHp ?></b></div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <?php if (trim((string) $hp->observacoes) !== ''): ?>
+                                        <div class="mt-2">
+                                            <small class="text-muted">Observações finais</small>
+                                            <div class="text-break"><?= nl2br(htmlspecialchars($hp->observacoes, ENT_QUOTES, 'UTF-8')) ?></div>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php else: ?>
+                                <div class="mt-2">
+                                    <a href="<?= URL ?>/triagens/historico_pessoal/<?= (int) $alunoId ?>/<?= (int) $tp->id ?>"
+                                        class="btn btn-outline-success btn-sm fw-bold">
+                                        <i class="bi bi-plus-lg me-1" aria-hidden="true"></i> Preencher histórico pessoal
+                                    </a>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>

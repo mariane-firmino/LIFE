@@ -134,9 +134,9 @@ class Triagens extends Controller
                         (int) $_SESSION['usuario_id']
                     );
 
-                    // Volta ao perfil já na aba das triagens.
-                    Sessao::mensagem('alunos', 'Triagem psicológica salva com sucesso');
-                    URL::redirecionar('alunos/visualizarPerfil/' . (int) $aluno->id . '#aba-triagens');
+                    // Segue para a Etapa 2 (histórico pessoal) desta triagem.
+                    Sessao::mensagem('triagens', 'Etapa 1 salva. Agora preencha o histórico pessoal.', 'alert alert-success');
+                    URL::redirecionar('triagens/historico_pessoal/' . (int) $aluno->id . '/' . (int) $salvou);
                 }
 
                 Sessao::mensagem('triagens', 'Não foi possível salvar a triagem. Tente novamente.', 'alert alert-danger');
@@ -157,6 +157,124 @@ class Triagens extends Controller
         ];
 
         $this->view('triagens/psicologica_rapida', $dados);
+    }
+
+    // =========================================================
+    // TRIAGEM PSICOLÓGICA - ETAPA 2: HISTÓRICO PESSOAL
+    // GET  triagens/historico_pessoal/5/12 -> abre o formulário
+    // POST triagens/historico_pessoal/5/12 -> valida e salva
+    // (5 = aluno, 12 = triagem psicológica da Etapa 1)
+    // =========================================================
+
+    public function historico_pessoal($alunoId = null, $triagemId = null)
+    {
+        $aluno = $this->alunoOuRedireciona($alunoId);
+        $id = (int) $aluno->id;
+        $model = $this->model('TriagemPsicologica');
+
+        // A Etapa 2 sempre pertence a uma triagem (Etapa 1) deste aluno.
+        $triagem = ctype_digit((string) $triagemId) ? $model->buscarDoAluno((int) $triagemId, $id) : null;
+        if (!$triagem) {
+            Sessao::mensagem('triagens', 'Preencha primeiro a Etapa 1 da triagem psicológica.', 'alert alert-warning');
+            URL::redirecionar('triagens/psicologico_rapido/' . $id);
+        }
+
+        if ($model->temHistorico($triagem->id)) {
+            Sessao::mensagem('alunos', 'O histórico pessoal desta triagem já foi registrado.', 'alert alert-info');
+            URL::redirecionar('alunos/visualizarPerfil/' . $id . '#aba-triagens');
+        }
+
+        // Perguntas de escolha: campo => opções válidas.
+        $opcoes = [
+            'diagnostico' => TriagemPsicologica::SIM_NAO,
+            'medicamento' => TriagemPsicologica::SIM_NAO,
+            'acompanhamento' => TriagemPsicologica::ACOMPANHAMENTOS,
+            'crises' => TriagemPsicologica::SIM_NAO_NAO_SABE,
+            'relacao_familiar' => TriagemPsicologica::RELACOES_FAMILIARES,
+            'historico_familiar' => TriagemPsicologica::SIM_NAO_NAO_SABE,
+            'alimentacao' => TriagemPsicologica::ALIMENTACAO,
+        ];
+        $textos = ['transtorno', 'nome_medicamento', 'observacoes'];
+
+        $form = array_fill_keys(array_merge(array_keys($opcoes), $textos), '');
+        $form['gatilhos'] = [];
+        $erros = [];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            foreach (array_merge(array_keys($opcoes), $textos) as $campo) {
+                $valor = $_POST[$campo] ?? '';
+                $form[$campo] = is_string($valor) ? trim($valor) : '';
+            }
+
+            $marcados = $_POST['gatilhos'] ?? [];
+            $marcados = is_array($marcados) ? $marcados : [];
+            $form['gatilhos'] = array_values(array_unique(array_filter($marcados, 'is_string')));
+
+            // Todas as perguntas de escolha são obrigatórias.
+            foreach ($opcoes as $campo => $validas) {
+                if (!array_key_exists($form[$campo], $validas)) {
+                    $erros[$campo] = 'Selecione uma opção.';
+                }
+            }
+
+            // "Se sim, qual?" passa a ser obrigatório quando a resposta é Sim.
+            if ($form['diagnostico'] === 'sim' && $form['transtorno'] === '') {
+                $erros['transtorno'] = 'Informe qual transtorno foi diagnosticado.';
+            }
+            if ($form['medicamento'] === 'sim' && $form['nome_medicamento'] === '') {
+                $erros['nome_medicamento'] = 'Informe qual medicamento utiliza.';
+            }
+
+            // Gatilhos (opcionais): só os da lista e só se já teve crises.
+            if ($form['crises'] !== 'sim') {
+                $form['gatilhos'] = [];
+            } elseif (array_diff($form['gatilhos'], array_keys(TriagemPsicologica::GATILHOS))) {
+                $erros['gatilhos'] = 'Marque apenas opções da lista.';
+            }
+
+            // Limites de tamanho.
+            if (mb_strlen($form['nome_medicamento']) > 255) {
+                $erros['nome_medicamento'] = 'Use no máximo 255 caracteres.';
+            }
+            foreach (['transtorno', 'observacoes'] as $campo) {
+                if (mb_strlen($form[$campo]) > self::MAX_TEXTO_RAPIDA) {
+                    $erros[$campo] = 'Use no máximo ' . self::MAX_TEXTO_RAPIDA . ' caracteres.';
+                }
+            }
+
+            if (!$erros) {
+                try {
+                    $salvou = $model->salvarHistorico($form + [
+                        'aluno_id' => $id,
+                        'trps_id' => (int) $triagem->id,
+                        'serv_id' => (int) $_SESSION['usuario_id'],
+                    ]);
+                } catch (PDOException $e) {
+                    error_log('Erro ao salvar histórico pessoal: ' . $e->getMessage());
+                    $salvou = false;
+                }
+
+                if ($salvou) {
+                    Sessao::mensagem('alunos', 'Triagem psicológica salva com sucesso');
+                    URL::redirecionar('alunos/visualizarPerfil/' . $id . '#aba-triagens');
+                }
+
+                Sessao::mensagem('triagens', 'Não foi possível salvar o histórico. Tente novamente.', 'alert alert-danger');
+            }
+        }
+
+        $this->view('triagens/historico_pessoal', [
+            'titulo' => 'Triagem Psicológica - Histórico Pessoal',
+            'descricao' => 'Etapa 2 da triagem psicológica',
+            'aluno_id' => $id,
+            'aluno_nome' => $aluno->nome,
+            'triagem' => $triagem,
+            'opcoes' => $opcoes,
+            'gatilhos' => TriagemPsicologica::GATILHOS,
+            'max_texto' => self::MAX_TEXTO_RAPIDA,
+            'form' => $form,
+            'erros' => $erros,
+        ]);
     }
 
     public function fisica($alunoId = null)
