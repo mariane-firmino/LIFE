@@ -193,7 +193,7 @@ function consultaAlunoClasseTurno($turno)
                             $curso  = (string) ($aluno->curso ?? '');
                             $turma  = (string) ($aluno->ano_turma ?? '');
                             $turno  = (string) ($aluno->turno ?? '');
-                            $inicial = $nome !== '' ? mb_strtoupper(mb_substr($nome, 0, 1)) : '?';
+                            $inicial = Checa::iniciais($nome);
                             $fotoAluno = !empty($aluno->foto)
                                 && is_file(dirname(__DIR__, 3) . '/Public/uploads/alunos/' . basename((string) $aluno->foto))
                                 ? URL . '/uploads/alunos/' . basename((string) $aluno->foto)

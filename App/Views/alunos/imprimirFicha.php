@@ -66,7 +66,7 @@ $imcTexto = $imc ? $imc['texto'] . (!empty($imc['classe']) ? ' (' . $imc['classe
 
 $fotoAluno = (!empty($aluno->foto) && is_file(dirname(__DIR__, 3) . '/Public/uploads/alunos/' . basename((string) $aluno->foto)))
     ? URL . '/uploads/alunos/' . basename((string) $aluno->foto)
-    : URL . '/img/user.avif';
+    : null; // sem foto: mostra as iniciais do primeiro e do segundo nome
 
 $fuso = new DateTimeZone('America/Porto_Velho');
 $emitidoEm = (new DateTime('now', $fuso))->format('d/m/Y \à\s H:i');
@@ -87,6 +87,7 @@ $linha = function ($rotulo, $valorHtml) {
     .fi-topo small { color: #555; }
     .fi-ident { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 10px; }
     .fi-foto { width: 90px; height: 110px; object-fit: cover; border: 1px solid #999; border-radius: 4px; flex-shrink: 0; }
+    .fi-foto-iniciais { display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 700; color: #146c43; background: #eef7f1; }
     .fi-nome { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
     .fi-secao { margin-top: 12px; break-inside: avoid; page-break-inside: avoid; }
     .fi-secao h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; color: #146c43; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 6px; }
@@ -144,7 +145,11 @@ $linha = function ($rotulo, $valorHtml) {
 
         <!-- IDENTIFICAÇÃO -->
         <div class="fi-ident">
-            <img src="<?= htmlspecialchars($fotoAluno) ?>" class="fi-foto" alt="Foto do aluno">
+            <?php if ($fotoAluno !== null): ?>
+                <img src="<?= htmlspecialchars($fotoAluno) ?>" class="fi-foto" alt="Foto do aluno">
+            <?php else: ?>
+                <div class="fi-foto fi-foto-iniciais" role="img" aria-label="Foto do aluno"><?= htmlspecialchars(Checa::iniciais($aluno->nome ?? '')) ?></div>
+            <?php endif; ?>
             <div class="flex-grow-1">
                 <p class="fi-nome"><?= $fv($aluno->nome) ?></p>
                 <div class="fi-grade">

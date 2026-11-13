@@ -220,7 +220,8 @@ body {
     border-radius: 50%;
     background: #fdecec;
     color: #c92a30;
-    font-size: 1.375rem;
+    font-size: 1rem;
+    font-weight: 700;
 }
 
 .home-atencao-info {

@@ -118,10 +118,10 @@ $pesoTexto = ($aluno->peso !== null && $aluno->peso !== '')
     ? rtrim(rtrim(number_format((float) $aluno->peso, 2, ',', ''), '0'), ',') . ' kg'
     : '';
 
-// Foto do aluno (Public/uploads/alunos/) ou imagem padrão.
+// Foto do aluno (Public/uploads/alunos/); sem foto, mostra as iniciais.
 $fotoAluno = (!empty($aluno->foto) && is_file(dirname(__DIR__, 3) . '/Public/uploads/alunos/' . basename((string) $aluno->foto)))
     ? URL . '/uploads/alunos/' . basename((string) $aluno->foto)
-    : URL . '/img/user.avif';
+    : null;
 
 // Opções do botão "Adicionar Triagem": [rota, título, descrição, ícone].
 $opcoesTriagem = [
@@ -256,10 +256,19 @@ $ehSim = function ($valor) {
                             </span>
 
                             <div class="position-relative">
-                                <img src="<?= htmlspecialchars($fotoAluno) ?>"
-                                    class="rounded-circle border border-3 border-success-subtle"
-                                    style="width: 130px; height: 130px; object-fit: cover;"
-                                    alt="Foto do aluno">
+                                <?php if ($fotoAluno !== null): ?>
+                                    <img src="<?= htmlspecialchars($fotoAluno) ?>"
+                                        class="rounded-circle border border-3 border-success-subtle"
+                                        style="width: 130px; height: 130px; object-fit: cover;"
+                                        alt="Foto do aluno">
+                                <?php else: ?>
+                                    <!-- Sem foto: iniciais do primeiro e do segundo nome -->
+                                    <div class="rounded-circle border border-3 border-success-subtle d-flex align-items-center justify-content-center fw-bold"
+                                        style="width: 130px; height: 130px; background: #d8f0e2; color: #0f5c37; font-size: 2.75rem; letter-spacing: 1px;"
+                                        role="img" aria-label="Foto do aluno">
+                                        <?= htmlspecialchars(Checa::iniciais($aluno->nome ?? '')) ?>
+                                    </div>
+                                <?php endif; ?>
 
                                 <form action="<?= URL ?>/alunos/atualizarFoto/<?= $id ?>" method="POST" enctype="multipart/form-data">
                                     <label for="fotoAluno"

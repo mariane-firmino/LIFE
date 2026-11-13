@@ -1,6 +1,23 @@
 <?php //abertura da tag de php
 class checa
 { // criando a classe checa
+    // Iniciais do primeiro e do segundo nome (ex.: "Ana Beatriz Souza" -> "AB").
+    // Pula "da", "de", "do", "das", "dos" e "e" ("Maria da Silva" -> "MS").
+    public static function iniciais($nome)
+    {
+        $partes = preg_split('/\s+/u', trim((string) $nome), -1, PREG_SPLIT_NO_EMPTY);
+        $partes = array_values(array_filter($partes, function ($p) {
+            return !in_array(mb_strtolower($p), ['da', 'de', 'do', 'das', 'dos', 'e'], true);
+        }));
+
+        $iniciais = '';
+        foreach (array_slice($partes, 0, 2) as $p) {
+            $iniciais .= mb_substr($p, 0, 1);
+        }
+
+        return $iniciais !== '' ? mb_strtoupper($iniciais) : '?';
+    }
+
     public static function checarNome($nome)
     {
         // Só letras (com ou sem acento) e um espaço entre as palavras.

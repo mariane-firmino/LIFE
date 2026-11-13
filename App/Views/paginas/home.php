@@ -115,7 +115,7 @@ $cards = [
                                href="<?= URL ?>/alunos/visualizarPerfil/<?= (int) $aluno['id'] ?>">
 
                                 <span class="home-atencao-avatar" aria-hidden="true">
-                                    <i class="bi bi-person-fill"></i>
+                                    <?= htmlspecialchars(Checa::iniciais($aluno['nome'])) ?>
                                 </span>
 
                                 <span class="home-atencao-info">
